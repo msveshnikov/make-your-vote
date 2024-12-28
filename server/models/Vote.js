@@ -5,7 +5,6 @@ const voteSchema = new mongoose.Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
-            // required: true
         },
         topic: {
             type: mongoose.Schema.Types.ObjectId,
@@ -55,7 +54,6 @@ const voteSchema = new mongoose.Schema(
     }
 );
 
-voteSchema.index({ topic: 1, user: 1 }, { unique: true });
 voteSchema.index({ topic: 1, createdAt: -1 });
 voteSchema.index({ user: 1, createdAt: -1 });
 

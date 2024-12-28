@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     ChakraProvider,
     Box,
@@ -21,31 +21,40 @@ import {
     Input,
     FormControl,
     FormLabel,
-    useToast
+    useToast,
+    Progress,
+    HStack,
+    Tooltip,
+    useMediaQuery
 } from '@chakra-ui/react';
-import { FaVoteYea, FaPlus } from 'react-icons/fa';
+import { FaVoteYea, FaPlus, FaChartLine, FaShare } from 'react-icons/fa';
 import { API_URL } from './App';
 
 const theme = extendTheme({
     config: {
         initialColorMode: 'light',
         useSystemColorMode: false
+    },
+    components: {
+        Button: {
+            baseStyle: {
+                borderRadius: 'full'
+            }
+        }
     }
 });
 
 function Vote() {
     const [topics, setTopics] = useState([]);
     const [newTopic, setNewTopic] = useState({ optionA: '', optionB: '' });
+    const [loading, setLoading] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
+    const [isMobile] = useMediaQuery('(max-width: 768px)');
 
-    useEffect(() => {
-        fetchTopics();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const fetchTopics = async () => {
+    const fetchTopics = useCallback(async () => {
         try {
+            setLoading(true);
             const response = await fetch(`${API_URL}/api/topics`);
             const data = await response.json();
             setTopics(data);
@@ -55,8 +64,14 @@ function Vote() {
                 status: 'error',
                 duration: 3000
             });
+        } finally {
+            setLoading(false);
         }
-    };
+    }, [toast]);
+
+    useEffect(() => {
+        fetchTopics();
+    }, [fetchTopics]);
 
     const handleVote = async (topicId, option) => {
         try {
@@ -71,6 +86,7 @@ function Vote() {
                 status: 'success',
                 duration: 2000
             });
+            fetchTopics();
         } catch {
             toast({
                 title: 'Error recording vote',
@@ -105,54 +121,119 @@ function Vote() {
         }
     };
 
+    const handleShare = async (topic) => {
+        try {
+            await navigator.share({
+                title: `Vote on ${topic.title}`,
+                text: `${topic.optionA} vs ${topic.optionB}`,
+                url: window.location.href
+            });
+        } catch {
+            toast({
+                title: 'Error sharing topic',
+                status: 'error',
+                duration: 3000
+            });
+        }
+    };
+
     return (
         <ChakraProvider theme={theme}>
             <Box minH="100vh" bg="white" color="gray.800">
-                <Container maxW="container.xl" py={12}>
-                    <Flex justifyContent="space-between" alignItems="center" mb={12}>
+                <Container maxW="container.xl" py={6}>
+                    <Flex
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb={8}
+                        flexDir={isMobile ? 'column' : 'row'}
+                        gap={4}
+                    >
                         <Flex alignItems="center" gap={3}>
                             <Icon as={FaVoteYea} w={8} h={8} color="blue.400" />
                             <Heading size="xl">MakeYour.vote</Heading>
                         </Flex>
-                        <Button leftIcon={<FaPlus />} colorScheme="blue" onClick={onOpen}>
+                        <Button
+                            leftIcon={<FaPlus />}
+                            colorScheme="blue"
+                            onClick={onOpen}
+                            size={isMobile ? 'sm' : 'md'}
+                        >
                             Create Topic
                         </Button>
                     </Flex>
 
-                    <VStack spacing={8}>
-                        {topics.map((topic) => (
-                            <Box
-                                key={topic._id}
-                                w="full"
-                                p={6}
-                                borderRadius="lg"
-                                border="1px"
-                                borderColor="gray.200"
-                            >
-                                <Flex justifyContent="space-between" alignItems="center">
-                                    <VStack align="start" spacing={2}>
-                                        <Heading size="md">{topic.title}</Heading>
-                                        <Flex gap={4}>
+                    {loading ? (
+                        <Progress size="xs" isIndeterminate />
+                    ) : (
+                        <VStack spacing={6}>
+                            {topics.map((topic) => (
+                                <Box
+                                    key={topic._id}
+                                    w="full"
+                                    p={6}
+                                    borderRadius="xl"
+                                    border="1px"
+                                    borderColor="gray.200"
+                                    transition="all 0.2s"
+                                    _hover={{ shadow: 'md' }}
+                                >
+                                    <VStack spacing={4} align="stretch">
+                                        <Flex justifyContent="space-between" alignItems="center">
+                                            <Heading size="md">{topic.title}</Heading>
+                                            <HStack>
+                                                <Tooltip label="View Analytics">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        colorScheme="blue"
+                                                    >
+                                                        <Icon as={FaChartLine} />
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip label="Share">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        colorScheme="blue"
+                                                        onClick={() => handleShare(topic)}
+                                                    >
+                                                        <Icon as={FaShare} />
+                                                    </Button>
+                                                </Tooltip>
+                                            </HStack>
+                                        </Flex>
+                                        <Flex
+                                            gap={4}
+                                            flexDir={isMobile ? 'column' : 'row'}
+                                            align="center"
+                                        >
                                             <Button
+                                                flex="1"
                                                 onClick={() => handleVote(topic._id, -1)}
                                                 colorScheme="blue"
+                                                variant="outline"
                                             >
                                                 {topic.optionA}
                                             </Button>
-                                            <Text>vs</Text>
+                                            <Text fontWeight="bold">vs</Text>
                                             <Button
+                                                flex="1"
                                                 onClick={() => handleVote(topic._id, 1)}
                                                 colorScheme="blue"
                                             >
                                                 {topic.optionB}
                                             </Button>
                                         </Flex>
+                                        <Flex justifyContent="flex-end">
+                                            <Badge colorScheme="blue" fontSize="sm">
+                                                {topic.totalVotes} votes
+                                            </Badge>
+                                        </Flex>
                                     </VStack>
-                                    <Badge colorScheme="blue">{topic.totalVotes} votes</Badge>
-                                </Flex>
-                            </Box>
-                        ))}
-                    </VStack>
+                                </Box>
+                            ))}
+                        </VStack>
+                    )}
                 </Container>
             </Box>
 
@@ -169,6 +250,7 @@ function Vote() {
                                 onChange={(e) =>
                                     setNewTopic({ ...newTopic, optionA: e.target.value })
                                 }
+                                placeholder="Enter first option"
                             />
                         </FormControl>
                         <FormControl mt={4}>
@@ -178,15 +260,17 @@ function Vote() {
                                 onChange={(e) =>
                                     setNewTopic({ ...newTopic, optionB: e.target.value })
                                 }
+                                placeholder="Enter second option"
                             />
                         </FormControl>
                         <Button
-                            mt={4}
+                            mt={6}
+                            w="full"
                             colorScheme="blue"
                             onClick={handleCreateTopic}
                             isDisabled={!newTopic.optionA || !newTopic.optionB}
                         >
-                            Create
+                            Create Topic
                         </Button>
                     </ModalBody>
                 </ModalContent>
