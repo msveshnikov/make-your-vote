@@ -9,7 +9,7 @@ export default defineConfig({
             registerType: 'autoUpdate',
             manifest: {
                 name: 'Make Your Vote',
-                short_name: 'MYVote',
+                short_name: 'Make Your Vote',
                 description: 'The Definitive Source for Public Opinion',
                 theme_color: '#ffffff',
                 background_color: '#ffffff',
