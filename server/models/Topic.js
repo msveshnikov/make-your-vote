@@ -7,20 +7,29 @@ const topicSchema = new mongoose.Schema(
             required: true,
             trim: true
         },
-        description: {
+        optionA: {
             type: String,
             required: true,
             trim: true
         },
-        category: {
+        optionB: {
             type: String,
             required: true,
-            enum: ['politics', 'social', 'technology', 'environment', 'economy', 'other']
+            trim: true
+        },
+        description: {
+            type: String,
+            // required: true,
+            trim: true
+        },
+        category: {
+            type: String,
+            required: true
+            // enum: ['politics', 'social', 'technology', 'environment', 'economy', 'other']
         },
         creator: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
+            ref: 'User'
         },
         status: {
             type: String,

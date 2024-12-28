@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     ChakraProvider,
     Box,
@@ -10,96 +10,102 @@ import {
     Flex,
     Icon,
     extendTheme,
-    Grid,
     Badge,
-    Stat,
-    StatLabel,
-    StatNumber,
-    StatHelpText
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
+    Input,
+    FormControl,
+    FormLabel,
+    useToast
 } from '@chakra-ui/react';
-import { FaVoteYea, FaChartLine, FaUsers, FaGlobeAmericas } from 'react-icons/fa';
+import { FaVoteYea, FaPlus } from 'react-icons/fa';
+import { API_URL } from './App';
 
 const theme = extendTheme({
     config: {
         initialColorMode: 'light',
         useSystemColorMode: false
-    },
-    styles: {
-        global: {
-            body: {
-                bg: 'white'
-            }
-        }
-    },
-    components: {
-        Button: {
-            baseStyle: {
-                fontWeight: 'normal'
-            },
-            variants: {
-                solid: {
-                    bg: 'blue.400',
-                    color: 'white',
-                    _hover: {
-                        bg: 'blue.500'
-                    }
-                }
-            }
-        }
     }
 });
 
 function Vote() {
-    const [activeTopics] = useState([
-        {
-            id: 1,
-            title: 'Current Events',
-            votes: 1200,
-            participants: 450,
-            category: 'News'
-        },
-        {
-            id: 2,
-            title: 'Sports',
-            votes: 800,
-            participants: 320,
-            category: 'Entertainment'
-        },
-        {
-            id: 3,
-            title: 'Society',
-            votes: 950,
-            participants: 380,
-            category: 'Social'
-        }
-    ]);
+    const [topics, setTopics] = useState([]);
+    const [newTopic, setNewTopic] = useState({ optionA: '', optionB: '' });
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
 
-    const stats = [
-        {
-            icon: FaUsers,
-            label: 'Active Users',
-            number: '10,000+',
-            help: 'Growing community'
-        },
-        {
-            icon: FaVoteYea,
-            label: 'Total Votes',
-            number: '160,000+',
-            help: 'In just two weeks'
-        },
-        {
-            icon: FaChartLine,
-            label: 'Conversion Rate',
-            number: '35%',
-            help: 'Visitor to voter'
-        },
-        {
-            icon: FaGlobeAmericas,
-            label: 'Avg. Engagement',
-            number: '16',
-            help: 'Votes per user'
+    useEffect(() => {
+        fetchTopics();
+        // socket.on('newVote', handleVoteUpdate);
+        // return () => socket.off('newVote', handleVoteUpdate);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const fetchTopics = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/topics`);
+            const data = await response.json();
+            setTopics(data);
+        } catch {
+            toast({
+                title: 'Error fetching topics',
+                status: 'error',
+                duration: 3000
+            });
         }
-    ];
+    };
+
+    const handleVote = async (topicId, option) => {
+        try {
+            const response = await fetch(`${API_URL}/api/vote`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ topicId, vote: option })
+            });
+            if (!response.ok) throw new Error('Vote failed');
+            toast({
+                title: 'Vote recorded',
+                status: 'success',
+                duration: 2000
+            });
+        } catch {
+            toast({
+                title: 'Error recording vote',
+                status: 'error',
+                duration: 3000
+            });
+        }
+    };
+
+    const handleCreateTopic = async () => {
+        try {
+            const response = await fetch(`${API_URL}/api/topics`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newTopic)
+            });
+            if (!response.ok) throw new Error('Failed to create topic');
+            onClose();
+            fetchTopics();
+            setNewTopic({ optionA: '', optionB: '' });
+            toast({
+                title: 'Topic created successfully',
+                status: 'success',
+                duration: 2000
+            });
+        } catch {
+            toast({
+                title: 'Error creating topic',
+                status: 'error',
+                duration: 3000
+            });
+        }
+    };
 
     return (
         <ChakraProvider theme={theme}>
@@ -108,120 +114,85 @@ function Vote() {
                     <Flex justifyContent="space-between" alignItems="center" mb={12}>
                         <Flex alignItems="center" gap={3}>
                             <Icon as={FaVoteYea} w={8} h={8} color="blue.400" />
-                            <Heading size="xl" fontWeight="bold" letterSpacing="tight">
-                                MakeYour.vote
-                            </Heading>
+                            <Heading size="xl">MakeYour.vote</Heading>
                         </Flex>
+                        <Button leftIcon={<FaPlus />} colorScheme="blue" onClick={onOpen}>
+                            Create Topic
+                        </Button>
                     </Flex>
 
-                    <VStack spacing={12} align="stretch">
-                        <Box>
-                            <Heading size="lg" mb={4} fontWeight="semibold" letterSpacing="tight">
-                                The Definitive Source for Public Opinion
-                            </Heading>
-                            <Text fontSize="xl" color="gray.600" lineHeight="tall">
-                                Unifying fragmented sentiment into official, actionable data
-                            </Text>
-                        </Box>
-
-                        <Grid
-                            templateColumns={{
-                                base: '1fr',
-                                md: 'repeat(2, 1fr)',
-                                lg: 'repeat(4, 1fr)'
-                            }}
-                            gap={8}
-                        >
-                            {stats.map((stat, index) => (
-                                <Box
-                                    key={index}
-                                    p={6}
-                                    bg="white"
-                                    borderRadius="lg"
-                                    shadow="sm"
-                                    border="1px"
-                                    borderColor="gray.100"
-                                >
-                                    <Stat>
-                                        <Flex align="center" mb={2}>
-                                            <Icon
-                                                as={stat.icon}
-                                                w={5}
-                                                h={5}
-                                                color="blue.400"
-                                                mr={2}
-                                            />
-                                            <StatLabel fontSize="sm">{stat.label}</StatLabel>
-                                        </Flex>
-                                        <StatNumber fontSize="2xl" fontWeight="bold">
-                                            {stat.number}
-                                        </StatNumber>
-                                        <StatHelpText>{stat.help}</StatHelpText>
-                                    </Stat>
-                                </Box>
-                            ))}
-                        </Grid>
-
-                        <Box>
-                            <Heading size="md" mb={6} fontWeight="semibold">
-                                Trending Topics
-                            </Heading>
-                            <VStack spacing={4}>
-                                {activeTopics.map((topic) => (
-                                    <Box
-                                        key={topic.id}
-                                        p={8}
-                                        borderRadius="xl"
-                                        bg="white"
-                                        shadow="sm"
-                                        border="1px"
-                                        borderColor="gray.100"
-                                        w="100%"
-                                        transition="all 0.2s"
-                                        _hover={{ shadow: 'md' }}
-                                    >
-                                        <Flex justifyContent="space-between" alignItems="center">
-                                            <VStack align="start" spacing={2}>
-                                                <Flex align="center" gap={2}>
-                                                    <Heading size="md" fontWeight="medium">
-                                                        {topic.title}
-                                                    </Heading>
-                                                    <Badge colorScheme="blue" variant="subtle">
-                                                        {topic.category}
-                                                    </Badge>
-                                                </Flex>
-                                                <Text fontSize="sm" color="gray.600">
-                                                    {topic.votes.toLocaleString()} votes •{' '}
-                                                    {topic.participants.toLocaleString()}{' '}
-                                                    participants
-                                                </Text>
-                                            </VStack>
-                                            <Button colorScheme="blue" size="md" borderRadius="lg">
-                                                Vote Now
+                    <VStack spacing={8}>
+                        {topics.map((topic) => (
+                            <Box
+                                key={topic._id}
+                                w="full"
+                                p={6}
+                                borderRadius="lg"
+                                border="1px"
+                                borderColor="gray.200"
+                            >
+                                <Flex justifyContent="space-between" alignItems="center">
+                                    <VStack align="start" spacing={2}>
+                                        <Heading size="md">{topic.title}</Heading>
+                                        <Flex gap={4}>
+                                            <Button
+                                                onClick={() => handleVote(topic._id, 'optionA')}
+                                                colorScheme="blue"
+                                            >
+                                                {topic.optionA}
+                                            </Button>
+                                            <Text>vs</Text>
+                                            <Button
+                                                onClick={() => handleVote(topic._id, 'optionB')}
+                                                colorScheme="blue"
+                                            >
+                                                {topic.optionB}
                                             </Button>
                                         </Flex>
-                                    </Box>
-                                ))}
-                            </VStack>
-                        </Box>
-
-                        <Box textAlign="center" py={12}>
-                            <Button
-                                colorScheme="blue"
-                                size="lg"
-                                px={12}
-                                py={7}
-                                fontSize="lg"
-                                borderRadius="lg"
-                                shadow="md"
-                                _hover={{ shadow: 'lg' }}
-                            >
-                                Join the Discussion
-                            </Button>
-                        </Box>
+                                    </VStack>
+                                    <Badge colorScheme="blue">{topic.totalVotes} votes</Badge>
+                                </Flex>
+                            </Box>
+                        ))}
                     </VStack>
                 </Container>
             </Box>
+
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Create New Topic</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        <FormControl>
+                            <FormLabel>Option 1</FormLabel>
+                            <Input
+                                value={newTopic.optionA}
+                                onChange={(e) =>
+                                    setNewTopic({ ...newTopic, optionA: e.target.value })
+                                }
+                            />
+                        </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel>Option 2</FormLabel>
+                            <Input
+                                value={newTopic.optionB}
+                                onChange={(e) =>
+                                    setNewTopic({ ...newTopic, optionB: e.target.value })
+                                }
+                            />
+                        </FormControl>
+                        <Button
+                            mt={4}
+                            colorScheme="blue"
+                            onClick={handleCreateTopic}
+                            isDisabled={!newTopic.optionA || !newTopic.optionB}
+                        >
+                            Create
+                        </Button>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </ChakraProvider>
     );
 }

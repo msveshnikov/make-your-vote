@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
-import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import mongoose from 'mongoose';
@@ -12,9 +11,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { Server } from 'socket.io';
 import { createServer } from 'http';
-import { getTextClaude } from './claude.js';
 import { getTextGemini } from './gemini.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
@@ -27,17 +24,9 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-    cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-        methods: ['GET', 'POST']
-    }
-});
 
 app.set('trust proxy', 1);
 const port = process.env.PORT || 3000;
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
 
 app.use(cors());
 app.use(helmet());
@@ -55,36 +44,37 @@ app.use(limiter);
 
 mongoose.connect(process.env.MONGODB_URI, {});
 
-const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Access denied' });
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ error: 'Invalid token' });
-        req.user = user;
-        next();
-    });
+const cleanGeneratedCode = (code) => {
+    const codeBlockRegex = /```(?:json)?\n([\s\S]*?)\n```/;
+    const match = code.match(codeBlockRegex);
+    return match ? match[1] : code;
 };
 
-// eslint-disable-next-line no-unused-vars
-const generateAIResponse = async (prompt, model, temperature = 0.7) => {
-    switch (model) {
-        case 'gpt-4':
-        case 'gpt-3.5-turbo': {
-            const completion = await openai.chat.completions.create({
-                model,
-                messages: [{ role: 'user', content: prompt }],
-                temperature
-            });
-            return completion.choices[0].message.content;
-        }
-        case 'claude-3':
-            return await getTextClaude(prompt, model, temperature);
-        case 'gemini-pro':
-            return await getTextGemini(prompt, model, temperature);
-        default:
-            throw new Error('Invalid model specified');
+const generateTopicPairs = async () => {
+    const prompt =
+        "Generate 20 pairs of comparable items/people for voting (e.g., 'Ronaldo vs Messi'). Format as JSON array of objects with properties: title, optionA, optionB, category.";
+    try {
+        let response = await getTextGemini(prompt, 'gemini-exp-1206', 1.0);
+        response = cleanGeneratedCode(response);
+        const pairs = JSON.parse(response);
+        // await Topic.deleteMany({});
+        await Topic.insertMany(pairs);
+    } catch (error) {
+        console.error(error);
+        console.error('Failed to generate topic pairs:', error);
     }
+};
+
+const authenticateToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+        req.user = null;
+        return next();
+    }
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        req.user = err ? null : user;
+        next();
+    });
 };
 
 app.post('/api/register', async (req, res) => {
@@ -95,6 +85,7 @@ app.post('/api/register', async (req, res) => {
         await user.save();
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -121,6 +112,7 @@ app.post('/api/login', async (req, res) => {
             }
         });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -128,7 +120,7 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/vote', authenticateToken, async (req, res) => {
     try {
         const { topicId, vote } = req.body;
-        const userId = req.user.id;
+        const userId = req.user?.id || 'anonymous';
 
         const result = await Vote.create({
             user: userId,
@@ -136,13 +128,27 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
             vote
         });
 
-        io.emit('newVote', {
-            topicId,
-            voteCount: await Vote.countDocuments({ topic: topicId })
-        });
-
         res.json(result);
     } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/topics', authenticateToken, async (req, res) => {
+    try {
+        const { title, optionA, optionB, category } = req.body;
+        const topic = new Topic({
+            title,
+            optionA,
+            optionB,
+            category,
+            createdBy: req.user?.id || 'anonymous'
+        });
+        await topic.save();
+        res.status(201).json(topic);
+    } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -152,18 +158,9 @@ app.get('/api/topics', async (req, res) => {
         const topics = await Topic.find().sort({ createdAt: -1 }).limit(20);
         res.json(topics);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
-});
-
-io.on('connection', (socket) => {
-    socket.on('joinTopic', (topicId) => {
-        socket.join(`topic:${topicId}`);
-    });
-
-    socket.on('leaveTopic', (topicId) => {
-        socket.leave(`topic:${topicId}`);
-    });
 });
 
 app.get('/', async (req, res) => {
@@ -184,8 +181,9 @@ process.on('uncaughtException', (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
 
-httpServer.listen(port, () => {
+httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
+    await generateTopicPairs();
 });
 
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = './google.json';
