@@ -113,3 +113,6 @@ official & visible for all.
 # TODO
 
 - generate 20 pairs (topics) with AI on startup
+- connect to API
+- allow vote without login
+- allow create new topic (like Ronaldo vs Messi)
