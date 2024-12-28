@@ -1,0 +1,1 @@
+voting,polls,public opinion,sentiment analysis,real-time voting,social polling,democracy,decision making

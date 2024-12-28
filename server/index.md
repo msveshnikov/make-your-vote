@@ -1,175 +1,170 @@
-# Server Documentation (server/index.js)
+# Server Index.js Documentation
 
 ## Overview
 
-This file serves as the main server implementation for a training exercise management application.
-It provides a REST API with user authentication, exercise management, and AI-powered training
-generation using OpenAI's GPT-4 model.
+This file serves as the main server entry point for a voting application. It sets up an Express.js
+server with various middleware configurations, authentication, and API endpoints for user
+management, voting, and topic handling.
 
 ## Dependencies
 
-- `express`: Web application framework
-- `cors`: Cross-Origin Resource Sharing middleware
-- `openai`: OpenAI API client
-- `mongoose`: MongoDB ODM
-- `jwt`: JSON Web Token authentication
-- `bcryptjs`: Password hashing
-- Additional security packages: `helmet`, `compression`, `rate-limit`
+- Express.js - Web application framework
+- MongoDB/Mongoose - Database and ODM
+- JWT - Authentication
+- Various security middleware (helmet, cors, rate-limiting)
+- Compression and logging utilities
 
-## Configuration
+## Core Configuration
+
+### Server Setup
 
 ```javascript
+const app = express();
+const httpServer = createServer(app);
 const port = process.env.PORT || 3000;
 ```
 
-Required environment variables:
+### Middleware Configuration
 
-- `OPENAI_KEY`: OpenAI API key
-- `MONGODB_URI`: MongoDB connection string
-- `JWT_SECRET`: Secret key for JWT signing
-- `PORT`: Server port (optional)
+- CORS enabled
+- Helmet for security headers
+- JSON body parsing (15mb limit)
+- Static file serving with 3-day cache
+- Request logging with Morgan
+- Response compression
+- Rate limiting (100 requests per 15 minutes)
+- MongoDB connection
 
-## Database Schemas
+## Authentication
 
-### UserSchema
+### `authenticateToken(req, res, next)`
 
-```javascript
-{
-    email: String,          // Required, unique
-    password: String,       // Required, hashed
-    role: String,           // 'coach' or 'club'
-    certifications: [String],
-    experience: String,
-    achievements: [String]
-}
-```
+Middleware for JWT authentication.
 
-### ExerciseSchema
-
-```javascript
-{
-    title: String,
-    description: String,
-    difficulty: String,
-    ageGroup: String,
-    category: String,
-    videoUrl: String,
-    restrictions: [String],
-    createdBy: ObjectId    // Reference to User
-}
-```
-
-## Middleware Functions
-
-### authenticateToken
-
-Validates JWT tokens for protected routes.
-
-```javascript
-const authenticateToken = (req, res, next) => {
-    // ... token validation logic
-};
-```
+- **Parameters**:
+    - `req` - Express request object
+    - `res` - Express response object
+    - `next` - Next middleware function
+- **Returns**: Calls next() with authenticated user attached to request
 
 ## API Endpoints
 
-### Authentication
+### User Management
 
-#### POST /api/register
+#### POST `/api/register`
 
 Creates a new user account.
 
-- Body: `{ email, password, role }`
-- Returns: `{ message: 'User created successfully' }` (201)
+- **Body**: `{ email, password, role }`
+- **Returns**: Status 201 on success
 
-#### POST /api/login
+#### POST `/api/login`
 
-Authenticates a user and returns a JWT.
+Authenticates a user and returns a JWT token.
 
-- Body: `{ email, password }`
-- Returns: `{ token: 'JWT_TOKEN' }` (200)
+- **Body**: `{ email, password }`
+- **Returns**: `{ token, user }` object
 
-### Exercises
+### Voting System
 
-#### POST /api/generate-training
+#### POST `/api/vote`
 
-Generates training exercises using AI.
+Records a user's vote.
 
-- Authentication: Required
-- Body: `{ prompt }`
-- Returns: `{ exercise: 'Generated content' }`
+- **Authentication**: Required
+- **Body**: `{ topicId, vote }`
+- **Returns**: Vote record
 
-#### POST /api/exercises
+### Topic Management
 
-Creates a new exercise.
+#### POST `/api/topics`
 
-- Authentication: Required
-- Body: Exercise details
-- Returns: Created exercise object (201)
+Creates a new voting topic.
 
-#### GET /api/exercises
+- **Authentication**: Required
+- **Body**: `{ title, optionA, optionB, category }`
+- **Returns**: Created topic
 
-Retrieves all exercises.
+#### GET `/api/topics`
 
-- Authentication: Required
-- Returns: Array of exercise objects
+Retrieves latest 20 topics.
 
-### Static File Serving
+- **Authentication**: Not required
+- **Returns**: Array of topics
 
-- Serves static files from the `../dist` directory
-- Landing page: `/` serves `landing.html`
-- All other routes serve `index.html` (SPA support)
+### Static Routes
 
-## Security Features
+#### GET `/`
 
-1. Rate limiting: 100 requests per 15 minutes
-2. Helmet security headers
-3. Request size limiting (15mb)
-4. CORS protection
-5. Password hashing
-6. JWT authentication
+Serves the landing page.
+
+#### GET `*`
+
+Serves the main application page for all other routes.
+
+## Utility Functions
+
+### `cleanGeneratedCode(code)`
+
+Cleans AI-generated code responses.
+
+- **Parameters**: `code` - String containing code block
+- **Returns**: Cleaned code string
+
+### `generateTopicPairs()`
+
+Generates initial voting topics using AI.
+
+- **Returns**: void
+- **Side Effects**: Creates topics in database
 
 ## Error Handling
 
 - Global uncaught exception handler
 - 404 handler for undefined routes
-- Try-catch blocks for async operations
+- Error responses in JSON format
 
 ## Usage Example
 
 ```javascript
-// Starting the server
-npm start
+// Start the server
+npm run start
 
-// Making a request to create an exercise
-fetch('/api/exercises', {
-    method: 'POST',
-    headers: {
-        'Authorization': 'Bearer YOUR_JWT_TOKEN',
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        title: 'Exercise Name',
-        description: 'Exercise Description',
-        difficulty: 'Intermediate'
-        // ... other fields
-    })
-});
+// Make a login request
+fetch('/api/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: 'user@example.com',
+    password: 'password123'
+  })
+})
 ```
 
 ## Project Context
 
-This server file is part of a larger training management application. It works in conjunction with:
+This server file is the backend foundation for a voting application. It interfaces with:
 
-- Frontend SPA (`/src`)
-- Landing page (`/public/landing.html`)
-- Documentation (`/docs`)
-- Docker deployment configuration
+- Frontend React components in `/src`
+- MongoDB models in `/server/models`
+- AI integration through `gemini.js`
+- Static assets in `/dist`
 
-## Notes
+## Environment Requirements
 
-- The server implements a RESTful API architecture
-- Uses MongoDB for data persistence
-- Implements security best practices
-- Supports both development and production environments
-- Includes compression for performance optimization
+- MongoDB URI
+- JWT Secret
+- Google Application Credentials
+- Port (optional, defaults to 3000)
+
+## Security Features
+
+- Rate limiting
+- CORS protection
+- Helmet security headers
+- JWT authentication
+- Password hashing
+- Request size limiting
+
+This documentation provides a comprehensive overview of the server's functionality and its role in
+the larger application architecture.
