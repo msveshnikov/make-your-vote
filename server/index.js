@@ -57,7 +57,6 @@ const generateTopicPairs = async () => {
         let response = await getTextGemini(prompt, 'gemini-exp-1206', 1.0);
         response = cleanGeneratedCode(response);
         const pairs = JSON.parse(response);
-        // await Topic.deleteMany({});
         await Topic.insertMany(pairs);
     } catch (error) {
         console.error(error);
@@ -156,7 +155,14 @@ app.post('/api/topics', authenticateToken, async (req, res) => {
 app.get('/api/topics', async (req, res) => {
     try {
         const topics = await Topic.find().sort({ createdAt: -1 }).limit(20);
-        res.json(topics);
+        const topicsWithVotes = await Promise.all(
+            topics.map(async (topic) => {
+                const votes = await Vote.find({ topic: topic._id });
+                const totalVotes = votes.length;
+                return { ...topic.toObject(), totalVotes };
+            })
+        );
+        res.json(topicsWithVotes);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
