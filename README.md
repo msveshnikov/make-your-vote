@@ -106,3 +106,7 @@ Raising $500K at $5M valuation:
 8. Optimize for performance and scalability
 9. Conduct thorough security audits and implement best practices
 10. Launch beta version and gather user feedback for iterative improvements
+
+# TODO
+
+-   make design white/light
