@@ -21,21 +21,9 @@ export default defineConfig({
                         type: 'image/png'
                     },
                     {
-                        src: '/icons/icon-512x512.png', 
+                        src: '/icons/icon-512x512.png',
                         sizes: '512x512',
                         type: 'image/png'
-                    }
-                ]
-            },
-            workbox: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
-                runtimeCaching: [
-                    {
-                        urlPattern: /^https:\/\/api\.makeyour\.vote/,
-                        handler: 'NetworkFirst',
-                        options: {
-                            cacheName: 'api-cache'
-                        }
                     }
                 ]
             }
