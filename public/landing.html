@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="MakeYour.vote - The definitive platform for unified public opinion tracking, real-time sentiment analysis, and global consensus building."
+        />
+        <meta
+            name="keywords"
+            content="public opinion, voting platform, sentiment analysis, opinion tracking, global consensus, AI-driven analytics"
+        />
+        <meta name="author" content="MakeYour.vote" />
+        <meta
+            property="og:title"
+            content="MakeYour.vote - The Definitive Source for Public Opinion"
+        />
+        <meta
+            property="og:description"
+            content="Unify global public opinion with AI-driven analytics and real-time sentiment tracking."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://makeyour.vote" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="MakeYour.vote - Public Opinion Platform" />
+        <meta
+            name="twitter:description"
+            content="The future of unified public opinion tracking and analysis."
+        />
+        <link rel="canonical" href="https://makeyour.vote" />
+        <title>
+            MakeYour.vote - The Definitive Source for Public Opinion | Vote, Track, Analyze
+        </title>
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: #f8f9fa;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+            header {
+                background: #2c3e50;
+                color: #fff;
+                padding: 1rem 0;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            nav ul {
+                list-style: none;
+                display: flex;
+                justify-content: space-around;
+            }
+            nav ul li a {
+                color: #fff;
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.3s ease;
+            }
+            nav ul li a:hover {
+                color: #3498db;
+            }
+            .hero {
+                background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                    url('https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+                background-size: cover;
+                background-position: center;
+                color: #fff;
+                text-align: center;
+                padding: 10rem 0;
+                position: relative;
+            }
+            .hero h1 {
+                font-size: 4rem;
+                margin-bottom: 1rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .hero p {
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+            .cta-button {
+                display: inline-block;
+                background: #e74c3c;
+                color: #fff;
+                padding: 1rem 3rem;
+                text-decoration: none;
+                border-radius: 30px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            }
+            .cta-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            }
+            .features {
+                padding: 6rem 0;
+                background: #fff;
+            }
+            .features h2 {
+                text-align: center;
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+                color: #2c3e50;
+            }
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2rem;
+            }
+            .feature-item {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 15px;
+                text-align: center;
+                transition: transform 0.3s ease;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            }
+            .feature-item:hover {
+                transform: translateY(-5px);
+            }
+            .feature-item h3 {
+                color: #2c3e50;
+                margin-bottom: 1rem;
+                font-size: 1.5rem;
+            }
+            .feature-item p {
+                color: #666;
+            }
+            .testimonials {
+                background: #f8f9fa;
+                padding: 6rem 0;
+            }
+            .testimonials h2 {
+                text-align: center;
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+                color: #2c3e50;
+            }
+            .testimonial-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                padding: 0 2rem;
+            }
+            .testimonial-item {
+                background: #fff;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+            .testimonial-text {
+                font-style: italic;
+                margin-bottom: 1rem;
+            }
+            .testimonial-author {
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            footer {
+                background: #2c3e50;
+                color: #fff;
+                text-align: center;
+                padding: 2rem 0;
+            }
+            @media (max-width: 768px) {
+                .hero h1 {
+                    font-size: 2.5rem;
+                }
+                .hero p {
+                    font-size: 1.2rem;
+                }
+                nav ul {
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="container" role="navigation" aria-label="Main navigation">
+                <ul>
+                    <li><a href="#home" aria-label="Home section">Home</a></li>
+                    <li><a href="#features" aria-label="Features section">Features</a></li>
+                    <li>
+                        <a href="#testimonials" aria-label="Testimonials section">Testimonials</a>
+                    </li>
+                    <li><a href="#contact" aria-label="Contact section">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section id="home" class="hero" role="banner">
+                <div class="container">
+                    <h1>MakeYour.vote</h1>
+                    <p>The Definitive Source for Public Opinion</p>
+                    <a href="#" class="cta-button" role="button" aria-label="Join our platform"
+                        >Join Now</a
+                    >
+                </div>
+            </section>
+
+            <section id="features" class="features" role="region" aria-label="Key features">
+                <div class="container">
+                    <h2>Key Features</h2>
+                    <div class="feature-grid">
+                        <article class="feature-item">
+                            <h3>Single Source of Truth</h3>
+                            <p>Unified global consensus on every topic</p>
+                        </article>
+                        <article class="feature-item">
+                            <h3>Opinion Evolution</h3>
+                            <p>Live sentiment shifts on local & global scales</p>
+                        </article>
+                        <article class="feature-item">
+                            <h3>AI-Driven Consolidation</h3>
+                            <p>Automated topic identification and unification</p>
+                        </article>
+                        <article class="feature-item">
+                            <h3>Advanced Analytics</h3>
+                            <p>Cross-preference correlation and pattern recognition</p>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section
+                id="testimonials"
+                class="testimonials"
+                role="region"
+                aria-label="User testimonials"
+            >
+                <div class="container">
+                    <h2>What Our Users Say</h2>
+                    <div class="testimonial-grid">
+                        <div class="testimonial-item">
+                            <p class="testimonial-text">
+                                "Finally, a platform that brings together global opinions in a
+                                meaningful way. The real-time analytics are incredible!"
+                            </p>
+                            <p class="testimonial-author">Sarah Johnson, Data Analyst</p>
+                        </div>
+                        <div class="testimonial-item">
+                            <p class="testimonial-text">
+                                "The AI-driven consolidation feature has revolutionized how we
+                                gather public sentiment for our research."
+                            </p>
+                            <p class="testimonial-author">Dr. Michael Chen, Research Director</p>
+                        </div>
+                        <div class="testimonial-item">
+                            <p class="testimonial-text">
+                                "MakeYour.vote has become our go-to platform for understanding
+                                public opinion trends in real-time."
+                            </p>
+                            <p class="testimonial-author">Emma Rodriguez, Marketing Manager</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer role="contentinfo">
+            <div class="container">
+                <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
+            </div>
+        </footer>
+    </body>
+</html>
