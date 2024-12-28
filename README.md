@@ -19,51 +19,50 @@ visible for all.
 
 ## Unique System Architecture
 
--   Single Source of Truth: Each topic exists once, creating unified global consensus
--   Opinion Evolution: Live collective sentiment shifts on local & global scales
--   Quantitative to Qualitative: Demographic, profession & vast segmentations for actionable
-    insights
--   AI-Driven Consolidation: Automated topic identification and opinion unification
--   Advanced Data Analytics: Cross-preference correlation and pattern recognition
--   Data Integrity: Multi-layered verification methods
+- Single Source of Truth: Each topic exists once, creating unified global consensus
+- Opinion Evolution: Live collective sentiment shifts on local & global scales
+- Quantitative to Qualitative: Demographic, profession & vast segmentations for actionable insights
+- AI-Driven Consolidation: Automated topic identification and opinion unification
+- Advanced Data Analytics: Cross-preference correlation and pattern recognition
+- Data Integrity: Multi-layered verification methods
 
 ## Early Traction
 
--   10,000 users casting 160,000 votes in two weeks
--   35% visitor-to-voter conversion rate
--   16 votes per user average
+- 10,000 users casting 160,000 votes in two weeks
+- 35% visitor-to-voter conversion rate
+- 16 votes per user average
 
 ## B2B Revenue Models
 
--   Enterprise Licensing & API Access
--   Professional Analytics Platform
--   Custom Research Solutions
--   SaaS: Private Channels
--   Real-time Data Services
+- Enterprise Licensing & API Access
+- Professional Analytics Platform
+- Custom Research Solutions
+- SaaS: Private Channels
+- Real-time Data Services
 
 ## Market Opportunity
 
--   TAM: $308B
--   SAM: $158B
--   GTM Focus: Hosting globally trending debates on current events, sports, societal conflicts etc.
--   Expansion: Media, Brands, Research firms, Consumer-facing Entities
+- TAM: $308B
+- SAM: $158B
+- GTM Focus: Hosting globally trending debates on current events, sports, societal conflicts etc.
+- Expansion: Media, Brands, Research firms, Consumer-facing Entities
 
 ## Competitive Advantage
 
--   Social Network Effects: Social dynamics, each vote increases platform value
--   First-Mover: Creating new category in opinion infrastructure
--   Data Moat: Growing proprietary dataset
--   Natural Monopoly: Single source of truth model
+- Social Network Effects: Social dynamics, each vote increases platform value
+- First-Mover: Creating new category in opinion infrastructure
+- Data Moat: Growing proprietary dataset
+- Natural Monopoly: Single source of truth model
 
 ## Investment Use
 
 Raising $500K at $5M valuation:
 
--   12-month runway
--   Scale viral features
--   Build B2B tools
--   Expand content categories
--   Develop enterprise platform
+- 12-month runway
+- Scale viral features
+- Build B2B tools
+- Expand content categories
+- Develop enterprise platform
 
 ## Design Considerations
 
@@ -87,13 +86,13 @@ Raising $500K at $5M valuation:
 
 ## Technical Stack
 
--   Frontend: React.js with Vite for fast development and optimized builds + Chakra UI v2 for
-    component library
--   Styling: CSS modules or styled-components for component-scoped styles
--   State Management: Redux or Context API
--   Backend: Node.js with Express.js (to be implemented)
--   Database: MongoDB for flexible data storage (to be implemented)
--   Authentication: JWT for secure user sessions (to be implemented)
+- Frontend: React.js with Vite for fast development and optimized builds + Chakra UI v2 for
+  component library
+- Styling: CSS modules or styled-components for component-scoped styles
+- State Management: Redux or Context API
+- Backend: Node.js with Express.js (to be implemented)
+- Database: MongoDB for flexible data storage (to be implemented)
+- Authentication: JWT for secure user sessions (to be implemented)
 
 ## Next Steps
 
