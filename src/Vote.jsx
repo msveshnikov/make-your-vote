@@ -41,8 +41,6 @@ function Vote() {
 
     useEffect(() => {
         fetchTopics();
-        // socket.on('newVote', handleVoteUpdate);
-        // return () => socket.off('newVote', handleVoteUpdate);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -65,7 +63,7 @@ function Vote() {
             const response = await fetch(`${API_URL}/api/vote`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topicId, vote: option })
+                body: JSON.stringify({ topicId, value: option })
             });
             if (!response.ok) throw new Error('Vote failed');
             toast({
@@ -136,14 +134,14 @@ function Vote() {
                                         <Heading size="md">{topic.title}</Heading>
                                         <Flex gap={4}>
                                             <Button
-                                                onClick={() => handleVote(topic._id, 'optionA')}
+                                                onClick={() => handleVote(topic._id, -1)}
                                                 colorScheme="blue"
                                             >
                                                 {topic.optionA}
                                             </Button>
                                             <Text>vs</Text>
                                             <Button
-                                                onClick={() => handleVote(topic._id, 'optionB')}
+                                                onClick={() => handleVote(topic._id, 1)}
                                                 colorScheme="blue"
                                             >
                                                 {topic.optionB}

@@ -119,13 +119,13 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/vote', authenticateToken, async (req, res) => {
     try {
-        const { topicId, vote } = req.body;
-        const userId = req.user?.id || 'anonymous';
+        const { topicId, value } = req.body;
+        const userId = req.user?.id;
 
         const result = await Vote.create({
             user: userId,
             topic: topicId,
-            vote
+            value
         });
 
         res.json(result);
@@ -183,7 +183,9 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
-    await generateTopicPairs();
+    if (process.env.NODE_ENV === 'production') {
+        await generateTopicPairs();
+    }
 });
 
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = './google.json';
