@@ -1,0 +1,35 @@
+{
+    "name": "coach-ai-server",
+    "version": "1.0.0",
+    "description": "Backend server for AI-powered coaching platform",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "dev": "nodemon index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@anthropic-ai/sdk": "^0.33.1",
+        "@google-cloud/vertexai": "^1.9.2",
+        "bcryptjs": "^2.4.3",
+        "compression": "^1.7.5",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "express-rate-limit": "^7.5.0",
+        "helmet": "^8.0.0",
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.9.2",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.5-lts.1",
+        "openai": "^4.77.0",
+        "socket.io": "^4.8.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.9"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
