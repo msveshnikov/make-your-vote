@@ -8,7 +8,7 @@ export default defineConfig({
         VitePWA({
             registerType: 'autoUpdate',
             manifest: {
-                name: 'MakeYour.vote',
+                name: 'Make Your Vote',
                 short_name: 'MYVote',
                 description: 'The Definitive Source for Public Opinion',
                 theme_color: '#ffffff',
@@ -16,12 +16,12 @@ export default defineConfig({
                 display: 'standalone',
                 icons: [
                     {
-                        src: '/icons/icon-192x192.png',
+                        src: '/logo192.png',
                         sizes: '192x192',
                         type: 'image/png'
                     },
                     {
-                        src: '/icons/icon-512x512.png',
+                        src: '/logo512.png',
                         sizes: '512x512',
                         type: 'image/png'
                     }
