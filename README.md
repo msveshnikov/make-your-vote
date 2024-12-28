@@ -138,3 +138,7 @@ $500K Seed Round:
 3. Release B2B API platform
 4. Deploy mobile-optimized interface
 5. Scale infrastructure for growth
+
+# TODO
+
+-   rewrite using es6 modules
