@@ -66,6 +66,7 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// eslint-disable-next-line no-unused-vars
 const generateAIResponse = async (prompt, model, temperature = 0.7) => {
     switch (model) {
         case 'gpt-4':

@@ -141,4 +141,3 @@ $500K Seed Round:
 
 # TODO
 
--   rewrite using es6 modules
