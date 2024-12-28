@@ -1,0 +1,12 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "ai.aicoachpro.twa",
+            "sha256_cert_fingerprints": [
+                "60:C2:7E:79:9E:AC:F4:70:D6:F7:64:95:C8:5A:5A:B1:EE:EB:B2:A4:8B:68:7F:51:2C:C5:C4:AD:5A:22:1C:78"
+            ]
+        }
+    }
+]

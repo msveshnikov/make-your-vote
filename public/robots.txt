@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /profile
+Allow: /$
+Allow: /app$
+Allow: /manifest.json
