@@ -14,8 +14,8 @@ people truly think.
 
 ### Solution
 
-makeyour unifies all votes into a single source of truth, making the collective sentiment official &
-visible for all.
+MakeYour.vote unifies all votes into a single source of truth, making the collective sentiment
+official & visible for all.
 
 ## System Architecture
 
@@ -39,28 +39,17 @@ visible for all.
 4. Performance Optimization:
     - Code splitting and lazy loading
     - Asset compression and caching
-    - Server-side rendering capabilities
-5. Security Measures:
-    - Rate limiting
-    - CSRF protection
-    - Input sanitization
-6. Scalability Features:
-    - Horizontal scaling support
-    - Load balancing
-    - Caching strategies
-7. Data Visualization:
+5. Data Visualization:
     - Real-time charts
     - Interactive dashboards
     - Custom reporting tools
-8. User Experience:
+6. User Experience:
     - Intuitive navigation
     - Gesture support
     - Offline functionality
-9. Integration Capabilities:
+7. Integration Capabilities:
     - RESTful API
-    - WebSocket endpoints
-    - Webhook support
-10. Monitoring and Analytics:
+8. Monitoring and Analytics:
     - Performance metrics
     - User behavior tracking
     - Error logging
@@ -121,23 +110,6 @@ visible for all.
     - Private channels
     - Data services
 
-## Investment Allocation
-
-$500K Seed Round:
-
-- Engineering Team: 40%
-- Product Development: 25%
-- Infrastructure: 20%
-- Marketing: 10%
-- Operations: 5%
-
-## Next Milestones
-
-1. Launch MVP with core voting features
-2. Implement AI-powered topic analysis
-3. Release B2B API platform
-4. Deploy mobile-optimized interface
-5. Scale infrastructure for growth
-
 # TODO
 
+- generate 20 pairs (topics) with AI on startup
