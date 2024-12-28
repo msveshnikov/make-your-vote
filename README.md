@@ -17,96 +17,123 @@ people truly think.
 makeyour unifies all votes into a single source of truth, making the collective sentiment official &
 visible for all.
 
-## Unique System Architecture
+## System Architecture
 
-- Single Source of Truth: Each topic exists once, creating unified global consensus
-- Opinion Evolution: Live collective sentiment shifts on local & global scales
-- Quantitative to Qualitative: Demographic, profession & vast segmentations for actionable insights
-- AI-Driven Consolidation: Automated topic identification and opinion unification
-- Advanced Data Analytics: Cross-preference correlation and pattern recognition
-- Data Integrity: Multi-layered verification methods
-
-## Early Traction
-
-- 10,000 users casting 160,000 votes in two weeks
-- 35% visitor-to-voter conversion rate
-- 16 votes per user average
-
-## B2B Revenue Models
-
-- Enterprise Licensing & API Access
-- Professional Analytics Platform
-- Custom Research Solutions
-- SaaS: Private Channels
-- Real-time Data Services
-
-## Market Opportunity
-
-- TAM: $308B
-- SAM: $158B
-- GTM Focus: Hosting globally trending debates on current events, sports, societal conflicts etc.
-- Expansion: Media, Brands, Research firms, Consumer-facing Entities
-
-## Competitive Advantage
-
-- Social Network Effects: Social dynamics, each vote increases platform value
-- First-Mover: Creating new category in opinion infrastructure
-- Data Moat: Growing proprietary dataset
-- Natural Monopoly: Single source of truth model
-
-## Investment Use
-
-Raising $500K at $5M valuation:
-
-- 12-month runway
-- Scale viral features
-- Build B2B tools
-- Expand content categories
-- Develop enterprise platform
+- Microservices Architecture: Separate frontend and backend services for scalability
+- AI Integration: Dual AI providers (Claude and Gemini) for enhanced topic analysis
+- Docker Containerization: Consistent development and deployment environments
+- Real-time Processing: WebSocket implementation for live vote tracking
+- User Management: Robust authentication and authorization system
+- Static Asset Optimization: Vite-powered build process for optimal performance
 
 ## Design Considerations
 
-1. Responsive Design: Implement a mobile-first approach to ensure seamless user experience across
-   devices.
-2. Accessibility: Follow WCAG guidelines to make the platform inclusive for all users.
-3. Real-time Updates: Utilize WebSocket technology for live opinion updates and interactive
-   visualizations.
-4. Modular Architecture: Implement a component-based structure for easier maintenance and
-   scalability.
-5. State Management: Integrate Redux or Context API for efficient state management across the
-   application.
-6. Performance Optimization: Implement lazy loading and code splitting to improve load times and
-   overall performance.
-7. Internationalization: Design with multi-language support in mind for global expansion.
-8. Data Visualization: Incorporate interactive charts and graphs for intuitive data representation.
-9. User Authentication: Implement secure login and registration systems with options for social
-   media integration.
-10. API Design: Create a robust and scalable API architecture to support future B2B integrations and
-    data services.
+1. Light Mode Interface: Clean, minimalist design with white/light color scheme
+2. AI-Powered Features:
+   - Automated topic clustering
+   - Sentiment analysis
+   - Content moderation
+3. Cross-Platform Compatibility:
+   - Progressive Web App (PWA) support
+   - Native-like mobile experience
+4. Performance Optimization:
+   - Code splitting and lazy loading
+   - Asset compression and caching
+   - Server-side rendering capabilities
+5. Security Measures:
+   - Rate limiting
+   - CSRF protection
+   - Input sanitization
+6. Scalability Features:
+   - Horizontal scaling support
+   - Load balancing
+   - Caching strategies
+7. Data Visualization:
+   - Real-time charts
+   - Interactive dashboards
+   - Custom reporting tools
+8. User Experience:
+   - Intuitive navigation
+   - Gesture support
+   - Offline functionality
+9. Integration Capabilities:
+   - RESTful API
+   - WebSocket endpoints
+   - Webhook support
+10. Monitoring and Analytics:
+    - Performance metrics
+    - User behavior tracking
+    - Error logging
 
 ## Technical Stack
 
-- Frontend: React.js with Vite for fast development and optimized builds + Chakra UI v2 for
-  component library
-- Styling: CSS modules or styled-components for component-scoped styles
-- State Management: Redux or Context API
-- Backend: Node.js with Express.js (to be implemented)
-- Database: MongoDB for flexible data storage (to be implemented)
-- Authentication: JWT for secure user sessions (to be implemented)
+- Frontend:
+  - React.js with Vite
+  - Chakra UI v2
+  - CSS Modules
+  - WebSocket client
+- Backend:
+  - Node.js/Express
+  - AI Services (Claude & Gemini)
+  - MongoDB
+  - WebSocket server
+- Infrastructure:
+  - Docker
+  - Docker Compose
+  - Nginx
+  - Redis (planned)
 
-## Next Steps
+## Development Roadmap
 
-1. Implement core voting functionality in the React frontend
-2. Develop backend API endpoints for vote submission and retrieval
-3. Set up user authentication and authorization system
-4. Create data visualization components for real-time opinion tracking
-5. Implement AI-driven topic consolidation algorithms
-6. Develop B2B tools and API access points
-7. Expand content categories and implement topic suggestion features
-8. Optimize for performance and scalability
-9. Conduct thorough security audits and implement best practices
-10. Launch beta version and gather user feedback for iterative improvements
+1. Core Platform Development
+   - User authentication system
+   - Voting mechanism
+   - Real-time updates
+2. AI Integration
+   - Topic analysis pipeline
+   - Content moderation system
+   - Sentiment tracking
+3. B2B Features
+   - API development
+   - Enterprise dashboard
+   - Custom reporting
+4. Platform Optimization
+   - Performance improvements
+   - Security enhancements
+   - Scalability testing
+5. Mobile Experience
+   - PWA implementation
+   - Mobile-specific features
+   - Offline support
+6. Analytics & Reporting
+   - Data visualization tools
+   - Custom report builder
+   - Export functionality
 
-# TODO
+## Market & Business
 
--   make design white/light
+- TAM: $308B
+- SAM: $158B
+- Revenue Models:
+  - Enterprise API access
+  - Premium analytics
+  - Custom research
+  - Private channels
+  - Data services
+
+## Investment Allocation
+
+$500K Seed Round:
+- Engineering Team: 40%
+- Product Development: 25%
+- Infrastructure: 20%
+- Marketing: 10%
+- Operations: 5%
+
+## Next Milestones
+
+1. Launch MVP with core voting features
+2. Implement AI-powered topic analysis
+3. Release B2B API platform
+4. Deploy mobile-optimized interface
+5. Scale infrastructure for growth

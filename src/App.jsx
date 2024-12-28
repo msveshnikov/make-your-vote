@@ -7,7 +7,6 @@ import {
     Text,
     VStack,
     Button,
-    useColorMode,
     Flex,
     Icon,
     extendTheme,
@@ -75,8 +74,6 @@ function App() {
         }
     ]);
 
-    const { colorMode } = useColorMode();
-
     const stats = [
         {
             icon: FaUsers,
@@ -127,7 +124,14 @@ function App() {
                             </Text>
                         </Box>
 
-                        <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }} gap={8}>
+                        <Grid
+                            templateColumns={{
+                                base: '1fr',
+                                md: 'repeat(2, 1fr)',
+                                lg: 'repeat(4, 1fr)'
+                            }}
+                            gap={8}
+                        >
                             {stats.map((stat, index) => (
                                 <Box
                                     key={index}
@@ -140,7 +144,13 @@ function App() {
                                 >
                                     <Stat>
                                         <Flex align="center" mb={2}>
-                                            <Icon as={stat.icon} w={5} h={5} color="blue.400" mr={2} />
+                                            <Icon
+                                                as={stat.icon}
+                                                w={5}
+                                                h={5}
+                                                color="blue.400"
+                                                mr={2}
+                                            />
                                             <StatLabel fontSize="sm">{stat.label}</StatLabel>
                                         </Flex>
                                         <StatNumber fontSize="2xl" fontWeight="bold">
@@ -182,7 +192,8 @@ function App() {
                                                 </Flex>
                                                 <Text fontSize="sm" color="gray.600">
                                                     {topic.votes.toLocaleString()} votes •{' '}
-                                                    {topic.participants.toLocaleString()} participants
+                                                    {topic.participants.toLocaleString()}{' '}
+                                                    participants
                                                 </Text>
                                             </VStack>
                                             <Button colorScheme="blue" size="md" borderRadius="lg">

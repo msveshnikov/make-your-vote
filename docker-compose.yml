@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+    backend:
+        image: extender777/vote
+        ports:
+            - '8016:3000'
+        environment:
+            - NODE_ENV=production
+            - OPENAI_KEY=${OPENAI_KEY}
+            - GOOGLE_KEY=${GOOGLE_KEY}
+            - CLAUDE_KEY=${CLAUDE_KEY}
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+            - ELEVEN_KEY=${ELEVEN_KEY}
+            - MONGODB_URI=mongodb://mongodb:27017/vote
+            - JWT_SECRET=${JWT_SECRET}
+            - EMAIL=${EMAIL}
+            - FROM_EMAIL=${FROM_EMAIL}
+            - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+            - FRONTEND_URL=https://MakeYour.vote
+        depends_on:
+            - mongodb
+        restart: unless-stopped
+        volumes:
+            - ./google.json:/app/google.json
+
+    mongodb:
+        image: mongo:latest
+        volumes:
+            - mongodb_data:/data/db
+        restart: unless-stopped
+        logging:
+            driver: none
+
+volumes:
+    mongodb_data:
