@@ -245,7 +245,7 @@ function Vote() {
                                                     )}
                                                     <Button
                                                         w="full"
-                                                        onClick={() => handleVote(topic._id, 'A')}
+                                                        onClick={() => handleVote(topic._id, -1)}
                                                         colorScheme="blue"
                                                         variant="outline"
                                                     >
@@ -268,7 +268,7 @@ function Vote() {
                                                     )}
                                                     <Button
                                                         w="full"
-                                                        onClick={() => handleVote(topic._id, 'B')}
+                                                        onClick={() => handleVote(topic._id, 1)}
                                                         colorScheme="blue"
                                                     >
                                                         {topic.optionB}

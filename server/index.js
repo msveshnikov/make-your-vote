@@ -30,7 +30,6 @@ app.set('trust proxy', 1);
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(helmet());
 app.use(express.json({ limit: '15mb' }));
 app.use(express.static(join(__dirname, '../dist'), { maxAge: '3d' }));
 app.use(morgan('dev'));
@@ -145,6 +144,7 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 
         res.json(result);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 });
