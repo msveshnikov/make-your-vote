@@ -14,7 +14,6 @@ import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { getTextGemini } from './gemini.js';
 import { getUnsplashImages } from './unsplash.js';
-import { getTextClaude } from './claude.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
 import Topic from './models/Topic.js';
@@ -58,16 +57,10 @@ const generateTopicPairs = async () => {
     try {
         const prompt =
             "Generate 20 pairs of comparable items/people for voting (e.g., 'Ronaldo vs Messi'). Format as JSON array of objects with properties: title, optionA, optionB, category.";
-        const [geminiResponse, claudeResponse] = await Promise.all([
-            getTextGemini(prompt, 'gemini-exp-1206', 1.0),
-            getTextClaude(prompt, 'claude-3-haiku-20240307', 1.0)
-        ]);
-
+        const geminiResponse = await getTextGemini(prompt, 'gemini-exp-1206', 1.0);
         const geminiPairs = JSON.parse(cleanGeneratedCode(geminiResponse));
-        const claudePairs = JSON.parse(cleanGeneratedCode(claudeResponse));
-        const combinedPairs = [...geminiPairs, ...claudePairs];
 
-        for (const pair of combinedPairs) {
+        for (const pair of geminiPairs) {
             const [optionAImages, optionBImages] = await Promise.all([
                 getUnsplashImages(pair.optionA),
                 getUnsplashImages(pair.optionB)
@@ -76,7 +69,7 @@ const generateTopicPairs = async () => {
             pair.optionBImage = optionBImages[0];
         }
 
-        await Topic.insertMany(combinedPairs);
+        await Topic.insertMany(geminiPairs);
     } catch (error) {
         console.error(error);
         console.error('Failed to generate topic pairs:', error);
