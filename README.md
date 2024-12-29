@@ -134,8 +134,4 @@ Backend:
 
 # TODO
 
-- add images to topics for optionA, optionB and generate them by unsplash API (use option text as search query)
-- show optionAImage and optionBImage if present
-- Mobile responsiveness optimization
-- make navigation on mobile more intuitive
-- make super cool design, add info, prepare for launch!!!
+- scan all topics on startup and unsplash/fill images to topics if they are not already there

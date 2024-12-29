@@ -26,7 +26,9 @@ import {
     HStack,
     Tooltip,
     useMediaQuery,
-    Select
+    Select,
+    Image,
+    Skeleton
 } from '@chakra-ui/react';
 import { FaVoteYea, FaPlus, FaChartLine, FaShare } from 'react-icons/fa';
 import { API_URL } from './App';
@@ -208,22 +210,50 @@ function Vote() {
                                             flexDir={isMobile ? 'column' : 'row'}
                                             align="center"
                                         >
-                                            <Button
-                                                flex="1"
-                                                onClick={() => handleVote(topic._id, -1)}
-                                                colorScheme="blue"
-                                                variant="outline"
-                                            >
-                                                {topic.optionA}
-                                            </Button>
+                                            <VStack flex="1">
+                                                {topic.optionAImage && (
+                                                    <Skeleton isLoaded={!loading}>
+                                                        <Image
+                                                            src={topic.optionAImage}
+                                                            alt={topic.optionA}
+                                                            borderRadius="md"
+                                                            objectFit="cover"
+                                                            w="full"
+                                                            h="200px"
+                                                        />
+                                                    </Skeleton>
+                                                )}
+                                                <Button
+                                                    w="full"
+                                                    onClick={() => handleVote(topic._id, -1)}
+                                                    colorScheme="blue"
+                                                    variant="outline"
+                                                >
+                                                    {topic.optionA}
+                                                </Button>
+                                            </VStack>
                                             <Text fontWeight="bold">vs</Text>
-                                            <Button
-                                                flex="1"
-                                                onClick={() => handleVote(topic._id, 1)}
-                                                colorScheme="blue"
-                                            >
-                                                {topic.optionB}
-                                            </Button>
+                                            <VStack flex="1">
+                                                {topic.optionBImage && (
+                                                    <Skeleton isLoaded={!loading}>
+                                                        <Image
+                                                            src={topic.optionBImage}
+                                                            alt={topic.optionB}
+                                                            borderRadius="md"
+                                                            objectFit="cover"
+                                                            w="full"
+                                                            h="200px"
+                                                        />
+                                                    </Skeleton>
+                                                )}
+                                                <Button
+                                                    w="full"
+                                                    onClick={() => handleVote(topic._id, 1)}
+                                                    colorScheme="blue"
+                                                >
+                                                    {topic.optionB}
+                                                </Button>
+                                            </VStack>
                                         </Flex>
                                         <Flex justifyContent="space-between">
                                             <Badge colorScheme="purple" fontSize="sm">
