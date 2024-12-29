@@ -25,7 +25,8 @@ import {
     Progress,
     HStack,
     Tooltip,
-    useMediaQuery
+    useMediaQuery,
+    Select
 } from '@chakra-ui/react';
 import { FaVoteYea, FaPlus, FaChartLine, FaShare } from 'react-icons/fa';
 import { API_URL } from './App';
@@ -46,7 +47,7 @@ const theme = extendTheme({
 
 function Vote() {
     const [topics, setTopics] = useState([]);
-    const [newTopic, setNewTopic] = useState({ optionA: '', optionB: '' });
+    const [newTopic, setNewTopic] = useState({ title: '', optionA: '', optionB: '', category: '' });
     const [loading, setLoading] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
@@ -106,7 +107,7 @@ function Vote() {
             if (!response.ok) throw new Error('Failed to create topic');
             onClose();
             fetchTopics();
-            setNewTopic({ optionA: '', optionB: '' });
+            setNewTopic({ title: '', optionA: '', optionB: '', category: '' });
             toast({
                 title: 'Topic created successfully',
                 status: 'success',
@@ -224,7 +225,10 @@ function Vote() {
                                                 {topic.optionB}
                                             </Button>
                                         </Flex>
-                                        <Flex justifyContent="flex-end">
+                                        <Flex justifyContent="space-between">
+                                            <Badge colorScheme="purple" fontSize="sm">
+                                                {topic.category}
+                                            </Badge>
                                             <Badge colorScheme="blue" fontSize="sm">
                                                 {topic.totalVotes} votes
                                             </Badge>
@@ -244,6 +248,16 @@ function Vote() {
                     <ModalCloseButton />
                     <ModalBody pb={6}>
                         <FormControl>
+                            <FormLabel>Title</FormLabel>
+                            <Input
+                                value={newTopic.title}
+                                onChange={(e) =>
+                                    setNewTopic({ ...newTopic, title: e.target.value })
+                                }
+                                placeholder="Enter topic title"
+                            />
+                        </FormControl>
+                        <FormControl mt={4}>
                             <FormLabel>Option 1</FormLabel>
                             <Input
                                 value={newTopic.optionA}
@@ -263,12 +277,34 @@ function Vote() {
                                 placeholder="Enter second option"
                             />
                         </FormControl>
+                        <FormControl mt={4}>
+                            <FormLabel>Category</FormLabel>
+                            <Select
+                                placeholder="Select category"
+                                value={newTopic.category}
+                                onChange={(e) =>
+                                    setNewTopic({ ...newTopic, category: e.target.value })
+                                }
+                            >
+                                <option value="Politics">Politics</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Science">Science</option>
+                                <option value="Other">Other</option>
+                            </Select>
+                        </FormControl>
                         <Button
                             mt={6}
                             w="full"
                             colorScheme="blue"
                             onClick={handleCreateTopic}
-                            isDisabled={!newTopic.optionA || !newTopic.optionB}
+                            isDisabled={
+                                !newTopic.title ||
+                                !newTopic.optionA ||
+                                !newTopic.optionB ||
+                                !newTopic.category
+                            }
                         >
                             Create Topic
                         </Button>

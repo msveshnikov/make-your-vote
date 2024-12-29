@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* global use, db */
 use('vote');
-db.votes.dropIndex("topic_1_user_1");
+db.votes.dropIndex('topic_1_user_1');
 
 // Create collections
 db.createCollection('users');

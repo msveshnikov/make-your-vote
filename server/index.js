@@ -142,7 +142,7 @@ app.post('/api/topics', authenticateToken, async (req, res) => {
             optionA,
             optionB,
             category,
-            createdBy: req.user?.id || 'anonymous'
+            createdBy: req.user?.id
         });
         await topic.save();
         res.status(201).json(topic);
