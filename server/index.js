@@ -52,6 +52,21 @@ const cleanGeneratedCode = (code) => {
     return match ? match[1] : code;
 };
 
+const generateSitemap = async () => {
+    const topics = await Topic.find({}, '_id').lean();
+    const baseUrl = 'https://makeyour.vote';
+    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    sitemap += `  <url><loc>${baseUrl}</loc></url>\n`;
+
+    topics.forEach((topic) => {
+        sitemap += `  <url><loc>${baseUrl}/topic/${topic._id}</loc></url>\n`;
+    });
+
+    sitemap += '</urlset>';
+    fs.writeFileSync(join(__dirname, '../dist/sitemap.xml'), sitemap);
+};
+
 const generateTopicPairs = async () => {
     try {
         const prompt =
@@ -69,6 +84,7 @@ const generateTopicPairs = async () => {
         }
 
         await Topic.insertMany(geminiPairs);
+        await generateSitemap();
     } catch (error) {
         console.error(error);
         console.error('Failed to generate topic pairs:', error);
@@ -129,7 +145,6 @@ app.post('/api/login', async (req, res) => {
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: '24h'
         });
-
         res.json({
             token,
             user: {
@@ -161,7 +176,6 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
         const countryCode = req.headers['geoip_country_code'];
         const countryName = req.headers['geoip_country_name'];
         const browserLanguage = req.headers['accept-language'];
-        console.log(browserLanguage);
         const ip = getIpFromRequest(req);
 
         const vote = new Vote({
@@ -191,7 +205,6 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 app.post('/api/topics', authenticateToken, async (req, res) => {
     try {
         const { title, optionA, optionB, category } = req.body;
-
         const [optionAImages, optionBImages] = await Promise.all([
             getUnsplashImages(optionA),
             getUnsplashImages(optionB)
@@ -207,6 +220,7 @@ app.post('/api/topics', authenticateToken, async (req, res) => {
             optionBImage: optionBImages[0]
         });
         await topic.save();
+        await generateSitemap();
         res.status(201).json(topic);
     } catch (error) {
         console.error(error);
@@ -258,12 +272,7 @@ app.get('/api/topics', async (req, res) => {
         ]);
 
         const total = await Topic.countDocuments(query);
-
-        res.json({
-            topics,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page
-        });
+        res.json({ topics, totalPages: Math.ceil(total / limit), currentPage: page });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -273,12 +282,10 @@ app.get('/api/topics', async (req, res) => {
 export const enrichMetadata = async (html, slug) => {
     try {
         if (!slug) return html;
-
         const topic = await Topic.findById(slug);
         if (!topic) return html;
 
         const $ = load(html);
-
         $('title').text(`${topic.title} - MakeYour.vote`);
         $('meta[name="description"]').attr(
             'content',
@@ -293,13 +300,16 @@ export const enrichMetadata = async (html, slug) => {
         if (topic.optionAImage) {
             $('meta[property="og:image"]').attr('content', topic.optionAImage);
         }
-
         return $.html();
     } catch (error) {
         console.error(error);
         return html;
     }
 };
+
+app.get('/sitemap.xml', (req, res) => {
+    res.sendFile(join(__dirname, '../dist/sitemap.xml'));
+});
 
 app.get('/', async (req, res) => {
     const html = fs.readFileSync(join(__dirname, '../dist/landing.html'), 'utf8');
