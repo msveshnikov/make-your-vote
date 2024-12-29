@@ -137,3 +137,5 @@ Backend:
 # TODO
 
 - Mobile responsiveness optimization
+- make navigation on mobile more intuitive
+- make super cool design, add info, prepare for launch!!!

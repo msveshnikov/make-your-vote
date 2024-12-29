@@ -50,10 +50,13 @@
                 padding: 0 20px;
             }
             header {
-                background: #2c3e50;
+                background: rgba(44, 62, 80, 0.8);
+                backdrop-filter: blur(10px);
                 color: #fff;
                 padding: 1rem 0;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                position: fixed;
+                width: 100%;
+                z-index: 1000;
             }
             nav ul {
                 list-style: none;
@@ -76,7 +79,7 @@
                 background-position: center;
                 color: #fff;
                 text-align: center;
-                padding: 10rem 0;
+                padding: 16rem 0;
                 position: relative;
             }
             .hero h1 {
@@ -124,7 +127,8 @@
                 gap: 2rem;
             }
             .feature-item {
-                background: #fff;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
                 padding: 2rem;
                 border-radius: 15px;
                 text-align: center;
@@ -159,7 +163,8 @@
                 padding: 0 2rem;
             }
             .testimonial-item {
-                background: #fff;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
                 padding: 2rem;
                 border-radius: 10px;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -178,6 +183,9 @@
                 text-align: center;
                 padding: 2rem 0;
             }
+            .mobile-nav {
+                display: none;
+            }
             @media (max-width: 768px) {
                 .hero h1 {
                     font-size: 2.5rem;
@@ -186,19 +194,45 @@
                     font-size: 1.2rem;
                 }
                 nav ul {
-                    flex-direction: column;
+                    display: none;
+                }
+                .mobile-nav {
+                    display: block;
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: rgba(44, 62, 80, 0.9);
+                    padding: 1rem;
+                    display: flex;
+                    justify-content: space-around;
                     align-items: center;
-                    gap: 1rem;
+                }
+                .mobile-nav a {
+                    color: #fff;
+                    text-decoration: none;
+                    font-size: 0.9rem;
                 }
             }
         </style>
     </head>
     <body>
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="/app">Launch App</a></li>
+                </ul>
+            </nav>
+        </header>
+
         <main>
             <section id="home" class="hero" role="banner">
                 <div class="container">
-                    <h1>Make Your Vote</h1>
-                    <p>The Definitive Source for Public Opinion</p>
+                    <h1>Make Your Vote Count</h1>
+                    <p>The Definitive Source for Global Public Opinion</p>
                     <a href="/app" class="cta-button" role="button" aria-label="Join our platform"
                         >Join Now</a
                     >
@@ -214,16 +248,16 @@
                             <p>Unified global consensus on every topic</p>
                         </article>
                         <article class="feature-item">
-                            <h3>Opinion Evolution</h3>
-                            <p>Live sentiment shifts on local & global scales</p>
+                            <h3>AI-Driven Analysis</h3>
+                            <p>Dual AI providers for enhanced topic insights</p>
                         </article>
                         <article class="feature-item">
-                            <h3>AI-Driven Consolidation</h3>
-                            <p>Automated topic identification and unification</p>
+                            <h3>Real-time Processing</h3>
+                            <p>Live vote tracking and sentiment shifts</p>
                         </article>
                         <article class="feature-item">
-                            <h3>Advanced Analytics</h3>
-                            <p>Cross-preference correlation and pattern recognition</p>
+                            <h3>Mobile-First Design</h3>
+                            <p>Optimized for seamless mobile experience</p>
                         </article>
                     </div>
                 </div>
@@ -240,24 +274,24 @@
                     <div class="testimonial-grid">
                         <div class="testimonial-item">
                             <p class="testimonial-text">
-                                "Finally, a platform that brings together global opinions in a
-                                meaningful way. The real-time analytics are incredible!"
+                                "The real-time processing and AI analysis have transformed how we
+                                understand public sentiment."
                             </p>
-                            <p class="testimonial-author">Sarah Johnson, Data Analyst</p>
+                            <p class="testimonial-author">Alex Thompson, Policy Analyst</p>
                         </div>
                         <div class="testimonial-item">
                             <p class="testimonial-text">
-                                "The AI-driven consolidation feature has revolutionized how we
-                                gather public sentiment for our research."
+                                "MakeYour.vote's mobile experience is unparalleled. I can stay
+                                connected to global opinions on-the-go."
                             </p>
-                            <p class="testimonial-author">Dr. Michael Chen, Research Director</p>
+                            <p class="testimonial-author">Sophia Lee, Journalist</p>
                         </div>
                         <div class="testimonial-item">
                             <p class="testimonial-text">
-                                "MakeYour.vote has become our go-to platform for understanding
-                                public opinion trends in real-time."
+                                "The unified platform has become an essential tool for our market
+                                research and strategy development."
                             </p>
-                            <p class="testimonial-author">Emma Rodriguez, Marketing Manager</p>
+                            <p class="testimonial-author">David Chen, Business Strategist</p>
                         </div>
                     </div>
                 </div>
@@ -269,5 +303,34 @@
                 <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
             </div>
         </footer>
+
+        <nav class="mobile-nav">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="/app">Launch App</a>
+        </nav>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const header = document.querySelector('header');
+                const heroSection = document.querySelector('.hero');
+
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) {
+                                header.style.background = 'rgba(44, 62, 80, 1)';
+                            } else {
+                                header.style.background = 'rgba(44, 62, 80, 0.8)';
+                            }
+                        });
+                    },
+                    { threshold: 0.1 }
+                );
+
+                observer.observe(heroSection);
+            });
+        </script>
     </body>
 </html>
