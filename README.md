@@ -86,6 +86,7 @@ Backend:
 - Node.js/Express
 - AI Services (Claude & Gemini)
 - MongoDB
+- Never delete console.error() calls!!!
 - Infrastructure:
 
 - Docker
@@ -133,5 +134,3 @@ Backend:
     - Consulting services
 
 # TODO
-
--   imporve SEO

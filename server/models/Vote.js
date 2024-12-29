@@ -32,17 +32,22 @@ const voteSchema = new mongoose.Schema(
                 type: { type: String },
                 coordinates: [Number]
             },
-            userAgent: String
-        },
-        countryCode: {
-            type: String,
-            trim: true,
-            maxLength: 2
-        },
-        countryName: {
-            type: String,
-            trim: true,
-            maxLength: 100
+            userAgent: String,
+            browserLanguage: String,
+            countryCode: {
+                type: String,
+                trim: true,
+                maxLength: 2
+            },
+            countryName: {
+                type: String,
+                trim: true,
+                maxLength: 100
+            },
+            ip: {
+                type: String,
+                trim: true
+            }
         },
         isAnonymous: {
             type: Boolean,

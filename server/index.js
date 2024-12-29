@@ -130,12 +130,25 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+export const getIpFromRequest = (req) => {
+    let ips = (
+        req.headers['x-real-ip'] ||
+        req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        ''
+    ).split(',');
+    return ips[0].trim();
+};
+
 app.post('/api/vote', authenticateToken, async (req, res) => {
     try {
         const { topicId, value, context, metadata } = req.body;
         const userId = req.user?.id;
-        const countryCode = req.headers['cf-ipcountry'] || req.headers['geoip-country-code'];
-        const countryName = req.headers['geoip-country-name'];
+        const countryCode = req.headers['geoip_country_code'];
+        const countryName = req.headers['geoip_country_name'];
+        const browserLanguage = req.headers['accept-language'];
+        console.log(browserLanguage);
+        const ip = getIpFromRequest(req);
 
         const vote = new Vote({
             user: userId,
@@ -146,7 +159,9 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
                 ...metadata,
                 userAgent: req.headers['user-agent'],
                 countryCode,
-                countryName
+                countryName,
+                browserLanguage,
+                ip
             },
             isAnonymous: !userId
         });
