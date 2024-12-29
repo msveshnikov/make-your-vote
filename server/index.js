@@ -6,7 +6,6 @@ import rateLimit from 'express-rate-limit';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import compression from 'compression';
-import helmet from 'helmet';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { dirname, join } from 'path';
