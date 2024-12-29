@@ -14,6 +14,7 @@ import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { getTextGemini } from './gemini.js';
 import { getUnsplashImages } from './unsplash.js';
+import { getTextClaude } from './claude.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
 import Topic from './models/Topic.js';
@@ -38,10 +39,12 @@ app.use(compression());
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
 });
 
-app.use(limiter);
+app.use('/api/', limiter);
 
 mongoose.connect(process.env.MONGODB_URI, {});
 
@@ -52,13 +55,28 @@ const cleanGeneratedCode = (code) => {
 };
 
 const generateTopicPairs = async () => {
-    const prompt =
-        "Generate 20 pairs of comparable items/people for voting (e.g., 'Ronaldo vs Messi'). Format as JSON array of objects with properties: title, optionA, optionB, category.";
     try {
-        let response = await getTextGemini(prompt, 'gemini-exp-1206', 1.0);
-        response = cleanGeneratedCode(response);
-        const pairs = JSON.parse(response);
-        await Topic.insertMany(pairs);
+        const prompt =
+            "Generate 20 pairs of comparable items/people for voting (e.g., 'Ronaldo vs Messi'). Format as JSON array of objects with properties: title, optionA, optionB, category.";
+        const [geminiResponse, claudeResponse] = await Promise.all([
+            getTextGemini(prompt, 'gemini-exp-1206', 1.0),
+            getTextClaude(prompt, 'claude-3-haiku-20240307', 1.0)
+        ]);
+
+        const geminiPairs = JSON.parse(cleanGeneratedCode(geminiResponse));
+        const claudePairs = JSON.parse(cleanGeneratedCode(claudeResponse));
+        const combinedPairs = [...geminiPairs, ...claudePairs];
+
+        for (const pair of combinedPairs) {
+            const [optionAImages, optionBImages] = await Promise.all([
+                getUnsplashImages(pair.optionA),
+                getUnsplashImages(pair.optionB)
+            ]);
+            pair.optionAImage = optionAImages[0];
+            pair.optionBImage = optionBImages[0];
+        }
+
+        await Topic.insertMany(combinedPairs);
     } catch (error) {
         console.error(error);
         console.error('Failed to generate topic pairs:', error);
@@ -80,6 +98,10 @@ const authenticateToken = (req, res, next) => {
 app.post('/api/register', async (req, res) => {
     try {
         const { email, password, role } = req.body;
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ email, password: hashedPassword, role });
         await user.save();
@@ -162,15 +184,36 @@ app.post('/api/topics', authenticateToken, async (req, res) => {
 
 app.get('/api/topics', async (req, res) => {
     try {
-        const topics = await Topic.find().sort({ createdAt: -1 }).limit(20);
+        const { page = 1, limit = 20, category } = req.query;
+        const query = category ? { category } : {};
+
+        const topics = await Topic.find(query)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+
         const topicsWithVotes = await Promise.all(
             topics.map(async (topic) => {
                 const votes = await Vote.find({ topic: topic._id });
                 const totalVotes = votes.length;
-                return { ...topic.toObject(), totalVotes };
+                const optionAVotes = votes.filter((v) => v.value === 'A').length;
+                const optionBVotes = votes.filter((v) => v.value === 'B').length;
+                return {
+                    ...topic.toObject(),
+                    totalVotes,
+                    optionAVotes,
+                    optionBVotes
+                };
             })
         );
-        res.json(topicsWithVotes);
+
+        const total = await Topic.countDocuments(query);
+
+        res.json({
+            topics: topicsWithVotes,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -197,7 +240,7 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV !== 'production') {
         await generateTopicPairs();
     }
 });

@@ -60,7 +60,7 @@ function Vote() {
             setLoading(true);
             const response = await fetch(`${API_URL}/api/topics`);
             const data = await response.json();
-            setTopics(data);
+            setTopics(data.topics);
         } catch {
             toast({
                 title: 'Error fetching topics',

@@ -133,5 +133,3 @@ Backend:
     - Consulting services
 
 # TODO
-
-- scan all topics on startup and unsplash/fill images to topics if they are not already there
