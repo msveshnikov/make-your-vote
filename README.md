@@ -133,5 +133,3 @@ Infrastructure:
     - Consulting services
 
 # TODO
-
--   enhance landing with new info

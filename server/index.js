@@ -230,10 +230,13 @@ app.post('/api/topics', authenticateToken, async (req, res) => {
 
 app.get('/api/topics', async (req, res) => {
     try {
-        const { page = 1, limit = 20, category } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+        const category = req.query.category;
         const query = category ? { category } : {};
 
-        const [mostVotedTopics, newTopics] = await Promise.all([
+        const [mostVotedTopics, newTopics, total] = await Promise.all([
             Topic.aggregate([
                 { $match: query },
                 {
@@ -268,27 +271,32 @@ app.get('/api/topics', async (req, res) => {
                     }
                 },
                 { $sort: { totalVotes: -1 } },
-                { $limit: parseInt(limit) / 2 }
+                { $skip: skip },
+                { $limit: limit / 2 }
             ]),
             Topic.aggregate([
                 { $match: query },
                 { $sort: { createdAt: -1 } },
-                { $limit: parseInt(limit) / 2 }
-            ])
+                { $skip: skip },
+                { $limit: limit / 2 }
+            ]),
+            Topic.countDocuments(query)
         ]);
 
-        const interlacedTopics = [];
-        const maxLength = Math.max(mostVotedTopics.length, newTopics.length);
-        for (let i = 0; i < maxLength; i++) {
-            if (mostVotedTopics[i]) interlacedTopics.push(mostVotedTopics[i]);
-            if (newTopics[i]) interlacedTopics.push(newTopics[i]);
-        }
+        const uniqueTopics = new Map();
+        [...mostVotedTopics, ...newTopics].forEach((topic) => {
+            if (!uniqueTopics.has(topic._id.toString())) {
+                uniqueTopics.set(topic._id.toString(), topic);
+            }
+        });
 
-        const total = await Topic.countDocuments(query);
+        const topics = Array.from(uniqueTopics.values());
+
         res.json({
-            topics: interlacedTopics,
+            topics,
             totalPages: Math.ceil(total / limit),
-            currentPage: page
+            currentPage: page,
+            total
         });
     } catch (error) {
         console.error(error);
