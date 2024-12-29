@@ -133,3 +133,5 @@ Backend:
     - Consulting services
 
 # TODO
+
+-   imporve SEO

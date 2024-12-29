@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             name="description"
-            content="MakeYour.vote - The definitive platform for unified public opinion tracking, real-time sentiment analysis, and global consensus building."
+            content="MakeYour.vote - The definitive infrastructure for collective public opinion, unifying fragmented sentiment into official, actionable data."
         />
         <meta
             name="keywords"
-            content="public opinion, voting platform, sentiment analysis, opinion tracking, global consensus, AI-driven analytics"
+            content="public opinion, voting platform, sentiment analysis, opinion tracking, global consensus, AI-driven analytics, collective sentiment, unified platform"
         />
         <meta name="author" content="MakeYour.vote" />
         <meta
@@ -18,31 +18,43 @@
         />
         <meta
             property="og:description"
-            content="Unify global public opinion with AI-driven analytics and real-time sentiment tracking."
+            content="Building the first standardized infrastructure for collective public opinion. Unify fragmented sentiment into official, actionable data."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://makeyour.vote" />
+        <meta property="og:image" content="/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="MakeYour.vote - Public Opinion Platform" />
+        <meta name="twitter:title" content="MakeYour.vote - Unified Public Opinion Platform" />
         <meta
             name="twitter:description"
-            content="The future of unified public opinion tracking and analysis."
+            content="The first standardized infrastructure for collective public opinion."
         />
         <link rel="canonical" href="https://makeyour.vote" />
-        <title>
-            MakeYour.vote - The Definitive Source for Public Opinion | Vote, Track, Analyze
-        </title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <title>MakeYour.vote - The Definitive Source for Public Opinion</title>
         <style>
             * {
                 box-sizing: border-box;
                 margin: 0;
                 padding: 0;
             }
+            :root {
+                --primary: #3498db;
+                --secondary: #e74c3c;
+                --dark: #2c3e50;
+                --light: #f8f9fa;
+                --glass: rgba(255, 255, 255, 0.1);
+            }
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-family: 'Inter', sans-serif;
                 line-height: 1.6;
-                color: #333;
-                background: #f8f9fa;
+                color: var(--dark);
+                background: var(--light);
             }
             .container {
                 max-width: 1200px;
@@ -52,11 +64,13 @@
             header {
                 background: rgba(44, 62, 80, 0.8);
                 backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
                 color: #fff;
                 padding: 1rem 0;
                 position: fixed;
                 width: 100%;
                 z-index: 1000;
+                transition: background 0.3s ease;
             }
             nav ul {
                 list-style: none;
@@ -67,84 +81,126 @@
                 color: #fff;
                 text-decoration: none;
                 font-weight: 500;
-                transition: color 0.3s ease;
+                transition: all 0.3s ease;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
             }
             nav ul li a:hover {
-                color: #3498db;
+                background: var(--glass);
+                transform: translateY(-2px);
             }
             .hero {
-                background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
                     url('hero.avif');
                 background-size: cover;
                 background-position: center;
                 color: #fff;
                 text-align: center;
-                padding: 16rem 0;
+                padding: 18rem 0;
                 position: relative;
             }
             .hero h1 {
                 font-size: 4rem;
                 margin-bottom: 1rem;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                font-weight: 700;
             }
             .hero p {
                 font-size: 1.5rem;
                 margin-bottom: 2rem;
                 opacity: 0.9;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
             }
             .cta-button {
                 display: inline-block;
-                background: #e74c3c;
+                background: var(--secondary);
                 color: #fff;
-                padding: 1rem 3rem;
+                padding: 1.2rem 3.5rem;
                 text-decoration: none;
                 border-radius: 30px;
-                font-weight: bold;
+                font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: 1px;
-                transition:
-                    transform 0.3s ease,
-                    box-shadow 0.3s ease;
+                transition: all 0.3s ease;
                 box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
             }
             .cta-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
             }
             .features {
-                padding: 6rem 0;
+                padding: 8rem 0;
                 background: #fff;
             }
             .features h2 {
                 text-align: center;
                 font-size: 2.5rem;
-                margin-bottom: 3rem;
-                color: #2c3e50;
+                margin-bottom: 4rem;
+                color: var(--dark);
             }
             .feature-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 2rem;
+                gap: 2.5rem;
             }
             .feature-item {
-                background: rgba(255, 255, 255, 0.1);
+                background: var(--glass);
                 backdrop-filter: blur(10px);
-                padding: 2rem;
-                border-radius: 15px;
+                -webkit-backdrop-filter: blur(10px);
+                padding: 2.5rem;
+                border-radius: 20px;
                 text-align: center;
-                transition: transform 0.3s ease;
+                transition: all 0.3s ease;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
             .feature-item:hover {
                 transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             }
             .feature-item h3 {
-                color: #2c3e50;
+                color: var(--dark);
                 margin-bottom: 1rem;
                 font-size: 1.5rem;
+                font-weight: 600;
             }
             .feature-item p {
                 color: #666;
+            }
+            .roadmap {
+                padding: 8rem 0;
+                background: var(--light);
+            }
+            .roadmap h2 {
+                text-align: center;
+                font-size: 2.5rem;
+                margin-bottom: 4rem;
+                color: var(--dark);
+            }
+            .roadmap-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2.5rem;
+                padding: 0 2rem;
+            }
+            .roadmap-item {
+                background: #fff;
+                padding: 2.5rem;
+                border-radius: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: all 0.3s ease;
+            }
+            .roadmap-item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+            .roadmap-item h3 {
+                color: var(--primary);
+                margin-bottom: 1rem;
+                font-size: 1.3rem;
+                font-weight: 600;
             }
             .testimonials {
                 background: #f8f9fa;
@@ -178,10 +234,10 @@
                 color: #2c3e50;
             }
             footer {
-                background: #2c3e50;
+                background: var(--dark);
                 color: #fff;
                 text-align: center;
-                padding: 2rem 0;
+                padding: 3rem 0;
             }
             .mobile-nav {
                 display: none;
@@ -192,26 +248,36 @@
                 }
                 .hero p {
                     font-size: 1.2rem;
+                    padding: 0 1rem;
                 }
                 nav ul {
                     display: none;
                 }
                 .mobile-nav {
-                    display: block;
+                    display: flex;
                     position: fixed;
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    background: rgba(44, 62, 80, 0.9);
+                    background: rgba(44, 62, 80, 0.95);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
                     padding: 1rem;
-                    display: flex;
                     justify-content: space-around;
                     align-items: center;
+                    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
                 }
                 .mobile-nav a {
                     color: #fff;
                     text-decoration: none;
                     font-size: 0.9rem;
+                    font-weight: 500;
+                    padding: 0.5rem;
+                    border-radius: 15px;
+                    transition: background 0.3s ease;
+                }
+                .mobile-nav a:hover {
+                    background: var(--glass);
                 }
             }
         </style>
@@ -222,47 +288,71 @@
                 <ul>
                     <li><a href="#home">Home</a></li>
                     <li><a href="#features">Features</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#roadmap">Roadmap</a></li>
                     <li><a href="/app">Launch App</a></li>
                 </ul>
             </nav>
         </header>
 
         <main>
-            <section id="home" class="hero" role="banner">
+            <section id="home" class="hero">
                 <div class="container">
-                    <h1>Make Your Vote Count</h1>
-                    <p>The Definitive Source for Global Public Opinion</p>
-                    <a href="/app" class="cta-button" role="button" aria-label="Join our platform"
-                        >Join Now</a
-                    >
+                    <h1>Unify Public Opinion</h1>
+                    <p>
+                        Building the first standardized infrastructure for collective public
+                        opinion, transforming fragmented sentiment into official, actionable data.
+                    </p>
+                    <a href="/app" class="cta-button">Start Voting</a>
                 </div>
             </section>
 
-            <section id="features" class="features" role="region" aria-label="Key features">
+            <section id="features" class="features">
                 <div class="container">
-                    <h2>Key Features</h2>
+                    <h2>Platform Features</h2>
                     <div class="feature-grid">
                         <article class="feature-item">
-                            <h3>Single Source of Truth</h3>
-                            <p>Unified global consensus on every topic</p>
-                        </article>
-                        <article class="feature-item">
-                            <h3>AI-Driven Analysis</h3>
-                            <p>Dual AI providers for enhanced topic insights</p>
+                            <h3>AI-Enhanced Analysis</h3>
+                            <p>Dual AI providers for comprehensive topic analysis and insights</p>
                         </article>
                         <article class="feature-item">
                             <h3>Real-time Processing</h3>
-                            <p>Live vote tracking and sentiment shifts</p>
+                            <p>Instant vote tracking and sentiment analysis updates</p>
                         </article>
                         <article class="feature-item">
-                            <h3>Mobile-First Design</h3>
-                            <p>Optimized for seamless mobile experience</p>
+                            <h3>Mobile Optimized</h3>
+                            <p>Touch-optimized interface with native mobile features</p>
+                        </article>
+                        <article class="feature-item">
+                            <h3>Enterprise Solutions</h3>
+                            <p>Custom deployments and white-label options available</p>
                         </article>
                     </div>
                 </div>
             </section>
 
+            <section id="roadmap" class="roadmap">
+                <div class="container">
+                    <h2>Development Roadmap</h2>
+                    <div class="roadmap-grid">
+                        <div class="roadmap-item">
+                            <h3>Core Platform</h3>
+                            <p>Advanced authentication and real-time collaborative features</p>
+                        </div>
+                        <div class="roadmap-item">
+                            <h3>AI Integration</h3>
+                            <p>Predictive analytics and automated content curation</p>
+                        </div>
+                        <div class="roadmap-item">
+                            <h3>Mobile Experience</h3>
+                            <p>Native apps and offline-first architecture</p>
+                        </div>
+                        <div class="roadmap-item">
+                            <h3>Community Features</h3>
+                            <p>User profiles, discussion forums, and reward system</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section
                 id="testimonials"
                 class="testimonials"
@@ -298,7 +388,7 @@
             </section>
         </main>
 
-        <footer role="contentinfo">
+        <footer>
             <div class="container">
                 <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
             </div>
@@ -307,7 +397,7 @@
         <nav class="mobile-nav">
             <a href="#home">Home</a>
             <a href="#features">Features</a>
-            <a href="#testimonials">Testimonials</a>
+            <a href="#roadmap">Roadmap</a>
             <a href="/app">Launch App</a>
         </nav>
 
@@ -319,17 +409,24 @@
                 const observer = new IntersectionObserver(
                     (entries) => {
                         entries.forEach((entry) => {
-                            if (!entry.isIntersecting) {
-                                header.style.background = 'rgba(44, 62, 80, 1)';
-                            } else {
-                                header.style.background = 'rgba(44, 62, 80, 0.8)';
-                            }
+                            header.style.background = entry.isIntersecting
+                                ? 'rgba(44, 62, 80, 0.8)'
+                                : 'rgba(44, 62, 80, 0.95)';
                         });
                     },
                     { threshold: 0.1 }
                 );
 
                 observer.observe(heroSection);
+
+                document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                    anchor.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        document
+                            .querySelector(anchor.getAttribute('href'))
+                            .scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
             });
         </script>
     </body>
