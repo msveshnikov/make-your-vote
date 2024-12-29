@@ -86,6 +86,20 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+app.get('/api/topic/:id', async (req, res) => {
+    try {
+        const topic = await Topic.findById(req.params.id);
+        if (!topic) {
+            return res.status(404);
+        }
+
+        res.send(topic);
+    } catch (error) {
+        console.error(error);
+        res.status(500).redirect('/');
+    }
+});
+
 app.post('/api/register', async (req, res) => {
     try {
         const { email, password, role } = req.body;

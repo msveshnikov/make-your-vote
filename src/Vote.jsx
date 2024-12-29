@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-    ChakraProvider,
     Box,
     Container,
     Heading,
@@ -9,7 +8,6 @@ import {
     Button,
     Flex,
     Icon,
-    extendTheme,
     Badge,
     Modal,
     ModalOverlay,
@@ -36,27 +34,6 @@ import {
 } from '@chakra-ui/react';
 import { FaVoteYea, FaPlus, FaShare, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { API_URL } from './App';
-
-const theme = extendTheme({
-    config: {
-        initialColorMode: 'light',
-        useSystemColorMode: false
-    },
-    components: {
-        Button: {
-            baseStyle: {
-                borderRadius: 'full'
-            }
-        }
-    },
-    styles: {
-        global: {
-            'html, body': {
-                background: 'linear-gradient(to right, #f0f4f8, #ffffff)'
-            }
-        }
-    }
-});
 
 function Vote() {
     const [topics, setTopics] = useState([]);
@@ -195,7 +172,7 @@ function Vote() {
     };
 
     return (
-        <ChakraProvider theme={theme}>
+        <>
             <Box minH="100vh" bg="transparent" color="gray.800">
                 <Container maxW="container.xl" py={6}>
                     <Flex
@@ -451,7 +428,7 @@ function Vote() {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-        </ChakraProvider>
+        </>
     );
 }
 
