@@ -28,17 +28,13 @@ import {
     useMediaQuery,
     Select,
     Image,
-    Skeleton,
-    ButtonGroup
+    ButtonGroup,
+    Stat,
+    StatNumber,
+    StatHelpText,
+    StatArrow
 } from '@chakra-ui/react';
-import {
-    FaVoteYea,
-    FaPlus,
-    FaChartLine,
-    FaShare,
-    FaChevronLeft,
-    FaChevronRight
-} from 'react-icons/fa';
+import { FaVoteYea, FaPlus, FaShare, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { API_URL } from './App';
 
 const theme = extendTheme({
@@ -52,6 +48,13 @@ const theme = extendTheme({
                 borderRadius: 'full'
             }
         }
+    },
+    styles: {
+        global: {
+            'html, body': {
+                background: 'linear-gradient(to right, #f0f4f8, #ffffff)'
+            }
+        }
     }
 });
 
@@ -61,6 +64,7 @@ function Vote() {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [votedTopics, setVotedTopics] = useState(new Set());
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
     const [isMobile] = useMediaQuery('(max-width: 768px)');
@@ -70,7 +74,12 @@ function Vote() {
             setLoading(true);
             const response = await fetch(`${API_URL}/api/topics?page=${currentPage}&limit=10`);
             const data = await response.json();
-            setTopics(data.topics);
+            setTopics(
+                data.topics.map((topic) => ({
+                    ...topic,
+                    votePercentages: calculateVotePercentages(topic)
+                }))
+            );
             setTotalPages(data.totalPages);
         } catch {
             toast({
@@ -87,7 +96,23 @@ function Vote() {
         fetchTopics();
     }, [fetchTopics]);
 
+    const calculateVotePercentages = (topic) => {
+        return {
+            optionA: topic.totalVotes ? (topic.optionAVotes / topic.totalVotes) * 100 : 50,
+            optionB: topic.totalVotes ? (topic.optionBVotes / topic.totalVotes) * 100 : 50
+        };
+    };
+
     const handleVote = async (topicId, option) => {
+        if (votedTopics.has(topicId)) {
+            toast({
+                title: 'You have already voted on this topic',
+                status: 'warning',
+                duration: 2000
+            });
+            return;
+        }
+
         try {
             const response = await fetch(`${API_URL}/api/vote`, {
                 method: 'POST',
@@ -95,12 +120,25 @@ function Vote() {
                 body: JSON.stringify({ topicId, value: option })
             });
             if (!response.ok) throw new Error('Vote failed');
+
+            setVotedTopics((prev) => new Set([...prev, topicId]));
+
+            const updatedTopics = topics.map((topic) => {
+                if (topic._id === topicId) {
+                    return {
+                        ...topic,
+                        votePercentages: calculateVotePercentages(topic)
+                    };
+                }
+                return topic;
+            });
+            setTopics(updatedTopics);
+
             toast({
                 title: 'Vote recorded',
                 status: 'success',
                 duration: 2000
             });
-            fetchTopics();
         } catch {
             toast({
                 title: 'Error recording vote',
@@ -158,7 +196,7 @@ function Vote() {
 
     return (
         <ChakraProvider theme={theme}>
-            <Box minH="100vh" bg="white" color="gray.800">
+            <Box minH="100vh" bg="transparent" color="gray.800">
                 <Container maxW="container.xl" py={6}>
                     <Flex
                         justifyContent="space-between"
@@ -176,6 +214,8 @@ function Vote() {
                             colorScheme="blue"
                             onClick={onOpen}
                             size={isMobile ? 'sm' : 'md'}
+                            backdropFilter="blur(10px)"
+                            bg="rgba(66, 153, 225, 0.9)"
                         >
                             Create Topic
                         </Button>
@@ -192,10 +232,11 @@ function Vote() {
                                         w="full"
                                         p={6}
                                         borderRadius="xl"
-                                        border="1px"
-                                        borderColor="gray.200"
+                                        bg="rgba(255, 255, 255, 0.8)"
+                                        backdropFilter="blur(10px)"
+                                        boxShadow="lg"
                                         transition="all 0.2s"
-                                        _hover={{ shadow: 'md' }}
+                                        _hover={{ transform: 'translateY(-2px)' }}
                                     >
                                         <VStack spacing={4} align="stretch">
                                             <Flex
@@ -204,15 +245,6 @@ function Vote() {
                                             >
                                                 <Heading size="md">{topic.title}</Heading>
                                                 <HStack>
-                                                    <Tooltip label="View Analytics">
-                                                        <Button
-                                                            size="sm"
-                                                            variant="ghost"
-                                                            colorScheme="blue"
-                                                        >
-                                                            <Icon as={FaChartLine} />
-                                                        </Button>
-                                                    </Tooltip>
                                                     <Tooltip label="Share">
                                                         <Button
                                                             size="sm"
@@ -232,47 +264,85 @@ function Vote() {
                                             >
                                                 <VStack flex="1">
                                                     {topic.optionAImage && (
-                                                        <Skeleton isLoaded={!loading}>
-                                                            <Image
-                                                                src={topic.optionAImage}
-                                                                alt={topic.optionA}
-                                                                borderRadius="md"
-                                                                objectFit="cover"
-                                                                w="full"
-                                                                h="200px"
-                                                            />
-                                                        </Skeleton>
+                                                        <Image
+                                                            src={topic.optionAImage}
+                                                            alt={topic.optionA}
+                                                            borderRadius="md"
+                                                            objectFit="cover"
+                                                            w="full"
+                                                            h="200px"
+                                                        />
                                                     )}
                                                     <Button
                                                         w="full"
                                                         onClick={() => handleVote(topic._id, -1)}
                                                         colorScheme="blue"
                                                         variant="outline"
+                                                        isDisabled={votedTopics.has(topic._id)}
                                                     >
                                                         {topic.optionA}
                                                     </Button>
+                                                    {votedTopics.has(topic._id) && (
+                                                        <Stat>
+                                                            <StatNumber>
+                                                                {topic.votePercentages.optionA.toFixed(
+                                                                    1
+                                                                )}
+                                                                %
+                                                            </StatNumber>
+                                                            <StatHelpText>
+                                                                <StatArrow
+                                                                    type={
+                                                                        topic.votePercentages
+                                                                            .optionA >= 50
+                                                                            ? 'increase'
+                                                                            : 'decrease'
+                                                                    }
+                                                                />
+                                                            </StatHelpText>
+                                                        </Stat>
+                                                    )}
                                                 </VStack>
                                                 <Text fontWeight="bold">vs</Text>
                                                 <VStack flex="1">
                                                     {topic.optionBImage && (
-                                                        <Skeleton isLoaded={!loading}>
-                                                            <Image
-                                                                src={topic.optionBImage}
-                                                                alt={topic.optionB}
-                                                                borderRadius="md"
-                                                                objectFit="cover"
-                                                                w="full"
-                                                                h="200px"
-                                                            />
-                                                        </Skeleton>
+                                                        <Image
+                                                            src={topic.optionBImage}
+                                                            alt={topic.optionB}
+                                                            borderRadius="md"
+                                                            objectFit="cover"
+                                                            w="full"
+                                                            h="200px"
+                                                        />
                                                     )}
                                                     <Button
                                                         w="full"
                                                         onClick={() => handleVote(topic._id, 1)}
                                                         colorScheme="blue"
+                                                        isDisabled={votedTopics.has(topic._id)}
                                                     >
                                                         {topic.optionB}
                                                     </Button>
+                                                    {votedTopics.has(topic._id) && (
+                                                        <Stat>
+                                                            <StatNumber>
+                                                                {topic.votePercentages.optionB.toFixed(
+                                                                    1
+                                                                )}
+                                                                %
+                                                            </StatNumber>
+                                                            <StatHelpText>
+                                                                <StatArrow
+                                                                    type={
+                                                                        topic.votePercentages
+                                                                            .optionB >= 50
+                                                                            ? 'increase'
+                                                                            : 'decrease'
+                                                                    }
+                                                                />
+                                                            </StatHelpText>
+                                                        </Stat>
+                                                    )}
                                                 </VStack>
                                             </Flex>
                                             <Flex justifyContent="space-between">
@@ -280,7 +350,7 @@ function Vote() {
                                                     {topic.category}
                                                 </Badge>
                                                 <Badge colorScheme="blue" fontSize="sm">
-                                                    {topic.totalVotes} votes
+                                                    {Math.abs(topic.totalVotes)} votes
                                                 </Badge>
                                             </Flex>
                                         </VStack>

@@ -179,30 +179,48 @@ app.get('/api/topics', async (req, res) => {
         const { page = 1, limit = 20, category } = req.query;
         const query = category ? { category } : {};
 
-        const topics = await Topic.find(query)
-            .sort({ createdAt: -1 })
-            .skip((page - 1) * limit)
-            .limit(parseInt(limit));
-
-        const topicsWithVotes = await Promise.all(
-            topics.map(async (topic) => {
-                const votes = await Vote.find({ topic: topic._id });
-                const totalVotes = votes.length;
-                const optionAVotes = votes.filter((v) => v.value === 'A').length;
-                const optionBVotes = votes.filter((v) => v.value === 'B').length;
-                return {
-                    ...topic.toObject(),
-                    totalVotes,
-                    optionAVotes,
-                    optionBVotes
-                };
-            })
-        );
+        const topics = await Topic.aggregate([
+            { $match: query },
+            {
+                $lookup: {
+                    from: 'votes',
+                    localField: '_id',
+                    foreignField: 'topic',
+                    as: 'votes'
+                }
+            },
+            {
+                $addFields: {
+                    totalVotes: { $size: '$votes' },
+                    optionAVotes: {
+                        $size: {
+                            $filter: {
+                                input: '$votes',
+                                as: 'vote',
+                                cond: { $eq: ['$$vote.value', -1] }
+                            }
+                        }
+                    },
+                    optionBVotes: {
+                        $size: {
+                            $filter: {
+                                input: '$votes',
+                                as: 'vote',
+                                cond: { $eq: ['$$vote.value', 1] }
+                            }
+                        }
+                    }
+                }
+            },
+            { $sort: { totalVotes: -1 } },
+            { $skip: (page - 1) * limit },
+            { $limit: parseInt(limit) }
+        ]);
 
         const total = await Topic.countDocuments(query);
 
         res.json({
-            topics: topicsWithVotes,
+            topics,
             totalPages: Math.ceil(total / limit),
             currentPage: page
         });
