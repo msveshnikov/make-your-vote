@@ -151,7 +151,7 @@ function Vote() {
                     >
                         <Flex alignItems="center" gap={3}>
                             <Icon as={FaVoteYea} w={8} h={8} color="blue.400" />
-                            <Heading size="xl">MakeYour.vote</Heading>
+                            <Heading size="xl">Make Your Vote</Heading>
                         </Flex>
                         <Button
                             leftIcon={<FaPlus />}

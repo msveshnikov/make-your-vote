@@ -11,6 +11,7 @@ services:
             - GOOGLE_KEY=${GOOGLE_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+            - UNSPLASH_API_KEY=${UNSPLASH_API_KEY}
             - ELEVEN_KEY=${ELEVEN_KEY}
             - MONGODB_URI=mongodb://mongodb:27017/vote
             - JWT_SECRET=${JWT_SECRET}

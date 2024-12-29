@@ -136,6 +136,7 @@ Backend:
 
 # TODO
 
+- add images to topics for optionA, optionB and generate them by unsplash API (use option text as search query)
 - Mobile responsiveness optimization
 - make navigation on mobile more intuitive
 - make super cool design, add info, prepare for launch!!!
