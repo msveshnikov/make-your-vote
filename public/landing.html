@@ -38,17 +38,17 @@
         />
         <title>MakeYour.vote - The Definitive Source for Public Opinion</title>
         <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
             :root {
                 --primary: #3498db;
                 --secondary: #e74c3c;
                 --dark: #2c3e50;
                 --light: #f8f9fa;
                 --glass: rgba(255, 255, 255, 0.1);
+            }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
             }
             body {
                 font-family: 'Inter', sans-serif;
@@ -129,22 +129,29 @@
                 transform: translateY(-3px);
                 box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
             }
-            .features {
+            .features,
+            .roadmap,
+            .testimonials {
                 padding: 8rem 0;
-                background: #fff;
             }
-            .features h2 {
+            .features h2,
+            .roadmap h2,
+            .testimonials h2 {
                 text-align: center;
                 font-size: 2.5rem;
                 margin-bottom: 4rem;
                 color: var(--dark);
             }
-            .feature-grid {
+            .feature-grid,
+            .roadmap-grid,
+            .testimonial-grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                 gap: 2.5rem;
             }
-            .feature-item {
+            .feature-item,
+            .roadmap-item,
+            .testimonial-item {
                 background: var(--glass);
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
@@ -155,74 +162,22 @@
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            .feature-item:hover {
+            .feature-item:hover,
+            .roadmap-item:hover,
+            .testimonial-item:hover {
                 transform: translateY(-5px);
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             }
-            .feature-item h3 {
+            .feature-item h3,
+            .roadmap-item h3 {
                 color: var(--dark);
                 margin-bottom: 1rem;
                 font-size: 1.5rem;
                 font-weight: 600;
             }
-            .feature-item p {
+            .feature-item p,
+            .roadmap-item p {
                 color: #666;
-            }
-            .roadmap {
-                padding: 8rem 0;
-                background: var(--light);
-            }
-            .roadmap h2 {
-                text-align: center;
-                font-size: 2.5rem;
-                margin-bottom: 4rem;
-                color: var(--dark);
-            }
-            .roadmap-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 2.5rem;
-                padding: 0 2rem;
-            }
-            .roadmap-item {
-                background: #fff;
-                padding: 2.5rem;
-                border-radius: 20px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                transition: all 0.3s ease;
-            }
-            .roadmap-item:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            }
-            .roadmap-item h3 {
-                color: var(--primary);
-                margin-bottom: 1rem;
-                font-size: 1.3rem;
-                font-weight: 600;
-            }
-            .testimonials {
-                background: #f8f9fa;
-                padding: 6rem 0;
-            }
-            .testimonials h2 {
-                text-align: center;
-                font-size: 2.5rem;
-                margin-bottom: 3rem;
-                color: #2c3e50;
-            }
-            .testimonial-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 2rem;
-                padding: 0 2rem;
-            }
-            .testimonial-item {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                padding: 2rem;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
             .testimonial-text {
                 font-style: italic;
@@ -230,7 +185,19 @@
             }
             .testimonial-author {
                 font-weight: bold;
-                color: #2c3e50;
+                color: var(--dark);
+            }
+            .testimonial-face {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                margin: 0 auto 1rem;
+                overflow: hidden;
+            }
+            .testimonial-face img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
             footer {
                 background: var(--dark);
@@ -352,6 +319,7 @@
                     </div>
                 </div>
             </section>
+
             <section
                 id="testimonials"
                 class="testimonials"
@@ -362,6 +330,9 @@
                     <h2>What Our Users Say</h2>
                     <div class="testimonial-grid">
                         <div class="testimonial-item">
+                            <div class="testimonial-face">
+                                <img src="https://i.pravatar.cc/150?img=1" alt="Alex Thompson">
+                            </div>
                             <p class="testimonial-text">
                                 "The real-time processing and AI analysis have transformed how we
                                 understand public sentiment."
@@ -369,6 +340,9 @@
                             <p class="testimonial-author">Alex Thompson, Policy Analyst</p>
                         </div>
                         <div class="testimonial-item">
+                            <div class="testimonial-face">
+                                <img src="https://i.pravatar.cc/150?img=5" alt="Sophia Lee">
+                            </div>
                             <p class="testimonial-text">
                                 "MakeYour.vote's mobile experience is unparalleled. I can stay
                                 connected to global opinions on-the-go."
@@ -376,6 +350,9 @@
                             <p class="testimonial-author">Sophia Lee, Journalist</p>
                         </div>
                         <div class="testimonial-item">
+                            <div class="testimonial-face">
+                                <img src="https://i.pravatar.cc/150?img=8" alt="David Chen">
+                            </div>
                             <p class="testimonial-text">
                                 "The unified platform has become an essential tool for our market
                                 research and strategy development."
