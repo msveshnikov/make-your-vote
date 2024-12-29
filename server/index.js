@@ -233,46 +233,63 @@ app.get('/api/topics', async (req, res) => {
         const { page = 1, limit = 20, category } = req.query;
         const query = category ? { category } : {};
 
-        const topics = await Topic.aggregate([
-            { $match: query },
-            {
-                $lookup: {
-                    from: 'votes',
-                    localField: '_id',
-                    foreignField: 'topic',
-                    as: 'votes'
-                }
-            },
-            {
-                $addFields: {
-                    totalVotes: { $size: '$votes' },
-                    optionAVotes: {
-                        $size: {
-                            $filter: {
-                                input: '$votes',
-                                as: 'vote',
-                                cond: { $eq: ['$$vote.value', -1] }
+        const [mostVotedTopics, newTopics] = await Promise.all([
+            Topic.aggregate([
+                { $match: query },
+                {
+                    $lookup: {
+                        from: 'votes',
+                        localField: '_id',
+                        foreignField: 'topic',
+                        as: 'votes'
+                    }
+                },
+                {
+                    $addFields: {
+                        totalVotes: { $size: '$votes' },
+                        optionAVotes: {
+                            $size: {
+                                $filter: {
+                                    input: '$votes',
+                                    as: 'vote',
+                                    cond: { $eq: ['$$vote.value', -1] }
+                                }
                             }
-                        }
-                    },
-                    optionBVotes: {
-                        $size: {
-                            $filter: {
-                                input: '$votes',
-                                as: 'vote',
-                                cond: { $eq: ['$$vote.value', 1] }
+                        },
+                        optionBVotes: {
+                            $size: {
+                                $filter: {
+                                    input: '$votes',
+                                    as: 'vote',
+                                    cond: { $eq: ['$$vote.value', 1] }
+                                }
                             }
                         }
                     }
-                }
-            },
-            { $sort: { totalVotes: -1 } },
-            { $skip: (page - 1) * limit },
-            { $limit: parseInt(limit) }
+                },
+                { $sort: { totalVotes: -1 } },
+                { $limit: parseInt(limit) / 2 }
+            ]),
+            Topic.aggregate([
+                { $match: query },
+                { $sort: { createdAt: -1 } },
+                { $limit: parseInt(limit) / 2 }
+            ])
         ]);
 
+        const interlacedTopics = [];
+        const maxLength = Math.max(mostVotedTopics.length, newTopics.length);
+        for (let i = 0; i < maxLength; i++) {
+            if (mostVotedTopics[i]) interlacedTopics.push(mostVotedTopics[i]);
+            if (newTopics[i]) interlacedTopics.push(newTopics[i]);
+        }
+
         const total = await Topic.countDocuments(query);
-        res.json({ topics, totalPages: Math.ceil(total / limit), currentPage: page });
+        res.json({
+            topics: interlacedTopics,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
