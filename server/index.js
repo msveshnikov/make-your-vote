@@ -91,13 +91,12 @@ app.get('/api/topic/:id', async (req, res) => {
     try {
         const topic = await Topic.findById(req.params.id);
         if (!topic) {
-            return res.status(404);
+            return res.status(404).json({ error: 'Topic not found' });
         }
-
-        res.send(topic);
+        res.json(topic);
     } catch (error) {
         console.error(error);
-        res.status(500).redirect('/');
+        res.status(500).json({ error: 'Server error' });
     }
 });
 
@@ -275,43 +274,29 @@ export const enrichMetadata = async (html, slug) => {
     try {
         if (!slug) return html;
 
-        let topic = (await Topic.findOne({ slug: slug })) || (await Topic.findById(slug));
+        const topic = await Topic.findById(slug);
         if (!topic) return html;
 
-        const firstDayActivities = topic.itinerary?.[0]?.activities || [];
-        const firstDayHighlights = firstDayActivities
-            .slice(0, 2)
-            .map((act) => act.activity)
-            .join(' and ');
-
-        const highlightsText = firstDayHighlights ? ` Starting with ${firstDayHighlights}.` : '';
-        const itineraryContent = topic.itinerary
-            .map(
-                (day, i) =>
-                    `Day ${i + 1}: ${day.activities.map((a) => '<h1>' + a.activity + '</h1>' + '<p>' + a.description + '</p>').join(', ')}`
-            )
-            .join('. ');
-
         const $ = load(html);
-        $('title').text(`${topic.destination} Travel Guide - MyTrip.city`);
+
+        $('title').text(`${topic.title} - MakeYour.vote`);
         $('meta[name="description"]').attr(
             'content',
-            `Discover ${topic.destination} with our GPS audio travel guide. ${topic.duration}-day itinerary with best attractions, activities, and local insights.${highlightsText}`
+            `Vote on ${topic.title}: ${topic.optionA} vs ${topic.optionB} | MakeYour.vote`
         );
-        $('meta[property="og:title"]').attr('content', `${topic.destination} Travel Guide`);
+        $('meta[property="og:title"]').attr('content', topic.title);
         $('meta[property="og:description"]').attr(
             'content',
-            `Explore ${topic.destination} with our personalized travel itinerary.${highlightsText}`
+            `Vote on ${topic.title}: ${topic.optionA} vs ${topic.optionB}`
         );
-        $('meta[property="og:url"]').attr('content', 'https://mytrip.city/itinerary/' + slug);
-        if (topic.images?.[0]) {
-            $('meta[property="og:image"]').attr('content', topic.images[0]);
+        $('meta[property="og:url"]').attr('content', `https://makeyour.vote/topic/${slug}`);
+        if (topic.optionAImage) {
+            $('meta[property="og:image"]').attr('content', topic.optionAImage);
         }
 
-        $('body').append(`<div style="display:none">${itineraryContent}</div>`);
-
         return $.html();
-    } catch {
+    } catch (error) {
+        console.error(error);
         return html;
     }
 };
@@ -326,7 +311,7 @@ app.get('*', async (req, res) => {
     if (!req.path.startsWith('/topic/')) {
         return res.send(html);
     }
-    const slug = req.path.substring(8);
+    const slug = req.path.substring(7);
     const enrichedHtml = await enrichMetadata(html, slug);
     res.send(enrichedHtml);
 });
