@@ -133,5 +133,3 @@ Backend:
     - Consulting services
 
 # TODO
-
--  sort topics by votecount (most voted first)

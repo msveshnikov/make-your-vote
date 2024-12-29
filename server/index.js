@@ -132,16 +132,27 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/vote', authenticateToken, async (req, res) => {
     try {
-        const { topicId, value } = req.body;
+        const { topicId, value, context, metadata } = req.body;
         const userId = req.user?.id;
+        const countryCode = req.headers['cf-ipcountry'] || req.headers['geoip-country-code'];
+        const countryName = req.headers['geoip-country-name'];
 
-        const result = await Vote.create({
+        const vote = new Vote({
             user: userId,
             topic: topicId,
-            value
+            value,
+            context,
+            metadata: {
+                ...metadata,
+                userAgent: req.headers['user-agent'],
+                countryCode,
+                countryName
+            },
+            isAnonymous: !userId
         });
 
-        res.json(result);
+        await vote.save();
+        res.json(vote);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

@@ -34,6 +34,16 @@ const voteSchema = new mongoose.Schema(
             },
             userAgent: String
         },
+        countryCode: {
+            type: String,
+            trim: true,
+            maxLength: 2
+        },
+        countryName: {
+            type: String,
+            trim: true,
+            maxLength: 100
+        },
         isAnonymous: {
             type: Boolean,
             default: false
@@ -56,6 +66,7 @@ const voteSchema = new mongoose.Schema(
 
 voteSchema.index({ topic: 1, createdAt: -1 });
 voteSchema.index({ user: 1, createdAt: -1 });
+voteSchema.index({ countryCode: 1 });
 
 voteSchema.statics.getTopicStats = async function (topicId) {
     return this.aggregate([
