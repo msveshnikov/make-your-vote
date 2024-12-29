@@ -28,9 +28,17 @@ import {
     useMediaQuery,
     Select,
     Image,
-    Skeleton
+    Skeleton,
+    ButtonGroup
 } from '@chakra-ui/react';
-import { FaVoteYea, FaPlus, FaChartLine, FaShare } from 'react-icons/fa';
+import {
+    FaVoteYea,
+    FaPlus,
+    FaChartLine,
+    FaShare,
+    FaChevronLeft,
+    FaChevronRight
+} from 'react-icons/fa';
 import { API_URL } from './App';
 
 const theme = extendTheme({
@@ -51,6 +59,8 @@ function Vote() {
     const [topics, setTopics] = useState([]);
     const [newTopic, setNewTopic] = useState({ title: '', optionA: '', optionB: '', category: '' });
     const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
     const [isMobile] = useMediaQuery('(max-width: 768px)');
@@ -58,9 +68,10 @@ function Vote() {
     const fetchTopics = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${API_URL}/api/topics`);
+            const response = await fetch(`${API_URL}/api/topics?page=${currentPage}&limit=10`);
             const data = await response.json();
             setTopics(data.topics);
+            setTotalPages(data.totalPages);
         } catch {
             toast({
                 title: 'Error fetching topics',
@@ -70,7 +81,7 @@ function Vote() {
         } finally {
             setLoading(false);
         }
-    }, [toast]);
+    }, [currentPage, toast]);
 
     useEffect(() => {
         fetchTopics();
@@ -140,6 +151,11 @@ function Vote() {
         }
     };
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo(0, 0);
+    };
+
     return (
         <ChakraProvider theme={theme}>
             <Box minH="100vh" bg="white" color="gray.800">
@@ -168,105 +184,129 @@ function Vote() {
                     {loading ? (
                         <Progress size="xs" isIndeterminate />
                     ) : (
-                        <VStack spacing={6}>
-                            {topics.map((topic) => (
-                                <Box
-                                    key={topic._id}
-                                    w="full"
-                                    p={6}
-                                    borderRadius="xl"
-                                    border="1px"
-                                    borderColor="gray.200"
-                                    transition="all 0.2s"
-                                    _hover={{ shadow: 'md' }}
-                                >
-                                    <VStack spacing={4} align="stretch">
-                                        <Flex justifyContent="space-between" alignItems="center">
-                                            <Heading size="md">{topic.title}</Heading>
-                                            <HStack>
-                                                <Tooltip label="View Analytics">
+                        <>
+                            <VStack spacing={6}>
+                                {topics.map((topic) => (
+                                    <Box
+                                        key={topic._id}
+                                        w="full"
+                                        p={6}
+                                        borderRadius="xl"
+                                        border="1px"
+                                        borderColor="gray.200"
+                                        transition="all 0.2s"
+                                        _hover={{ shadow: 'md' }}
+                                    >
+                                        <VStack spacing={4} align="stretch">
+                                            <Flex
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                            >
+                                                <Heading size="md">{topic.title}</Heading>
+                                                <HStack>
+                                                    <Tooltip label="View Analytics">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            colorScheme="blue"
+                                                        >
+                                                            <Icon as={FaChartLine} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip label="Share">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            colorScheme="blue"
+                                                            onClick={() => handleShare(topic)}
+                                                        >
+                                                            <Icon as={FaShare} />
+                                                        </Button>
+                                                    </Tooltip>
+                                                </HStack>
+                                            </Flex>
+                                            <Flex
+                                                gap={4}
+                                                flexDir={isMobile ? 'column' : 'row'}
+                                                align="center"
+                                            >
+                                                <VStack flex="1">
+                                                    {topic.optionAImage && (
+                                                        <Skeleton isLoaded={!loading}>
+                                                            <Image
+                                                                src={topic.optionAImage}
+                                                                alt={topic.optionA}
+                                                                borderRadius="md"
+                                                                objectFit="cover"
+                                                                w="full"
+                                                                h="200px"
+                                                            />
+                                                        </Skeleton>
+                                                    )}
                                                     <Button
-                                                        size="sm"
-                                                        variant="ghost"
+                                                        w="full"
+                                                        onClick={() => handleVote(topic._id, 'A')}
+                                                        colorScheme="blue"
+                                                        variant="outline"
+                                                    >
+                                                        {topic.optionA}
+                                                    </Button>
+                                                </VStack>
+                                                <Text fontWeight="bold">vs</Text>
+                                                <VStack flex="1">
+                                                    {topic.optionBImage && (
+                                                        <Skeleton isLoaded={!loading}>
+                                                            <Image
+                                                                src={topic.optionBImage}
+                                                                alt={topic.optionB}
+                                                                borderRadius="md"
+                                                                objectFit="cover"
+                                                                w="full"
+                                                                h="200px"
+                                                            />
+                                                        </Skeleton>
+                                                    )}
+                                                    <Button
+                                                        w="full"
+                                                        onClick={() => handleVote(topic._id, 'B')}
                                                         colorScheme="blue"
                                                     >
-                                                        <Icon as={FaChartLine} />
+                                                        {topic.optionB}
                                                     </Button>
-                                                </Tooltip>
-                                                <Tooltip label="Share">
-                                                    <Button
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        colorScheme="blue"
-                                                        onClick={() => handleShare(topic)}
-                                                    >
-                                                        <Icon as={FaShare} />
-                                                    </Button>
-                                                </Tooltip>
-                                            </HStack>
-                                        </Flex>
-                                        <Flex
-                                            gap={4}
-                                            flexDir={isMobile ? 'column' : 'row'}
-                                            align="center"
-                                        >
-                                            <VStack flex="1">
-                                                {topic.optionAImage && (
-                                                    <Skeleton isLoaded={!loading}>
-                                                        <Image
-                                                            src={topic.optionAImage}
-                                                            alt={topic.optionA}
-                                                            borderRadius="md"
-                                                            objectFit="cover"
-                                                            w="full"
-                                                            h="200px"
-                                                        />
-                                                    </Skeleton>
-                                                )}
-                                                <Button
-                                                    w="full"
-                                                    onClick={() => handleVote(topic._id, -1)}
-                                                    colorScheme="blue"
-                                                    variant="outline"
-                                                >
-                                                    {topic.optionA}
-                                                </Button>
-                                            </VStack>
-                                            <Text fontWeight="bold">vs</Text>
-                                            <VStack flex="1">
-                                                {topic.optionBImage && (
-                                                    <Skeleton isLoaded={!loading}>
-                                                        <Image
-                                                            src={topic.optionBImage}
-                                                            alt={topic.optionB}
-                                                            borderRadius="md"
-                                                            objectFit="cover"
-                                                            w="full"
-                                                            h="200px"
-                                                        />
-                                                    </Skeleton>
-                                                )}
-                                                <Button
-                                                    w="full"
-                                                    onClick={() => handleVote(topic._id, 1)}
-                                                    colorScheme="blue"
-                                                >
-                                                    {topic.optionB}
-                                                </Button>
-                                            </VStack>
-                                        </Flex>
-                                        <Flex justifyContent="space-between">
-                                            <Badge colorScheme="purple" fontSize="sm">
-                                                {topic.category}
-                                            </Badge>
-                                            <Badge colorScheme="blue" fontSize="sm">
-                                                {topic.totalVotes} votes
-                                            </Badge>
-                                        </Flex>
-                                    </VStack>
-                                </Box>
-                            ))}
-                        </VStack>
+                                                </VStack>
+                                            </Flex>
+                                            <Flex justifyContent="space-between">
+                                                <Badge colorScheme="purple" fontSize="sm">
+                                                    {topic.category}
+                                                </Badge>
+                                                <Badge colorScheme="blue" fontSize="sm">
+                                                    {topic.totalVotes} votes
+                                                </Badge>
+                                            </Flex>
+                                        </VStack>
+                                    </Box>
+                                ))}
+                            </VStack>
+
+                            <Flex justifyContent="center" mt={8}>
+                                <ButtonGroup>
+                                    <Button
+                                        leftIcon={<FaChevronLeft />}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        isDisabled={currentPage === 1}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        rightIcon={<FaChevronRight />}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        isDisabled={currentPage === totalPages}
+                                    >
+                                        Next
+                                    </Button>
+                                </ButtonGroup>
+                            </Flex>
+                        </>
                     )}
                 </Container>
             </Box>
