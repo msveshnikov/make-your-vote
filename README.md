@@ -28,7 +28,6 @@ official & visible for all.
 - Microservices Architecture: Separate frontend and backend services for scalability
 - AI Integration: Dual AI providers (Claude and Gemini) for enhanced topic analysis
 - Docker Containerization: Consistent development and deployment environments
-- Real-time Processing: WebSocket implementation for live vote tracking
 - User Management: Robust authentication and authorization system
 - Static Asset Optimization: Vite-powered build process for optimal performance
 - SEO Optimization: Server-side metadata injection for topic pages
@@ -79,7 +78,6 @@ Frontend:
 - React.js with Vite
 - Chakra UI v2
 - CSS Modules
-- WebSocket client
 - Three.js for 3D visualizations
 - Service Workers
 
@@ -137,6 +135,7 @@ Backend:
 # TODO
 
 - add images to topics for optionA, optionB and generate them by unsplash API (use option text as search query)
+- show optionAImage and optionBImage if present
 - Mobile responsiveness optimization
 - make navigation on mobile more intuitive
 - make super cool design, add info, prepare for launch!!!

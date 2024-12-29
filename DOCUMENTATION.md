@@ -61,7 +61,6 @@ server/
 - **Backend**: Node.js/Express, MongoDB
 - **AI Services**: Claude, Gemini
 - **Infrastructure**: Docker, Nginx
-- **Real-time**: WebSocket/Socket.io
 
 ## Installation & Setup
 

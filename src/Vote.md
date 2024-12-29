@@ -145,7 +145,6 @@ Uses Chakra UI's toast system for user feedback:
 
 ## Future Improvements
 
-- Real-time updates using WebSocket (commented code present)
 - Pagination for topics list
 - Vote validation
 - User authentication integration

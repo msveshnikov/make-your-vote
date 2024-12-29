@@ -13,6 +13,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { getTextGemini } from './gemini.js';
+import { getUnsplashImages } from './unsplash.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
 import Topic from './models/Topic.js';
@@ -129,7 +130,6 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 
         res.json(result);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -137,12 +137,20 @@ app.post('/api/vote', authenticateToken, async (req, res) => {
 app.post('/api/topics', authenticateToken, async (req, res) => {
     try {
         const { title, optionA, optionB, category } = req.body;
+
+        const [optionAImages, optionBImages] = await Promise.all([
+            getUnsplashImages(optionA),
+            getUnsplashImages(optionB)
+        ]);
+
         const topic = new Topic({
             title,
             optionA,
             optionB,
             category,
-            createdBy: req.user?.id
+            creator: req.user?.id,
+            optionAImage: optionAImages[0],
+            optionBImage: optionBImages[0]
         });
         await topic.save();
         res.status(201).json(topic);

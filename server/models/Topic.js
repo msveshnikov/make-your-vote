@@ -17,15 +17,20 @@ const topicSchema = new mongoose.Schema(
             required: true,
             trim: true
         },
+        optionAImage: {
+            type: String,
+            trim: true
+        },
+        optionBImage: {
+            type: String,
+            trim: true
+        },
         description: {
             type: String,
-            // required: true,
             trim: true
         },
         category: {
             type: String
-            // required: true
-            // enum: ['politics', 'social', 'technology', 'environment', 'economy', 'other']
         },
         creator: {
             type: mongoose.Schema.Types.ObjectId,
