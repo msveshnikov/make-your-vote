@@ -26,7 +26,7 @@ official & visible for all.
 ## System Architecture
 
 - Microservices Architecture: Separate frontend and backend services for scalability
-- AI Integration: Dual AI providers (Claude and Gemini) for enhanced topic analysis
+- AI Integration: Gemini for enhanced topic analysis
 - Docker Containerization: Consistent development and deployment environments
 - User Management: Robust authentication and authorization system
 - Static Asset Optimization: Vite-powered build process for optimal performance
@@ -77,17 +77,16 @@ Frontend:
 
 - React.js with Vite
 - Chakra UI v2
-- CSS Modules
-- Three.js for 3D visualizations
 - Service Workers
 
 Backend:
 
 - Node.js/Express
-- AI Services (Claude & Gemini)
+- AI Services (Gemini)
 - MongoDB
 - Never delete console.error() calls!!!
-- Infrastructure:
+
+Infrastructure:
 
 - Docker
 - Docker Compose
@@ -134,4 +133,3 @@ Backend:
     - Consulting services
 
 # TODO
-
