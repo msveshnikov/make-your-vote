@@ -81,7 +81,7 @@ const Topic = () => {
                             alt={topic.optionA}
                             borderRadius="md"
                             objectFit="cover"
-                            w="300px"
+                            w="full"
                             h="200px"
                         />
                         <Text fontSize="xl" fontWeight="bold" mt={2}>

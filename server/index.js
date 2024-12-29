@@ -16,6 +16,7 @@ import { getUnsplashImages } from './unsplash.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
 import Topic from './models/Topic.js';
+import { load } from 'cheerio';
 
 dotenv.config();
 
@@ -270,6 +271,51 @@ app.get('/api/topics', async (req, res) => {
     }
 });
 
+export const enrichMetadata = async (html, slug) => {
+    try {
+        if (!slug) return html;
+
+        let topic = (await Topic.findOne({ slug: slug })) || (await Topic.findById(slug));
+        if (!topic) return html;
+
+        const firstDayActivities = topic.itinerary?.[0]?.activities || [];
+        const firstDayHighlights = firstDayActivities
+            .slice(0, 2)
+            .map((act) => act.activity)
+            .join(' and ');
+
+        const highlightsText = firstDayHighlights ? ` Starting with ${firstDayHighlights}.` : '';
+        const itineraryContent = topic.itinerary
+            .map(
+                (day, i) =>
+                    `Day ${i + 1}: ${day.activities.map((a) => '<h1>' + a.activity + '</h1>' + '<p>' + a.description + '</p>').join(', ')}`
+            )
+            .join('. ');
+
+        const $ = load(html);
+        $('title').text(`${topic.destination} Travel Guide - MyTrip.city`);
+        $('meta[name="description"]').attr(
+            'content',
+            `Discover ${topic.destination} with our GPS audio travel guide. ${topic.duration}-day itinerary with best attractions, activities, and local insights.${highlightsText}`
+        );
+        $('meta[property="og:title"]').attr('content', `${topic.destination} Travel Guide`);
+        $('meta[property="og:description"]').attr(
+            'content',
+            `Explore ${topic.destination} with our personalized travel itinerary.${highlightsText}`
+        );
+        $('meta[property="og:url"]').attr('content', 'https://mytrip.city/itinerary/' + slug);
+        if (topic.images?.[0]) {
+            $('meta[property="og:image"]').attr('content', topic.images[0]);
+        }
+
+        $('body').append(`<div style="display:none">${itineraryContent}</div>`);
+
+        return $.html();
+    } catch {
+        return html;
+    }
+};
+
 app.get('/', async (req, res) => {
     const html = fs.readFileSync(join(__dirname, '../dist/landing.html'), 'utf8');
     res.send(html);
@@ -277,7 +323,12 @@ app.get('/', async (req, res) => {
 
 app.get('*', async (req, res) => {
     const html = fs.readFileSync(join(__dirname, '../dist/index.html'), 'utf8');
-    res.send(html);
+    if (!req.path.startsWith('/topic/')) {
+        return res.send(html);
+    }
+    const slug = req.path.substring(8);
+    const enrichedHtml = await enrichMetadata(html, slug);
+    res.send(enrichedHtml);
 });
 
 app.use((req, res) => {
