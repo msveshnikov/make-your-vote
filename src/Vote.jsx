@@ -32,8 +32,10 @@ import {
     StatHelpText,
     StatArrow
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { FaVoteYea, FaPlus, FaShare, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { API_URL } from './App';
+import axios from 'axios';
 
 function Vote() {
     const [topics, setTopics] = useState([]);
@@ -43,6 +45,7 @@ function Vote() {
     const [totalPages, setTotalPages] = useState(1);
     const [votedTopics, setVotedTopics] = useState(new Set());
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [user, setUser] = useState(null);
     const toast = useToast();
     const [isMobile] = useMediaQuery('(max-width: 768px)');
 
@@ -68,6 +71,20 @@ function Vote() {
             setLoading(false);
         }
     }, [currentPage, toast]);
+
+    const checkAuth = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const response = await axios.get(`${API_URL}/api/user`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUser(response.data);
+        }
+    };
+
+    useEffect(() => {
+        checkAuth();
+    }, []);
 
     useEffect(() => {
         fetchTopics();
@@ -159,6 +176,13 @@ function Vote() {
                     text: `${topic.optionA} vs ${topic.optionB}`,
                     url: shareUrl
                 });
+            } else {
+                await navigator.clipboard.writeText(shareUrl);
+                toast({
+                    title: 'Link copied to clipboard',
+                    status: 'success',
+                    duration: 2000
+                });
             }
         } catch {
             toast({
@@ -189,16 +213,39 @@ function Vote() {
                             <Icon as={FaVoteYea} w={8} h={8} color="blue.400" />
                             <Heading size="xl">Make Your Vote</Heading>
                         </Flex>
-                        <Button
-                            leftIcon={<FaPlus />}
-                            colorScheme="blue"
-                            onClick={onOpen}
-                            size={isMobile ? 'sm' : 'md'}
-                            backdropFilter="blur(10px)"
-                            bg="rgba(66, 153, 225, 0.9)"
-                        >
-                            Create Topic
-                        </Button>
+                        <HStack spacing={4}>
+                            {user ? (
+                                <>
+                                    <Button as={Link} to="/profile" colorScheme="teal">
+                                        Profile
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            localStorage.removeItem('token');
+                                            setUser(null);
+                                        }}
+                                        colorScheme="red"
+                                    >
+                                        Logout
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button as={Link} to="/signup">
+                                        Sign Up
+                                    </Button>
+                                </>
+                            )}
+                            <Button
+                                leftIcon={<FaPlus />}
+                                colorScheme="blue"
+                                onClick={onOpen}
+                                backdropFilter="blur(10px)"
+                                bg="rgba(66, 153, 225, 0.9)"
+                            >
+                                Create Topic
+                            </Button>
+                        </HStack>
                     </Flex>
 
                     {loading ? (

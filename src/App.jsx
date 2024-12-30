@@ -7,6 +7,9 @@ import Topic from './Topic.jsx';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import Privacy from './Privacy.jsx';
 import Terms from './Terms.jsx';
+import Login from './Login.jsx';
+import Signup from './Signup.jsx';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export const API_URL = import.meta.env.DEV ? 'http://localhost:3000' : 'https://makeyour.vote';
 export const AuthContext = createContext(null);
@@ -40,16 +43,20 @@ function App() {
 
     return (
         <ChakraProvider theme={theme}>
-            <Router>
-                <Routes>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/app/*" element={<Vote />} />
-                    <Route path="/topic/:id" element={<Topic />} />
-                    <Route path="/privacy" element={<Privacy />} />
-                    <Route path="/terms" element={<Terms />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-            </Router>
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Landing />} />
+                        <Route path="/app/*" element={<Vote />} />
+                        <Route path="/topic/:id" element={<Topic />} />
+                        <Route path="/privacy" element={<Privacy />} />
+                        <Route path="/terms" element={<Terms />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                </Router>
+            </GoogleOAuthProvider>
         </ChakraProvider>
     );
 }

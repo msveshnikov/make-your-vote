@@ -17,6 +17,7 @@ import User from './models/User.js';
 import Vote from './models/Vote.js';
 import Topic from './models/Topic.js';
 import { load } from 'cheerio';
+import userRoutes from './user.js';
 
 dotenv.config();
 
@@ -45,6 +46,8 @@ const limiter = rateLimit({
 app.use(limiter);
 
 mongoose.connect(process.env.MONGODB_URI, {});
+
+userRoutes(app);
 
 const cleanGeneratedCode = (code) => {
     const codeBlockRegex = /```(?:json)?\n([\s\S]*?)\n```/;
