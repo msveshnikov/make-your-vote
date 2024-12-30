@@ -10,6 +10,7 @@ import Terms from './Terms.jsx';
 import Login from './Login.jsx';
 import Signup from './Signup.jsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Admin from './Admin.jsx';
 
 export const API_URL = import.meta.env.DEV ? 'http://localhost:3000' : 'https://makeyour.vote';
 export const AuthContext = createContext(null);
@@ -53,6 +54,7 @@ function App() {
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<Signup />} />
+                        <Route path="/admin" element={<Admin />} />
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </Router>

@@ -3,12 +3,23 @@ import Topic from './models/Topic.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
 import { getUnsplashImages } from './unsplash.js';
+// import { analyzeTopicTrends } from './gemini.js';
 
 const adminRoutes = (app) => {
     app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
         try {
             const users = await User.find().select('-password');
             res.json(users);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.get('/api/votes', authenticateToken, isAdmin, async (req, res) => {
+        try {
+            const votes = await Vote.find().limit(20);
+            res.json(votes);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal server error' });
@@ -62,12 +73,13 @@ const adminRoutes = (app) => {
             const topVotedTopics = await Topic.find()
                 .sort({ totalVotes: -1 })
                 .limit(5)
-                .select('title totalVotes');
+                .select('title totalVotes optionA optionB');
 
-            const recentVotes = await Vote.find()
-                .sort({ createdAt: -1 })
-                .limit(10)
-                .populate('topicId', 'title');
+            const recentVotes = await Vote.find().sort({ createdAt: -1 }).limit(10);
+            // .populate('topicId', 'title')
+            // .populate('userId', 'username');
+
+            // const trendAnalysis = await analyzeTopicTrends(topVotedTopics);
 
             res.json({
                 stats: {
@@ -77,7 +89,34 @@ const adminRoutes = (app) => {
                 },
                 topVotedTopics,
                 recentVotes
+                // trendAnalysis
             });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.put('/api/users/:id/role', authenticateToken, isAdmin, async (req, res) => {
+        try {
+            const { role } = req.body;
+            const user = await User.findByIdAndUpdate(
+                req.params.id,
+                { role },
+                { new: true }
+            ).select('-password');
+            res.json(user);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
+        try {
+            await Vote.deleteMany({ userId: req.params.id });
+            await User.findByIdAndDelete(req.params.id);
+            res.json({ message: 'User and related data deleted successfully' });
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal server error' });
