@@ -5,6 +5,8 @@ import Vote from './Vote.jsx';
 import ReactGA from 'react-ga4';
 import Topic from './Topic.jsx';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import Privacy from './Privacy.jsx';
+import Terms from './Terms.jsx';
 
 export const API_URL = import.meta.env.DEV ? 'http://localhost:3000' : 'https://makeyour.vote';
 export const AuthContext = createContext(null);
@@ -43,6 +45,8 @@ function App() {
                     <Route path="/" element={<Landing />} />
                     <Route path="/app/*" element={<Vote />} />
                     <Route path="/topic/:id" element={<Topic />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/terms" element={<Terms />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </Router>

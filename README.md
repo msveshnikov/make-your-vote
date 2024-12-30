@@ -133,5 +133,3 @@ Infrastructure:
     - Consulting services
 
 # TODO
-
-- add back link to homepage (/app)

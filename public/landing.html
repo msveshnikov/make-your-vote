@@ -228,6 +228,43 @@
                 text-align: center;
                 padding: 3rem 0;
             }
+            .footer-links {
+                margin-top: 1rem;
+            }
+            .footer-links a {
+                color: #fff;
+                text-decoration: none;
+                margin: 0 1rem;
+                opacity: 0.8;
+                transition: opacity 0.3s ease;
+            }
+            .footer-links a:hover {
+                opacity: 1;
+            }
+            .cookie-banner {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(44, 62, 80, 0.95);
+                color: #fff;
+                padding: 1rem;
+                text-align: center;
+                z-index: 1001;
+                display: none;
+            }
+            .cookie-banner.show {
+                display: block;
+            }
+            .cookie-banner button {
+                margin-left: 1rem;
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 5px;
+                background: var(--secondary);
+                color: #fff;
+                cursor: pointer;
+            }
             .mobile-nav {
                 display: none;
             }
@@ -255,6 +292,7 @@
                     justify-content: space-around;
                     align-items: center;
                     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                    z-index: 1000;
                 }
                 .mobile-nav a {
                     color: #fff;
@@ -271,6 +309,9 @@
                 .market-stats {
                     flex-direction: column;
                     gap: 1rem;
+                }
+                .cookie-banner {
+                    padding-bottom: 5rem;
                 }
             }
         </style>
@@ -401,7 +442,32 @@
         <footer>
             <div class="container">
                 <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
             </div>
         </footer>
+
+        <div class="cookie-banner" id="cookieBanner">
+            <p>
+                We use cookies to enhance your experience. By continuing to visit this site you
+                agree to our use of cookies.
+            </p>
+            <button onclick="acceptCookies()">Accept</button>
+        </div>
+
+        <script>
+            function acceptCookies() {
+                localStorage.setItem('cookiesAccepted', 'true');
+                document.getElementById('cookieBanner').style.display = 'none';
+            }
+
+            window.onload = function () {
+                if (!localStorage.getItem('cookiesAccepted')) {
+                    document.getElementById('cookieBanner').classList.add('show');
+                }
+            };
+        </script>
     </body>
 </html>
