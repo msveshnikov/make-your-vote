@@ -3,7 +3,6 @@ import {
     Box,
     Container,
     Heading,
-    Text,
     VStack,
     Button,
     Flex,
@@ -264,7 +263,7 @@ function Vote() {
     return (
         <>
             <Box minH="100vh" bg="transparent" color="gray.800">
-                <Container maxW="container.xl" py={6}>
+                <Container maxW="container.lg" py={6}>
                     <Flex
                         justifyContent="space-between"
                         alignItems="center"

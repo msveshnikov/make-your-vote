@@ -133,5 +133,3 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
-
-- put regenrate buttons below corresponding images
