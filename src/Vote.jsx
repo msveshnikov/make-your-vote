@@ -251,6 +251,7 @@ function Vote() {
                                                             objectFit="cover"
                                                             w="full"
                                                             h="200px"
+                                                            loading="lazy"
                                                         />
                                                     )}
                                                     <Button
@@ -293,6 +294,7 @@ function Vote() {
                                                             objectFit="cover"
                                                             w="full"
                                                             h="200px"
+                                                            loading="lazy"
                                                         />
                                                     )}
                                                     <Button

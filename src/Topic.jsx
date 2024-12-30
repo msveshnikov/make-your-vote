@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
     Container,
     Heading,
@@ -19,11 +19,12 @@ import {
     StatArrow,
     Box,
     useMediaQuery,
-    useToast
+    useToast,
+    IconButton
 } from '@chakra-ui/react';
 import { API_URL } from './App';
 import ReactGA from 'react-ga4';
-import { FaShare } from 'react-icons/fa';
+import { FaShare, FaArrowLeft } from 'react-icons/fa';
 
 const Topic = () => {
     const { id } = useParams();
@@ -62,6 +63,8 @@ const Topic = () => {
         };
 
         fetchTopic();
+        const voted = localStorage.getItem('votedTopics');
+        if (voted) setVotedTopics(new Set(JSON.parse(voted)));
     }, [id]);
 
     const handleShare = async (topic) => {
@@ -73,8 +76,16 @@ const Topic = () => {
                     text: `${topic.optionA} vs ${topic.optionB}`,
                     url: shareUrl
                 });
+            } else {
+                await navigator.clipboard.writeText(shareUrl);
+                toast({
+                    title: 'Link copied to clipboard',
+                    status: 'success',
+                    duration: 2000
+                });
             }
-        } catch {
+        } catch (err) {
+            console.error('Error sharing topic:', err);
             toast({
                 title: 'Error sharing topic',
                 status: 'error',
@@ -101,25 +112,33 @@ const Topic = () => {
             });
             if (!response.ok) throw new Error('Vote failed');
 
-            setVotedTopics((prev) => new Set([...prev, topicId]));
+            const updatedVotes = new Set([...votedTopics, topicId]);
+            setVotedTopics(updatedVotes);
+            localStorage.setItem('votedTopics', JSON.stringify([...updatedVotes]));
 
-            // const updatedTopics = topics.map((topic) => {
-            //     if (topic._id === topicId) {
-            //         return {
-            //             ...topic,
-            //             votePercentages: calculateVotePercentages(topic)
-            //         };
-            //     }
-            //     return topic;
-            // });
-            // setTopics(updatedTopics);
+            const updatedTopic = { ...topic };
+            if (option === -1) {
+                updatedTopic.optionAVotes++;
+            } else {
+                updatedTopic.optionBVotes++;
+            }
+            updatedTopic.totalVotes++;
+            updatedTopic.votePercentages = calculateVotePercentages(updatedTopic);
+            setTopic(updatedTopic);
+
+            ReactGA.event({
+                category: 'Vote',
+                action: 'Cast',
+                label: topic.title
+            });
 
             toast({
                 title: 'Vote recorded',
                 status: 'success',
                 duration: 2000
             });
-        } catch {
+        } catch (err) {
+            console.error('Error recording vote:', err);
             toast({
                 title: 'Error recording vote',
                 status: 'error',
@@ -134,8 +153,16 @@ const Topic = () => {
 
     return (
         <Container maxW="container.xl" py={8}>
+            <Flex mb={4}>
+                <IconButton
+                    as={Link}
+                    to="/app"
+                    icon={<FaArrowLeft />}
+                    aria-label="Back to home"
+                    variant="ghost"
+                />
+            </Flex>
             <Box
-                key={topic._id}
                 w="full"
                 p={6}
                 borderRadius="xl"
@@ -171,6 +198,7 @@ const Topic = () => {
                                     objectFit="cover"
                                     w="full"
                                     h="200px"
+                                    loading="lazy"
                                 />
                             )}
                             <Button
@@ -209,6 +237,7 @@ const Topic = () => {
                                     objectFit="cover"
                                     w="full"
                                     h="200px"
+                                    loading="lazy"
                                 />
                             )}
                             <Button
