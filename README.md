@@ -119,17 +119,6 @@ Infrastructure:
     - Predictive modeling
     - Custom dashboards
 
-## Market & Business
-
-- TAM: $308B
-- SAM: $158B
-- Revenue Models:
-    - Enterprise API access
-    - Premium analytics
-    - Custom research
-    - Private channels
-    - Data services
-    - White-label solutions
-    - Consulting services
-
 # TODO
+
+- merge topics with the same title on startup (keep and attach votes to first one)
