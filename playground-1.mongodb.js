@@ -1,16 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* global use, db */
+
 use('vote');
 db.users.updateOne({ email: 'msveshnikov@gmail.com' }, { $set: { isAdmin: true } });
 
 db.topics.deleteMany({ optionAImage: { $exists: false } });
 
 db.votes.dropIndex('topic_1_user_1');
-
-// Create collections
-db.createCollection('users');
-db.createCollection('topics');
-db.createCollection('votes');
 
 // Create indexes
 db.users.createIndex({ email: 1 }, { unique: true });
@@ -43,17 +39,6 @@ db.topics.insertMany([
             claude: { sentiment: 0.8, keywords: ['urgent', 'action', 'policy'] },
             gemini: { relevance: 0.9, categories: ['environmental', 'political'] }
         }
-    }
-]);
-
-// Sample vote data
-db.votes.insertMany([
-    {
-        topicId: db.topics.findOne({ slug: 'climate-change-action' })._id,
-        userId: db.users.findOne({ email: 'test@example.com' })._id,
-        value: 1,
-        comment: 'Strong support for immediate action',
-        createdAt: new Date()
     }
 ]);
 
