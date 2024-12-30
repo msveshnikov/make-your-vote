@@ -133,5 +133,3 @@ Infrastructure:
     - Consulting services
 
 # TODO
-
-- return in app.get('/api/topic/:id' topic.totalVotes,topic.optionAVotes,topic.optionBVotes

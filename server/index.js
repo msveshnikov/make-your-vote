@@ -58,11 +58,9 @@ const generateSitemap = async () => {
     let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     sitemap += `  <url><loc>${baseUrl}</loc></url>\n`;
-
     topics.forEach((topic) => {
         sitemap += `  <url><loc>${baseUrl}/topic/${topic._id}</loc></url>\n`;
     });
-
     sitemap += '</urlset>';
     fs.writeFileSync(join(__dirname, '../dist/sitemap.xml'), sitemap);
 };
@@ -109,7 +107,16 @@ app.get('/api/topic/:id', async (req, res) => {
         if (!topic) {
             return res.status(404).json({ error: 'Topic not found' });
         }
-        res.json(topic);
+        const votes = await Vote.find({ topic: topic._id });
+        const totalVotes = votes.length;
+        const optionAVotes = votes.filter((v) => v.value === -1).length;
+        const optionBVotes = votes.filter((v) => v.value === 1).length;
+        res.json({
+            ...topic.toObject(),
+            totalVotes,
+            optionAVotes,
+            optionBVotes
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server error' });

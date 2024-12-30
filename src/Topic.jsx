@@ -34,13 +34,20 @@ const Topic = () => {
     const [votedTopics, setVotedTopics] = useState(new Set());
     const toast = useToast();
 
+    const calculateVotePercentages = (topic) => {
+        return {
+            optionA: topic.totalVotes ? (topic.optionAVotes / topic.totalVotes) * 100 : 50,
+            optionB: topic.totalVotes ? (topic.optionBVotes / topic.totalVotes) * 100 : 50
+        };
+    };
+
     useEffect(() => {
         const fetchTopic = async () => {
             try {
                 const response = await fetch(`${API_URL}/api/topic/${id}`);
                 if (!response.ok) throw new Error('Topic not found');
                 const data = await response.json();
-                setTopic(data);
+                setTopic({ ...data, votePercentages: calculateVotePercentages(data) });
                 ReactGA.event({
                     category: 'Topic',
                     action: 'View',
