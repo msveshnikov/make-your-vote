@@ -55,15 +55,31 @@ const cleanGeneratedCode = (code) => {
     return match ? match[1] : code;
 };
 
+const mergeDuplicateTopics = async () => {
+    const topics = await Topic.find().lean();
+    const titleMap = new Map();
+
+    for (const topic of topics) {
+        const normalizedTitle = topic.title.toLowerCase().trim();
+        if (titleMap.has(normalizedTitle)) {
+            const originalTopic = titleMap.get(normalizedTitle);
+            await Vote.updateMany({ topic: topic._id }, { $set: { topic: originalTopic._id } });
+            await Topic.deleteOne({ _id: topic._id });
+        } else {
+            titleMap.set(normalizedTitle, topic);
+        }
+    }
+};
+
 const generateSitemap = async () => {
     const topics = await Topic.find({}, '_id').lean();
     const baseUrl = 'https://makeyour.vote';
     let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     sitemap += `  <url><loc>${baseUrl}</loc></url>\n`;
-    sitemap += `  <url><loc>${baseUrl}/app}</loc></url>\n`;
-    sitemap += `  <url><loc>${baseUrl}/terms}</loc></url>\n`;
-    sitemap += `  <url><loc>${baseUrl}/privacy}</loc></url>\n`;
+    sitemap += `  <url><loc>${baseUrl}/app</loc></url>\n`;
+    sitemap += `  <url><loc>${baseUrl}/terms</loc></url>\n`;
+    sitemap += `  <url><loc>${baseUrl}/privacy</loc></url>\n`;
     topics.forEach((topic) => {
         sitemap += `  <url><loc>${baseUrl}/topic/${topic._id}</loc></url>\n`;
     });
@@ -404,6 +420,7 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
+    await mergeDuplicateTopics();
     await generateSitemap();
     if (process.env.NODE_ENV === 'production2') {
         await generateTopicPairs();

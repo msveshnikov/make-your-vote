@@ -121,5 +121,5 @@ Infrastructure:
 
 # TODO
 
-- merge topics with the same title on startup (keep and attach votes to first one)
+- if user is set, add admin delete buttons to topic and regenerate optionAImage and optionBImage
 
