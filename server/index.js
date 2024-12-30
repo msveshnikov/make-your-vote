@@ -361,7 +361,7 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production2') {
         await generateTopicPairs();
     }
 });
