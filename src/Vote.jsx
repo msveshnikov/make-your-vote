@@ -31,7 +31,8 @@ import {
     StatNumber,
     StatHelpText,
     StatArrow,
-    IconButton
+    IconButton,
+    SimpleGrid
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import {
@@ -175,9 +176,15 @@ function Vote() {
 
             const updatedTopics = topics.map((topic) => {
                 if (topic._id === topicId) {
-                    return {
+                    const updatedTopic = {
                         ...topic,
-                        votePercentages: calculateVotePercentages(topic)
+                        totalVotes: topic.totalVotes + 1,
+                        optionAVotes: topic.optionAVotes + (option === -1 ? 1 : 0),
+                        optionBVotes: topic.optionBVotes + (option === 1 ? 1 : 0)
+                    };
+                    return {
+                        ...updatedTopic,
+                        votePercentages: calculateVotePercentages(updatedTopic)
                     };
                 }
                 return topic;
@@ -286,11 +293,9 @@ function Vote() {
                                     </Button>
                                 </>
                             ) : (
-                                <>
-                                    <Button as={Link} to="/signup">
-                                        Sign Up
-                                    </Button>
-                                </>
+                                <Button as={Link} to="/signup">
+                                    Sign Up
+                                </Button>
                             )}
                             <Button
                                 leftIcon={<FaPlus />}
@@ -339,30 +344,6 @@ function Vote() {
                                                                 }
                                                                 aria-label="Delete topic"
                                                             />
-                                                            <IconButton
-                                                                icon={<FaSync />}
-                                                                colorScheme="green"
-                                                                variant="ghost"
-                                                                onClick={() =>
-                                                                    handleRegenerateImage(
-                                                                        topic._id,
-                                                                        -1
-                                                                    )
-                                                                }
-                                                                aria-label="Regenerate option A image"
-                                                            />
-                                                            <IconButton
-                                                                icon={<FaSync />}
-                                                                colorScheme="green"
-                                                                variant="ghost"
-                                                                onClick={() =>
-                                                                    handleRegenerateImage(
-                                                                        topic._id,
-                                                                        1
-                                                                    )
-                                                                }
-                                                                aria-label="Regenerate option B image"
-                                                            />
                                                         </>
                                                     )}
                                                     <Tooltip label="Share">
@@ -376,22 +357,36 @@ function Vote() {
                                                     </Tooltip>
                                                 </HStack>
                                             </Flex>
-                                            <Flex
-                                                gap={4}
-                                                flexDir={isMobile ? 'column' : 'row'}
-                                                align="center"
-                                            >
-                                                <VStack flex="1">
+                                            <SimpleGrid columns={isMobile ? 1 : 2} spacing={4}>
+                                                <VStack>
                                                     {topic.optionAImage && (
-                                                        <Image
-                                                            src={topic.optionAImage}
-                                                            alt={topic.optionA}
-                                                            borderRadius="md"
-                                                            objectFit="cover"
-                                                            w="full"
-                                                            h="200px"
-                                                            loading="lazy"
-                                                        />
+                                                        <>
+                                                            <Image
+                                                                src={topic.optionAImage}
+                                                                alt={topic.optionA}
+                                                                borderRadius="md"
+                                                                objectFit="cover"
+                                                                w="full"
+                                                                h="200px"
+                                                                loading="lazy"
+                                                            />
+                                                            {user && user.isAdmin && (
+                                                                <Button
+                                                                    leftIcon={<FaSync />}
+                                                                    onClick={() =>
+                                                                        handleRegenerateImage(
+                                                                            topic._id,
+                                                                            -1
+                                                                        )
+                                                                    }
+                                                                    size="sm"
+                                                                    colorScheme="green"
+                                                                    variant="ghost"
+                                                                >
+                                                                    Regenerate
+                                                                </Button>
+                                                            )}
+                                                        </>
                                                     )}
                                                     <Button
                                                         w="full"
@@ -423,18 +418,35 @@ function Vote() {
                                                         </Stat>
                                                     )}
                                                 </VStack>
-                                                <Text fontWeight="bold">vs</Text>
-                                                <VStack flex="1">
+                                                <VStack>
                                                     {topic.optionBImage && (
-                                                        <Image
-                                                            src={topic.optionBImage}
-                                                            alt={topic.optionB}
-                                                            borderRadius="md"
-                                                            objectFit="cover"
-                                                            w="full"
-                                                            h="200px"
-                                                            loading="lazy"
-                                                        />
+                                                        <>
+                                                            <Image
+                                                                src={topic.optionBImage}
+                                                                alt={topic.optionB}
+                                                                borderRadius="md"
+                                                                objectFit="cover"
+                                                                w="full"
+                                                                h="200px"
+                                                                loading="lazy"
+                                                            />
+                                                            {user && user.isAdmin && (
+                                                                <Button
+                                                                    leftIcon={<FaSync />}
+                                                                    onClick={() =>
+                                                                        handleRegenerateImage(
+                                                                            topic._id,
+                                                                            1
+                                                                        )
+                                                                    }
+                                                                    size="sm"
+                                                                    colorScheme="green"
+                                                                    variant="ghost"
+                                                                >
+                                                                    Regenerate
+                                                                </Button>
+                                                            )}
+                                                        </>
                                                     )}
                                                     <Button
                                                         w="full"
@@ -465,7 +477,7 @@ function Vote() {
                                                         </Stat>
                                                     )}
                                                 </VStack>
-                                            </Flex>
+                                            </SimpleGrid>
                                             <Flex justifyContent="space-between">
                                                 <Badge colorScheme="purple" fontSize="sm">
                                                     {topic.category}

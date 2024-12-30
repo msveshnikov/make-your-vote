@@ -35,9 +35,11 @@ official & visible for all.
 ## Design Considerations
 
 1. Modern Interface:
+
     - Glass morphism effects
     - Micro-interactions and animations
     - Responsive grid system
+
 2. AI-Enhanced Features:
 
     - Real-time topic suggestion
@@ -95,28 +97,41 @@ Infrastructure:
 ## Development Roadmap
 
 1. Core Platform Enhancement
+
     - Advanced authentication flows
     - Real-time collaborative features
     - Social integration
+
 2. AI & Machine Learning
+
     - Predictive analytics
     - User behavior modeling
     - Automated content curation
+
 3. Mobile Experience
+
     - Native app development
     - Cross-platform optimization
     - Offline-first architecture
+
 4. Enterprise Solutions
+
     - Custom deployments
     - White-label options
     - Advanced API features
+
 5. Community Features
+
     - User profiles
     - Discussion forums
     - Reward system
+
 6. Data & Analytics
+
     - Machine learning insights
     - Predictive modeling
     - Custom dashboards
 
 # TODO
+
+- put regenrate buttons below corresponding images
