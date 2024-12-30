@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* global use, db */
 use('vote');
+db.topics.find({ _id: ObjectId('6771200d589959af652e758d') });
 db.topics.deleteMany({ optionAImage: { $exists: false } });
 
 db.votes.dropIndex('topic_1_user_1');

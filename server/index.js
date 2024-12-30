@@ -58,6 +58,9 @@ const generateSitemap = async () => {
     let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
     sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     sitemap += `  <url><loc>${baseUrl}</loc></url>\n`;
+    sitemap += `  <url><loc>${baseUrl}/app}</loc></url>\n`;
+    sitemap += `  <url><loc>${baseUrl}/terms}</loc></url>\n`;
+    sitemap += `  <url><loc>${baseUrl}/privacy}</loc></url>\n`;
     topics.forEach((topic) => {
         sitemap += `  <url><loc>${baseUrl}/topic/${topic._id}</loc></url>\n`;
     });
@@ -82,7 +85,6 @@ const generateTopicPairs = async () => {
         }
 
         await Topic.insertMany(geminiPairs);
-        await generateSitemap();
     } catch (error) {
         console.error(error);
         console.error('Failed to generate topic pairs:', error);
@@ -283,6 +285,37 @@ app.get('/api/topics', async (req, res) => {
             ]),
             Topic.aggregate([
                 { $match: query },
+                {
+                    $lookup: {
+                        from: 'votes',
+                        localField: '_id',
+                        foreignField: 'topic',
+                        as: 'votes'
+                    }
+                },
+                {
+                    $addFields: {
+                        totalVotes: { $size: '$votes' },
+                        optionAVotes: {
+                            $size: {
+                                $filter: {
+                                    input: '$votes',
+                                    as: 'vote',
+                                    cond: { $eq: ['$$vote.value', -1] }
+                                }
+                            }
+                        },
+                        optionBVotes: {
+                            $size: {
+                                $filter: {
+                                    input: '$votes',
+                                    as: 'vote',
+                                    cond: { $eq: ['$$vote.value', 1] }
+                                }
+                            }
+                        }
+                    }
+                },
                 { $sort: { createdAt: -1 } },
                 { $skip: skip },
                 { $limit: limit / 2 }
@@ -368,6 +401,7 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
+    await generateSitemap();
     if (process.env.NODE_ENV === 'production2') {
         await generateTopicPairs();
     }
