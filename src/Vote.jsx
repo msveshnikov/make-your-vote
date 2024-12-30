@@ -30,10 +30,19 @@ import {
     Stat,
     StatNumber,
     StatHelpText,
-    StatArrow
+    StatArrow,
+    IconButton
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { FaVoteYea, FaPlus, FaShare, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import {
+    FaVoteYea,
+    FaPlus,
+    FaShare,
+    FaChevronLeft,
+    FaChevronRight,
+    FaTrash,
+    FaSync
+} from 'react-icons/fa';
 import { API_URL } from './App';
 import axios from 'axios';
 
@@ -79,6 +88,53 @@ function Vote() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUser(response.data);
+        }
+    };
+
+    const handleDeleteTopic = async (topicId) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`${API_URL}/api/topics/${topicId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchTopics();
+            toast({
+                title: 'Topic deleted successfully',
+                status: 'success',
+                duration: 2000
+            });
+        } catch (error) {
+            console.error('Error deleting topic:', error);
+            toast({
+                title: 'Error deleting topic',
+                status: 'error',
+                duration: 3000
+            });
+        }
+    };
+
+    const handleRegenerateImage = async (topicId, index) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(
+                `${API_URL}/api/topic/${topicId}/image/${index}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+            fetchTopics();
+            toast({
+                title: 'Image regenerated successfully',
+                status: 'success',
+                duration: 2000
+            });
+        } catch {
+            toast({
+                title: 'Error regenerating image',
+                status: 'error',
+                duration: 3000
+            });
         }
     };
 
@@ -272,15 +328,51 @@ function Vote() {
                                             >
                                                 <Heading size="md">{topic.title}</Heading>
                                                 <HStack>
+                                                    {user && user.isAdmin && (
+                                                        <>
+                                                            <IconButton
+                                                                icon={<FaTrash />}
+                                                                colorScheme="red"
+                                                                variant="ghost"
+                                                                onClick={() =>
+                                                                    handleDeleteTopic(topic._id)
+                                                                }
+                                                                aria-label="Delete topic"
+                                                            />
+                                                            <IconButton
+                                                                icon={<FaSync />}
+                                                                colorScheme="green"
+                                                                variant="ghost"
+                                                                onClick={() =>
+                                                                    handleRegenerateImage(
+                                                                        topic._id,
+                                                                        -1
+                                                                    )
+                                                                }
+                                                                aria-label="Regenerate option A image"
+                                                            />
+                                                            <IconButton
+                                                                icon={<FaSync />}
+                                                                colorScheme="green"
+                                                                variant="ghost"
+                                                                onClick={() =>
+                                                                    handleRegenerateImage(
+                                                                        topic._id,
+                                                                        1
+                                                                    )
+                                                                }
+                                                                aria-label="Regenerate option B image"
+                                                            />
+                                                        </>
+                                                    )}
                                                     <Tooltip label="Share">
-                                                        <Button
-                                                            size="sm"
+                                                        <IconButton
+                                                            icon={<FaShare />}
                                                             variant="ghost"
                                                             colorScheme="blue"
                                                             onClick={() => handleShare(topic)}
-                                                        >
-                                                            <Icon as={FaShare} />
-                                                        </Button>
+                                                            aria-label="Share topic"
+                                                        />
                                                     </Tooltip>
                                                 </HStack>
                                             </Flex>

@@ -120,6 +120,3 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
-
-- if user is set, add admin delete buttons to topic and regenerate optionAImage and optionBImage
-

@@ -18,6 +18,7 @@ import Vote from './models/Vote.js';
 import Topic from './models/Topic.js';
 import { load } from 'cheerio';
 import userRoutes from './user.js';
+import adminRoutes from './admin.js';
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ app.use(limiter);
 mongoose.connect(process.env.MONGODB_URI, {});
 
 userRoutes(app);
+adminRoutes(app);
 
 const cleanGeneratedCode = (code) => {
     const codeBlockRegex = /```(?:json)?\n([\s\S]*?)\n```/;
@@ -420,11 +422,11 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
-    await mergeDuplicateTopics();
     await generateSitemap();
-    if (process.env.NODE_ENV === 'production2') {
+    if (process.env.NODE_ENV === 'production') {
         await generateTopicPairs();
     }
+    await mergeDuplicateTopics();
 });
 
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = './google.json';

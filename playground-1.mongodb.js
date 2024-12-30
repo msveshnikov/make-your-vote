@@ -3,7 +3,6 @@
 use('vote');
 db.users.updateOne({ email: 'msveshnikov@gmail.com' }, { $set: { isAdmin: true } });
 
-
 db.topics.deleteMany({ optionAImage: { $exists: false } });
 
 db.votes.dropIndex('topic_1_user_1');
