@@ -95,7 +95,7 @@
                 background-position: center;
                 color: #fff;
                 text-align: center;
-                padding: 18rem 0;
+                padding: 15rem 0;
                 position: relative;
             }
             .hero h1 {
@@ -276,18 +276,6 @@
         </style>
     </head>
     <body>
-        <header>
-            <nav>
-                <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#roadmap">Roadmap</a></li>
-                    <li><a href="#market">Market</a></li>
-                    <li><a href="/app">Launch App</a></li>
-                </ul>
-            </nav>
-        </header>
-
         <main>
             <section id="home" class="hero">
                 <div class="container">
@@ -415,42 +403,5 @@
                 <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
             </div>
         </footer>
-
-        <nav class="mobile-nav">
-            <a href="#home">Home</a>
-            <a href="#features">Features</a>
-            <a href="#roadmap">Roadmap</a>
-            <a href="#market">Market</a>
-            <a href="/app">Launch</a>
-        </nav>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const header = document.querySelector('header');
-                const heroSection = document.querySelector('.hero');
-
-                const observer = new IntersectionObserver(
-                    (entries) => {
-                        entries.forEach((entry) => {
-                            header.style.background = entry.isIntersecting
-                                ? 'rgba(44, 62, 80, 0.8)'
-                                : 'rgba(44, 62, 80, 0.95)';
-                        });
-                    },
-                    { threshold: 0.1 }
-                );
-
-                observer.observe(heroSection);
-
-                document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-                    anchor.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        document
-                            .querySelector(anchor.getAttribute('href'))
-                            .scrollIntoView({ behavior: 'smooth' });
-                    });
-                });
-            });
-        </script>
     </body>
 </html>
