@@ -356,7 +356,7 @@ function Vote() {
                                                     </Tooltip>
                                                 </HStack>
                                             </Flex>
-                                            <SimpleGrid columns={isMobile ? 1 : 2} spacing={4}>
+                                            <SimpleGrid columns={2} spacing={4}>
                                                 <VStack>
                                                     {topic.optionAImage && (
                                                         <>
