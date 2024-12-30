@@ -451,6 +451,7 @@ function Vote() {
                                                         w="full"
                                                         onClick={() => handleVote(topic._id, 1)}
                                                         colorScheme="blue"
+                                                        variant="outline"
                                                         isDisabled={votedTopics.has(topic._id)}
                                                     >
                                                         {topic.optionB}

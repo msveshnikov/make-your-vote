@@ -18,7 +18,7 @@ const adminRoutes = (app) => {
 
     app.get('/api/votes', authenticateToken, isAdmin, async (req, res) => {
         try {
-            const votes = await Vote.find().limit(20).populate('topic');
+            const votes = await Vote.find().sort({ createdAt: -1 }).limit(50).populate('topic');
             res.json(votes);
         } catch (error) {
             console.error(error);
