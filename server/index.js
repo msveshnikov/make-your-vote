@@ -42,7 +42,7 @@ const limiter = rateLimit({
     legacyHeaders: false
 });
 
-app.use('/api/', limiter);
+app.use(limiter);
 
 mongoose.connect(process.env.MONGODB_URI, {});
 

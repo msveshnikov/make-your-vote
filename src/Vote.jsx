@@ -151,12 +151,15 @@ function Vote() {
     };
 
     const handleShare = async (topic) => {
+        const shareUrl = `${window.location.origin}/topic/${topic._id}`;
         try {
-            await navigator.share({
-                title: `Vote on ${topic.title}`,
-                text: `${topic.optionA} vs ${topic.optionB}`,
-                url: window.location.href
-            });
+            if (navigator.share) {
+                await navigator.share({
+                    title: `Vote on ${topic.title}`,
+                    text: `${topic.optionA} vs ${topic.optionB}`,
+                    url: shareUrl
+                });
+            }
         } catch {
             toast({
                 title: 'Error sharing topic',
