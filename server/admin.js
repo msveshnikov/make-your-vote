@@ -18,7 +18,7 @@ const adminRoutes = (app) => {
 
     app.get('/api/votes', authenticateToken, isAdmin, async (req, res) => {
         try {
-            const votes = await Vote.find().limit(20);
+            const votes = await Vote.find().limit(20).populate('topic');
             res.json(votes);
         } catch (error) {
             console.error(error);
@@ -89,7 +89,6 @@ const adminRoutes = (app) => {
                 },
                 topVotedTopics,
                 recentVotes
-                // trendAnalysis
             });
         } catch (error) {
             console.error(error);
@@ -105,6 +104,7 @@ const adminRoutes = (app) => {
                 { role },
                 { new: true }
             ).select('-password');
+            if (!user) return res.status(404).json({ error: 'User not found' });
             res.json(user);
         } catch (error) {
             console.error(error);
@@ -114,6 +114,9 @@ const adminRoutes = (app) => {
 
     app.delete('/api/users/:id', authenticateToken, isAdmin, async (req, res) => {
         try {
+            const user = await User.findById(req.params.id);
+            if (!user) return res.status(404).json({ error: 'User not found' });
+
             await Vote.deleteMany({ userId: req.params.id });
             await User.findByIdAndDelete(req.params.id);
             res.json({ message: 'User and related data deleted successfully' });

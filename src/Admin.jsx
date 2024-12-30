@@ -310,7 +310,7 @@ const Admin = () => {
                             <Tbody>
                                 {votes?.map((vote) => (
                                     <Tr key={vote._id}>
-                                        <Td>{vote.title}</Td>
+                                        <Td>{vote?.topic?.title}</Td>
                                         <Td>{JSON.stringify(vote.metadata)}</Td>
                                         <Td>{vote.value}</Td>
                                         <Td>{new Date(vote.createdAt).toLocaleString()}</Td>
