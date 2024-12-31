@@ -18,7 +18,6 @@ import {
     StatHelpText,
     StatArrow,
     Box,
-    useMediaQuery,
     useToast,
     IconButton
 } from '@chakra-ui/react';
@@ -31,7 +30,6 @@ const Topic = () => {
     const [topic, setTopic] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isMobile] = useMediaQuery('(max-width: 768px)');
     const [votedTopics, setVotedTopics] = useState(new Set());
     const toast = useToast();
 
@@ -188,7 +186,7 @@ const Topic = () => {
                             </Tooltip>
                         </HStack>
                     </Flex>
-                    <Flex gap={4} flexDir={isMobile ? 'column' : 'row'} align="center">
+                    <Flex gap={4} flexDir={ 'row'} align="center">
                         <VStack flex="1">
                             {topic.optionAImage && (
                                 <Image

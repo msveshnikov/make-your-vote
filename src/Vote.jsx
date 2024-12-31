@@ -381,9 +381,7 @@ function Vote() {
                                                                     size="sm"
                                                                     colorScheme="green"
                                                                     variant="ghost"
-                                                                >
-                                                                    Regenerate
-                                                                </Button>
+                                                                ></Button>
                                                             )}
                                                         </>
                                                     )}
@@ -441,9 +439,7 @@ function Vote() {
                                                                     size="sm"
                                                                     colorScheme="green"
                                                                     variant="ghost"
-                                                                >
-                                                                    Regenerate
-                                                                </Button>
+                                                                ></Button>
                                                             )}
                                                         </>
                                                     )}
