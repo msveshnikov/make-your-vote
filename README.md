@@ -134,4 +134,4 @@ Infrastructure:
 
 # TODO
 
--   add basic html to enrichMetadata
+-   after topic create, navigate to topic page

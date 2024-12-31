@@ -33,7 +33,7 @@ import {
     IconButton,
     SimpleGrid
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
     FaVoteYea,
     FaPlus,
@@ -57,6 +57,7 @@ function Vote() {
     const [user, setUser] = useState(null);
     const toast = useToast();
     const [isMobile] = useMediaQuery('(max-width: 768px)');
+    const navigate = useNavigate();
 
     const fetchTopics = useCallback(async () => {
         try {
@@ -112,6 +113,7 @@ function Vote() {
             });
         }
     };
+
     const handleRegenerateImage = async (topicId, index) => {
         try {
             const token = localStorage.getItem('token');
@@ -134,7 +136,6 @@ function Vote() {
                     return topic;
                 })
             );
-
             toast({
                 title: 'Image regenerated successfully',
                 status: 'success',
@@ -223,8 +224,9 @@ function Vote() {
                 body: JSON.stringify(newTopic)
             });
             if (!response.ok) throw new Error('Failed to create topic');
+            const data = await response.json();
             onClose();
-            fetchTopics();
+            navigate(`/topic/${data._id}`);
             setNewTopic({ title: '', optionA: '', optionB: '', category: '' });
             toast({
                 title: 'Topic created successfully',
@@ -343,20 +345,20 @@ function Vote() {
                                                 justifyContent="space-between"
                                                 alignItems="center"
                                             >
-                                                <Heading size="md">{topic.title}</Heading>
+                                                <Link to={`/topic/${topic._id}`}>
+                                                    <Heading size="md">{topic.title}</Heading>
+                                                </Link>
                                                 <HStack>
                                                     {user && user.isAdmin && (
-                                                        <>
-                                                            <IconButton
-                                                                icon={<FaTrash />}
-                                                                colorScheme="red"
-                                                                variant="ghost"
-                                                                onClick={() =>
-                                                                    handleDeleteTopic(topic._id)
-                                                                }
-                                                                aria-label="Delete topic"
-                                                            />
-                                                        </>
+                                                        <IconButton
+                                                            icon={<FaTrash />}
+                                                            colorScheme="red"
+                                                            variant="ghost"
+                                                            onClick={() =>
+                                                                handleDeleteTopic(topic._id)
+                                                            }
+                                                            aria-label="Delete topic"
+                                                        />
                                                     )}
                                                     <Tooltip label="Share">
                                                         <IconButton
@@ -394,7 +396,7 @@ function Vote() {
                                                                     size="sm"
                                                                     colorScheme="green"
                                                                     variant="ghost"
-                                                                ></Button>
+                                                                />
                                                             )}
                                                         </>
                                                     )}
@@ -452,7 +454,7 @@ function Vote() {
                                                                     size="sm"
                                                                     colorScheme="green"
                                                                     variant="ghost"
-                                                                ></Button>
+                                                                />
                                                             )}
                                                         </>
                                                     )}
