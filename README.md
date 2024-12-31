@@ -133,3 +133,6 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
+
+- google login
+- dont return votes in get /topics

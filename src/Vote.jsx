@@ -112,18 +112,29 @@ function Vote() {
             });
         }
     };
-
     const handleRegenerateImage = async (topicId, index) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(
+            const response = await axios.put(
                 `${API_URL}/api/topic/${topicId}/image/${index}`,
                 {},
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            fetchTopics();
+            setTopics(
+                topics.map((topic) => {
+                    if (topic._id === topicId) {
+                        return {
+                            ...topic,
+                            ...response.data,
+                            votePercentages: calculateVotePercentages(response.data)
+                        };
+                    }
+                    return topic;
+                })
+            );
+
             toast({
                 title: 'Image regenerated successfully',
                 status: 'success',
