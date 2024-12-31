@@ -71,7 +71,8 @@ const userRoutes = (app) => {
 
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
             res.status(201).json({ message: 'User registered successfully', token });
-        } catch {
+        } catch (e) {
+            console.error(e);
             res.status(500).json({ error: 'Registration failed' });
         }
     });
@@ -258,7 +259,8 @@ const userRoutes = (app) => {
 
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
             res.json({ token });
-        } catch {
+        } catch (e) {
+            console.error(e);
             res.status(500).json({ error: 'Login failed' });
         }
     });
