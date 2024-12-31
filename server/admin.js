@@ -3,7 +3,6 @@ import Topic from './models/Topic.js';
 import User from './models/User.js';
 import Vote from './models/Vote.js';
 import { getUnsplashImages } from './unsplash.js';
-// import { analyzeTopicTrends } from './gemini.js';
 
 const adminRoutes = (app) => {
     app.get('/api/users', authenticateToken, isAdmin, async (req, res) => {
@@ -73,13 +72,24 @@ const adminRoutes = (app) => {
             const topVotedTopics = await Topic.find()
                 .sort({ totalVotes: -1 })
                 .limit(5)
-                .select('title totalVotes optionA optionB');
+                .select('title totalVotes optionA optionB optionAVotes optionBVotes');
 
-            const recentVotes = await Vote.find().sort({ createdAt: -1 }).limit(10);
-            // .populate('topicId', 'title')
-            // .populate('userId', 'username');
+            const recentVotes = await Vote.find()
+                .sort({ createdAt: -1 })
+                .limit(10)
+                .populate('topic');
 
-            // const trendAnalysis = await analyzeTopicTrends(topVotedTopics);
+            const demographics = await Vote.aggregate([
+                {
+                    $group: {
+                        _id: '$metadata.countryCode',
+                        count: { $sum: 1 },
+                        countryCode: {
+                            $push: '$metadata.countryCode'
+                        }
+                    }
+                }
+            ]);
 
             res.json({
                 stats: {
@@ -88,7 +98,8 @@ const adminRoutes = (app) => {
                     totalVotes
                 },
                 topVotedTopics,
-                recentVotes
+                recentVotes,
+                demographics
             });
         } catch (error) {
             console.error(error);

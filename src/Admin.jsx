@@ -33,7 +33,11 @@ import {
     StatGroup,
     SimpleGrid,
     Progress,
-    Link
+    Link,
+    Box,
+    Heading,
+    Flex,
+    Divider
 } from '@chakra-ui/react';
 import { DeleteIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { API_URL } from './App';
@@ -68,7 +72,7 @@ const Admin = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await response.json();
-            setStats(data.stats);
+            setStats(data);
         } catch (error) {
             console.error('Error fetching stats:', error);
             toast({
@@ -151,6 +155,32 @@ const Admin = () => {
         }
     };
 
+    const renderDemographicsInsights = () => (
+        <Box mt={8}>
+            <Heading size="md" mb={4}>
+                Demographics Insights
+            </Heading>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+                <Card>
+                    <CardBody>
+                        <Heading size="sm" mb={4}>
+                            Top countryCodes
+                        </Heading>
+                        {stats?.demographics?.map((a) => (
+                            <Box key={a._id} mb={2}>
+                                <Flex justify="space-between">
+                                    <Text>{a._id}</Text>
+                                    <Text>{a.count}</Text>
+                                </Flex>
+                                <Progress value={a.count} size="sm" colorScheme="green" />
+                            </Box>
+                        ))}
+                    </CardBody>
+                </Card>
+            </SimpleGrid>
+        </Box>
+    );
+
     return (
         <Container maxW="container.xl" py={8}>
             <StatGroup mb={8}>
@@ -159,7 +189,7 @@ const Admin = () => {
                         <CardBody>
                             <Stat>
                                 <StatLabel>Total Users</StatLabel>
-                                <StatNumber>{stats.totalUsers}</StatNumber>
+                                <StatNumber>{stats.stats.totalUsers}</StatNumber>
                             </Stat>
                         </CardBody>
                     </Card>
@@ -167,7 +197,7 @@ const Admin = () => {
                         <CardBody>
                             <Stat>
                                 <StatLabel>Total Topics</StatLabel>
-                                <StatNumber>{stats.totalTopics}</StatNumber>
+                                <StatNumber>{stats.stats.totalTopics}</StatNumber>
                             </Stat>
                         </CardBody>
                     </Card>
@@ -175,12 +205,16 @@ const Admin = () => {
                         <CardBody>
                             <Stat>
                                 <StatLabel>Total Votes</StatLabel>
-                                <StatNumber>{stats.totalVotes}</StatNumber>
+                                <StatNumber>{stats.stats.totalVotes}</StatNumber>
                             </Stat>
                         </CardBody>
                     </Card>
                 </SimpleGrid>
             </StatGroup>
+
+            {renderDemographicsInsights()}
+
+            <Divider my={8} />
 
             <Tabs>
                 <TabList>
