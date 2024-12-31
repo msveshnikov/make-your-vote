@@ -48,25 +48,25 @@ const userRoutes = (app) => {
                 });
                 await user.save();
 
-                // const welcomeEmail = {
-                //     to: email,
-                //     from: process.env.FROM_EMAIL,
-                //     subject: 'Welcome to MyTrip.city - Verify Your Email',
-                //     html: `
-                //         <h1>Welcome to MyTrip.city!</h1>
-                //         <p>Thank you for joining our community of travel enthusiasts.</p>
-                //         <p>Please verify your email by clicking this link: ${process.env.FRONTEND_URL}/api/verify/${user.verificationToken}</p>
-                //         <p>With MyTrip.city you can:</p>
-                //         <ul>
-                //             <li>Generate AI-powered travel itineraries</li>
-                //             <li>Get personalized recommendations</li>
-                //             <li>Access interactive maps and guides</li>
-                //             <li>Track your carbon footprint</li>
-                //         </ul>
-                //         <p>Start planning your next adventure now!</p>
-                //     `
-                // };
-                // await transporter.sendMail(welcomeEmail);
+                const welcomeEmail = {
+                    to: email,
+                    from: process.env.FROM_EMAIL,
+                    subject: 'Welcome to MakeYour.Vote - Verify Your Email',
+                    html: `
+                        <h1>Welcome to MakeYour.Vote!</h1>
+                        <p>Thank you for joining our community of travel enthusiasts.</p>
+                        <p>Please verify your email by clicking this link: ${process.env.FRONTEND_URL}/api/verify/${user.verificationToken}</p>
+                        <p>With MakeYour.Vote you can:</p>
+                        <ul>
+                            <li>Generate AI-powered travel itineraries</li>
+                            <li>Get personalized recommendations</li>
+                            <li>Access interactive maps and guides</li>
+                            <li>Track your carbon footprint</li>
+                        </ul>
+                        <p>Start planning your next adventure now!</p>
+                    `
+                };
+                await transporter.sendMail(welcomeEmail);
             }
 
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
