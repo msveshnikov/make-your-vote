@@ -133,3 +133,5 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
+
+-   add basic html to enrichMetadata

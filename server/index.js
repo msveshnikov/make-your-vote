@@ -304,6 +304,41 @@ export const enrichMetadata = async (html, slug) => {
         if (topic.optionAImage) {
             $('meta[property="og:image"]').attr('content', topic.optionAImage);
         }
+
+        const schema = {
+            '@context': 'https://schema.org',
+            '@type': 'VoteAction',
+            name: topic.title,
+            description: `Vote between ${topic.optionA} and ${topic.optionB}`,
+            object: {
+                '@type': 'Question',
+                name: topic.title,
+                suggestedAnswer: [
+                    {
+                        '@type': 'Answer',
+                        text: topic.optionA
+                    },
+                    {
+                        '@type': 'Answer',
+                        text: topic.optionB
+                    }
+                ]
+            }
+        };
+
+        $('head').append(`<script type="application/ld+json">${JSON.stringify(schema)}</script>`);
+
+        const voteContent = `
+            <div style="display:none">
+                <h1>${topic.title}</h1>
+                <p>Vote on this topic:</p>
+                <h2>Option A: ${topic.optionA}</h2>
+                <h2>Option B: ${topic.optionB}</h2>
+                ${topic.description ? `<p>${topic.description}</p>` : ''}
+            </div>
+        `;
+        $('body').append(voteContent);
+
         return $.html();
     } catch (error) {
         console.error(error);
