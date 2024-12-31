@@ -42,47 +42,8 @@ db.topics.insertMany([
 ]);
 
 // Analytics aggregation pipeline
-db.votes.aggregate([
-    {
-        $group: {
-            _id: '$topicId',
-            totalVotes: { $sum: 1 },
-            averageValue: { $avg: '$value' },
-            latestVote: { $max: '$createdAt' }
-        }
-    },
-    {
-        $lookup: {
-            from: 'topics',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'topic'
-        }
-    },
-    {
-        $unwind: '$topic'
-    }
-]);
-
+use('vote');
+db.votes.aggregate([ { $group: { _id: '$topicId', totalVotes: { $sum: 1 }, averageValue: { $avg: '$value' }, latestVote: { $max: '$createdAt' } } }, { $lookup: { from: 'topics', localField: '_id', foreignField: '_id', as: 'topic' } }, { $unwind: '$topic' } ]);
 // Trending topics query
-db.votes.aggregate([
-    {
-        $match: {
-            createdAt: {
-                $gte: new Date(Date.now() - 24 * 60 * 60 * 1000)
-            }
-        }
-    },
-    {
-        $group: {
-            _id: '$topicId',
-            voteCount: { $sum: 1 }
-        }
-    },
-    {
-        $sort: { voteCount: -1 }
-    },
-    {
-        $limit: 10
-    }
-]);
+use('vote');
+db.votes.aggregate([ { $match: { createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } } }, { $group: { _id: '$topicId', voteCount: { $sum: 1 } } }, { $sort: { voteCount: -1 } }, { $limit: 10 } ]);
