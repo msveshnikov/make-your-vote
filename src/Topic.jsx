@@ -186,7 +186,7 @@ const Topic = () => {
                             </Tooltip>
                         </HStack>
                     </Flex>
-                    <Flex gap={4} flexDir={ 'row'} align="center">
+                    <Flex gap={4} flexDir={'row'} align="center">
                         <VStack flex="1">
                             {topic.optionAImage && (
                                 <Image
@@ -201,14 +201,14 @@ const Topic = () => {
                             )}
                             <Button
                                 w="full"
-                                onClick={() => handleVote(topic._id, -1)}
+                                onClick={() => handleVote(id, -1)}
                                 colorScheme="blue"
                                 variant="outline"
                                 isDisabled={votedTopics.has(topic._id)}
                             >
                                 {topic.optionA}
                             </Button>
-                            {votedTopics.has(topic._id) && (
+                            {votedTopics.has(id) && (
                                 <Stat>
                                     <StatNumber>
                                         {topic.votePercentages.optionA.toFixed(1)}%
@@ -240,14 +240,14 @@ const Topic = () => {
                             )}
                             <Button
                                 w="full"
-                                onClick={() => handleVote(topic._id, 1)}
+                                onClick={() => handleVote(id, 1)}
                                 colorScheme="blue"
                                 variant="outline"
                                 isDisabled={votedTopics.has(topic._id)}
                             >
                                 {topic.optionB}
                             </Button>
-                            {votedTopics.has(topic._id) && (
+                            {votedTopics.has(id) && (
                                 <Stat>
                                     <StatNumber>
                                         {topic.votePercentages.optionB.toFixed(1)}%

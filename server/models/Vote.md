@@ -2,65 +2,53 @@
 
 ## Overview
 
-The `Vote.js` file defines the Mongoose schema and model for votes in the application. It represents
-user votes on topics with additional metadata and functionality for vote analysis. This model is a
-crucial part of the server-side data structure, working in conjunction with the User and Topic
-models.
+The `Vote.js` file defines the Mongoose schema and model for handling voting data in the
+application. This model is part of the server-side data structure, working alongside the User and
+Topic models to manage voting functionality.
 
-## Schema Structure
+## Schema Definition
 
 ### Core Fields
 
-- **user** (ObjectId, required)
-    - Reference to the User model
-    - Represents the user who cast the vote
-- **topic** (ObjectId, required)
-    - Reference to the Topic model
-    - Represents the topic being voted on
-- **value** (Number, required)
-    - Range: -1 to 1
-    - Represents the vote value
+| Field       | Type     | Description                                                    |
+| ----------- | -------- | -------------------------------------------------------------- |
+| user        | ObjectId | Reference to the User model (optional)                         |
+| topic       | ObjectId | Required reference to the Topic model                          |
+| value       | Number   | Required vote value between -1 and 1                           |
+| sentiment   | String   | Vote sentiment: 'positive', 'negative', or 'neutral' (default) |
+| context     | String   | Optional context for the vote (max 1000 characters)            |
+| isAnonymous | Boolean  | Indicates if the vote was cast anonymously (default: false)    |
 
-### Vote Characteristics
+### Metadata Fields
 
-- **sentiment** (String)
-    - Possible values: 'positive', 'negative', 'neutral'
-    - Default: 'neutral'
-- **context** (String)
-    - Optional contextual information
-    - Maximum length: 1000 characters
+The model includes detailed metadata capturing voting context:
 
-### Metadata
-
-- **metadata** (Object)
-    ```javascript
-    {
-      device: String,
-      location: {
-        type: String,
+```javascript
+metadata: {
+    device: String,
+    location: {
+        type: { type: String },
         coordinates: [Number]
-      },
-      userAgent: String
-    }
-    ```
+    },
+    userAgent: String,
+    browserLanguage: String,
+    countryCode: String,    // 2-character limit
+    countryName: String,    // 100-character limit
+    ip: String
+}
+```
 
-### Additional Properties
+### Timestamps
 
-- **isAnonymous** (Boolean)
-
-    - Default: false
-    - Indicates if the vote was cast anonymously
-
-- **timestamps**
-    - `createdAt`: Automatically set on creation
-    - `updatedAt`: Updated on each modification
+- `createdAt`: Automatically set when vote is created
+- `updatedAt`: Updated whenever the vote is modified
 
 ## Indexes
 
 ```javascript
-{ topic: 1, user: 1 }     // Unique compound index
-{ topic: 1, createdAt: -1 }  // For topic-based queries
-{ user: 1, createdAt: -1 }   // For user-based queries
+voteSchema.index({ topic: 1, createdAt: -1 });
+voteSchema.index({ user: 1, createdAt: -1 });
+voteSchema.index({ countryCode: 1 });
 ```
 
 ## Static Methods
@@ -71,66 +59,94 @@ Calculates voting statistics for a specific topic.
 
 #### Parameters
 
-- `topicId` (String|ObjectId): The ID of the topic
+- `topicId` (String|ObjectId): The ID of the topic to analyze
 
 #### Returns
 
 Promise that resolves to an object containing:
 
+- `totalVotes`: Total number of votes
+- `positiveVotes`: Count of positive votes (value > 0)
+- `negativeVotes`: Count of negative votes (value < 0)
+- `neutralVotes`: Count of neutral votes (value = 0)
+
+#### Example Usage
+
 ```javascript
-{
-  totalVotes: Number,
-  positiveVotes: Number,
-  negativeVotes: Number,
-  neutralVotes: Number
-}
+const stats = await Vote.getTopicStats('topicId123');
+console.log(stats);
+// Output:
+// [{
+//   _id: null,
+//   totalVotes: 100,
+//   positiveVotes: 60,
+//   negativeVotes: 30,
+//   neutralVotes: 10
+// }]
 ```
 
 ## Middleware
 
 ### Pre-save Hook
 
-Automatically updates the `updatedAt` timestamp before saving.
-
-## Usage Examples
-
-### Creating a New Vote
+Automatically updates the `updatedAt` timestamp before saving:
 
 ```javascript
-const newVote = await Vote.create({
+voteSchema.pre('save', function (next) {
+    this.updatedAt = Date.now();
+    next();
+});
+```
+
+## Schema Options
+
+```javascript
+{
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+}
+```
+
+- Enables automatic timestamp management
+- Includes virtual properties in JSON and Object conversions
+
+## Integration with Project
+
+This model is used in conjunction with:
+
+- `server/index.js` for handling vote-related API endpoints
+- `src/Vote.jsx` for frontend vote submission
+- `server/middleware/auth.js` for vote authentication
+- Works alongside `Topic.js` and `User.js` models for complete voting functionality
+
+## Usage Example
+
+```javascript
+import Vote from './models/Vote.js';
+
+// Creating a new vote
+const newVote = new Vote({
     user: userId,
     topic: topicId,
     value: 1,
     sentiment: 'positive',
-    context: 'Supporting comment',
+    context: 'Great initiative!',
     metadata: {
         device: 'mobile',
-        userAgent: 'Mozilla/5.0...'
+        countryCode: 'US'
     }
 });
+
+await newVote.save();
+
+// Getting topic statistics
+const topicStats = await Vote.getTopicStats(topicId);
 ```
 
-### Getting Topic Statistics
+## Security Considerations
 
-```javascript
-const stats = await Vote.getTopicStats(topicId);
-console.log(stats[0]); // First element contains the aggregated stats
-```
-
-## Integration
-
-This model is used in conjunction with:
-
-- `User.js` - For user reference and authentication
-- `Topic.js` - For topic management and voting context
-- Server endpoints handling vote operations
-
-## Notes
-
-- The schema uses timestamps for automatic date management
-- Virtuals are enabled for both JSON and Object representations
-- The model enforces unique votes per user per topic through indexing
-- Geospatial data can be stored in the metadata.location field
-
-This model is central to the voting functionality of the application, providing structured data
-storage and analysis capabilities for user interactions with topics.
+- The model includes IP address storage for audit purposes
+- Anonymous voting is supported through the `isAnonymous` flag
+- Metadata collection should comply with privacy policies
+- Location data is structured for GeoJSON compatibility

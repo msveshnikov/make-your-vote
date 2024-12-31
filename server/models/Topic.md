@@ -2,60 +2,101 @@
 
 ## Overview
 
-The `Topic.js` file defines the Mongoose schema and model for topics in the voting application.
-Topics represent the main voting items that users can create and vote on. This model is a crucial
-part of the server-side data structure, interacting with both User and Vote models.
+The `Topic.js` file defines the Mongoose schema and model for topics in the application. Topics
+represent discussion or voting items where users can choose between two options (A and B). This
+model is a core component of the application's data structure, used alongside User and Vote models.
 
-## Schema Definition
+## Schema Structure
 
 ### Basic Fields
 
-| Field       | Type     | Description                       | Required | Default |
-| ----------- | -------- | --------------------------------- | -------- | ------- |
-| title       | String   | The main title of the topic       | Yes      | -       |
-| optionA     | String   | First voting option               | Yes      | -       |
-| optionB     | String   | Second voting option              | Yes      | -       |
-| description | String   | Detailed description of the topic | No       | -       |
-| category    | String   | Topic category                    | Yes      | -       |
-| creator     | ObjectId | Reference to User model           | No       | -       |
+- **title** (String, required)
 
-### Status and Metadata
+    - The main title of the topic
+    - Trimmed automatically
 
-| Field      | Type   | Description                | Default      | Options                            |
-| ---------- | ------ | -------------------------- | ------------ | ---------------------------------- |
-| status     | String | Current state of the topic | 'pending'    | active, closed, pending, moderated |
-| startDate  | Date   | Topic creation date        | Current date | -                                  |
-| endDate    | Date   | Topic closing date         | -            | -                                  |
-| totalVotes | Number | Total vote count           | 0            | -                                  |
+- **optionA** and **optionB** (String, required)
 
-### AI Analysis
+    - The two voting options users can choose between
+    - Trimmed automatically
+
+- **optionAImage** and **optionBImage** (String)
+
+    - Optional image URLs for each option
+    - Trimmed automatically
+
+- **description** (String)
+    - Additional details about the topic
+    - Trimmed automatically
+
+### Metadata Fields
+
+- **category** (String)
+
+    - Topic classification category
+
+- **creator** (ObjectId)
+
+    - Reference to the User model
+    - Identifies who created the topic
+
+- **status** (String)
+    - Values: 'active', 'closed', 'pending', 'moderated'
+    - Default: 'pending'
+
+### AI Analysis Fields
 
 ```javascript
 aiAnalysis: {
-    sentiment: String (enum: ['positive', 'negative', 'neutral']),
-    keywords: [String],
-    cluster: String,
-    moderationScore: Number
+    sentiment: String,     // 'positive', 'negative', 'neutral'
+    keywords: [String],    // Array of relevant keywords
+    cluster: String,       // Clustering information
+    moderationScore: Number // Content moderation score
 }
 ```
+
+### Timing Fields
+
+- **startDate** (Date)
+
+    - When the topic becomes active
+    - Defaults to creation time
+
+- **endDate** (Date)
+    - Optional end date for the topic
 
 ### Access Control
 
-| Field        | Type       | Description       | Default  | Options                     |
-| ------------ | ---------- | ----------------- | -------- | --------------------------- |
-| visibility   | String     | Access level      | 'public' | public, private, restricted |
-| allowedUsers | [ObjectId] | Users with access | -        | -                           |
+- **visibility** (String)
 
-### Additional Metadata
+    - Values: 'public', 'private', 'restricted'
+    - Default: 'public'
+
+- **allowedUsers** (Array of ObjectIds)
+    - References to User model
+    - Specifies users with access to restricted topics
+
+### Additional Features
+
+- **totalVotes** (Number)
+
+    - Counter for total votes cast
+    - Default: 0
+
+- **tags** (Array of Strings)
+    - Keywords or categories for topic classification
+
+## Virtual Fields
 
 ```javascript
-metadata: {
-    source: String,
-    externalId: String,
-    lastAnalyzed: Date,
-    lastModerated: Date
+votes: {
+    ref: 'Vote',
+    localField: '_id',
+    foreignField: 'topic'
 }
 ```
+
+- Creates a virtual connection to associated votes
 
 ## Indexes
 
@@ -63,23 +104,9 @@ metadata: {
 // Text search indexes
 topicSchema.index({ title: 'text', description: 'text' });
 
-// Performance indexes
+// Performance optimization indexes
 topicSchema.index({ category: 1, status: 1 });
 topicSchema.index({ creator: 1 });
-```
-
-## Virtual Fields
-
-- `votes`: References the Vote model to get all votes associated with the topic
-
-## Schema Options
-
-```javascript
-{
-    timestamps: true,  // Adds createdAt and updatedAt fields
-    toJSON: { virtuals: true },  // Includes virtual fields in JSON
-    toObject: { virtuals: true }
-}
 ```
 
 ## Usage Examples
@@ -87,12 +114,14 @@ topicSchema.index({ creator: 1 });
 ### Creating a New Topic
 
 ```javascript
+import Topic from '../models/Topic.js';
+
 const newTopic = await Topic.create({
-    title: 'Sample Topic',
-    optionA: 'Yes',
-    optionB: 'No',
-    description: 'Description text',
-    category: 'social',
+    title: 'Which is better?',
+    optionA: 'Coffee',
+    optionB: 'Tea',
+    description: 'Morning beverage preference',
+    category: 'Food & Drink',
     creator: userId,
     visibility: 'public'
 });
@@ -101,31 +130,35 @@ const newTopic = await Topic.create({
 ### Querying Topics
 
 ```javascript
-// Get active public topics
+// Find active public topics
 const activeTopics = await Topic.find({
     status: 'active',
     visibility: 'public'
-}).populate('creator');
+})
+    .populate('creator')
+    .populate('votes');
 
 // Search topics by text
-const searchResults = await Topic.find({ $text: { $search: 'keyword' } });
+const searchResults = await Topic.find(
+    { $text: { $search: 'coffee' } },
+    { score: { $meta: 'textScore' } }
+).sort({ score: { $meta: 'textScore' } });
 ```
 
-## Integration
+## Integration Points
 
-This model works in conjunction with:
-
-- `User.js`: Referenced in creator and allowedUsers fields
-- `Vote.js`: Connected through the virtual 'votes' field
-- Server endpoints for topic creation, management, and retrieval
-- AI analysis services (via claude.js and gemini.js)
+- Used by server-side routes for topic management
+- Referenced in Vote model for vote tracking
+- Interacts with User model for creator and access control
+- Supports AI analysis features through the aiAnalysis field
 
 ## Notes
 
-- The schema includes support for AI analysis and moderation
-- Flexible visibility controls for public, private, and restricted access
-- Built-in text search capabilities
-- Optimized indexes for common query patterns
+- Implements timestamps for created/updated tracking
+- Includes virtuals in JSON/Object conversion
+- Uses trim on string fields for data cleanliness
+- Supports complex access control through visibility and allowedUsers
+- Enables efficient searching through text and compound indexes
 
-For more detailed implementation examples and API endpoints, refer to the server-side route handlers
-and controllers.
+This model is central to the application's functionality, managing the core content that users
+interact with and vote on.

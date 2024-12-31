@@ -2,161 +2,168 @@
 
 ## Overview
 
-The `Vote.jsx` component is a core feature of the MakeYour.vote application, providing a user
-interface for creating and participating in binary choice voting topics. Built using React and
-Chakra UI, this component handles the display of voting topics, vote submission, and creation of new
-topics.
+The `Vote.jsx` component is a core feature of the voting application that allows users to view,
+create, and vote on topics. It provides a responsive interface with support for pagination, image
+management, and real-time vote tracking.
 
 ## Component Location
 
-```
-src/Vote.jsx
-```
+`src/Vote.jsx`
 
 ## Dependencies
 
-- React (`useState`, `useEffect`)
-- Chakra UI components and hooks
-- React Icons (`FaVoteYea`, `FaPlus`)
-- API_URL from App.jsx
-
-## Theme Configuration
-
-```javascript
-const theme = extendTheme({
-    config: {
-        initialColorMode: 'light',
-        useSystemColorMode: false
-    }
-});
-```
-
-Defines a light theme for consistent styling across the component.
+- React and React hooks
+- Chakra UI components
+- React Router
+- React Icons
+- Axios
 
 ## State Management
 
 ```javascript
-const [topics, setTopics] = useState([]);
-const [newTopic, setNewTopic] = useState({ optionA: '', optionB: '' });
+const [topics, setTopics] = useState([]); // Stores all voting topics
+const [newTopic, setNewTopic] = useState({}); // Form data for new topics
+const [loading, setLoading] = useState(false); // Loading state
+const [currentPage, setCurrentPage] = useState(1); // Current page number
+const [totalPages, setTotalPages] = useState(1); // Total available pages
+const [votedTopics, setVotedTopics] = useState(new Set()); // Tracks user votes
+const [user, setUser] = useState(null); // Current user data
 ```
 
-## Core Functions
+## Main Functions
 
 ### `fetchTopics`
 
 ```javascript
-const fetchTopics = async () => {
-    // Fetches all voting topics from the API
-};
+const fetchTopics = useCallback(async () => {
+    // Fetches paginated topics from the API
+    // Parameters: None
+    // Returns: void
+});
 ```
-
-- **Purpose**: Retrieves all voting topics from the backend
-- **Returns**: Updates `topics` state with fetched data
-- **Error Handling**: Displays error toast on failure
 
 ### `handleVote`
 
 ```javascript
 const handleVote = async (topicId, option) => {
-    // Submits a vote for a specific topic
-};
+    // Records a user's vote on a topic
+    // Parameters:
+    //   topicId: string - The ID of the topic
+    //   option: number - Vote value (-1 for optionA, 1 for optionB)
+    // Returns: void
+});
 ```
-
-- **Parameters**:
-    - `topicId`: String - The ID of the voting topic
-    - `option`: String - Either 'optionA' or 'optionB'
-- **Returns**: Void
-- **Error Handling**: Displays success/error toast
 
 ### `handleCreateTopic`
 
 ```javascript
 const handleCreateTopic = async () => {
     // Creates a new voting topic
-};
+    // Parameters: None
+    // Returns: void
+});
 ```
 
-- **Purpose**: Submits new topic to the API
-- **Uses**: `newTopic` state
-- **Error Handling**: Displays success/error toast
+### `handleDeleteTopic`
 
-## UI Components
-
-### Main Layout
-
-- Header with logo and "Create Topic" button
-- List of voting topics
-- Modal for creating new topics
-
-### Topic Card
-
-```jsx
-<Box key={topic._id} w="full" p={6} borderRadius="lg" border="1px" borderColor="gray.200">
-    // Topic display with voting buttons
-</Box>
+```javascript
+const handleDeleteTopic = async (topicId) => {
+    // Deletes a topic (admin only)
+    // Parameters:
+    //   topicId: string - The ID of the topic to delete
+    // Returns: void
+});
 ```
 
-Displays individual topics with:
+### `handleRegenerateImage`
 
-- Topic title
-- Voting options as buttons
-- Vote count badge
-
-### Create Topic Modal
-
-```jsx
-<Modal isOpen={isOpen} onClose={onClose}>
-    // Form for creating new topics
-</Modal>
+```javascript
+const handleRegenerateImage = async (topicId, index) => {
+    // Regenerates an option image (admin only)
+    // Parameters:
+    //   topicId: string - The ID of the topic
+    //   index: number - Image index (-1 for optionA, 1 for optionB)
+    // Returns: void
+});
 ```
 
-Contains:
+## Features
 
-- Two input fields for voting options
-- Create button (disabled until both options are filled)
+1. **Topic Display**
+
+    - Responsive grid layout
+    - Image display for options
+    - Vote percentage visualization
+    - Category badges
+    - Total vote count
+
+2. **User Interactions**
+
+    - Voting on topics
+    - Creating new topics
+    - Sharing topics
+    - Pagination navigation
+
+3. **Admin Features**
+    - Topic deletion
+    - Image regeneration
+    - User management
 
 ## Usage Example
 
 ```jsx
+// In a parent component or route
 import Vote from './Vote';
 
 function App() {
     return (
-        <div>
+        <Route path="/vote">
             <Vote />
-        </div>
+        </Route>
     );
 }
 ```
 
-## Integration Points
+## Props
 
-- Connects to backend API endpoints:
-    - GET `/api/topics` - Fetches topics
-    - POST `/api/vote` - Submits votes
-    - POST `/api/topics` - Creates new topics
+This component doesn't accept any props as it's self-contained and manages its own state.
+
+## API Integration
+
+- Connects to backend API defined in `API_URL`
+- Endpoints used:
+    - GET `/api/topics` - Fetch topics
+    - POST `/api/topics` - Create topic
+    - POST `/api/vote` - Record vote
+    - DELETE `/api/topics/:id` - Delete topic
+    - PUT `/api/topic/:id/image/:index` - Regenerate image
+
+## Security
+
+- Implements authentication checks for protected actions
+- Uses JWT tokens for API requests
+- Admin-only features are protected
+
+## UI/UX Considerations
+
+- Responsive design for mobile and desktop
+- Loading states with progress indicators
+- Toast notifications for user feedback
+- Modal forms for topic creation
+- Blur effects and animations for visual appeal
 
 ## Error Handling
 
-Uses Chakra UI's toast system for user feedback:
+- API error handling with user notifications
+- Form validation
+- Vote duplicate prevention
+- Loading state management
 
-- Success messages for successful operations
-- Error messages for failed API calls
+## Related Components
 
-## Future Improvements
+- Connects with `App.jsx` for routing
+- Integrates with authentication system
+- Works alongside `Topic.jsx` for individual topic views
 
-- Pagination for topics list
-- Vote validation
-- User authentication integration
-
-## Related Files
-
-- `src/App.jsx` - Provides API_URL configuration
-- `server/models/Topic.js` - Backend topic model
-- `server/models/Vote.js` - Backend vote model
-
-## Notes
-
-- Ensure API_URL is properly configured in App.jsx
-- Component requires Chakra UI provider in parent tree
-- Designed for responsive layout
+This component serves as the main interaction point for users to participate in voting activities
+within the application.

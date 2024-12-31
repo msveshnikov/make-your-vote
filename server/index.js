@@ -128,15 +128,22 @@ app.get('/api/topic/:id', async (req, res) => {
         if (!topic) {
             return res.status(404).json({ error: 'Topic not found' });
         }
-        const votes = await Vote.find({ topic: topic._id });
-        const totalVotes = votes.length;
-        const optionAVotes = votes.filter((v) => v.value === -1).length;
-        const optionBVotes = votes.filter((v) => v.value === 1).length;
+        const aggregateResult = await Vote.aggregate([
+            { $match: { topic: topic._id } },
+            {
+                $group: {
+                    _id: null,
+                    totalVotes: { $sum: 1 },
+                    optionAVotes: { $sum: { $cond: [{ $eq: ['$value', -1] }, 1, 0] } },
+                    optionBVotes: { $sum: { $cond: [{ $eq: ['$value', 1] }, 1, 0] } }
+                }
+            }
+        ]);
+
+        const stats = aggregateResult[0] || { totalVotes: 0, optionAVotes: 0, optionBVotes: 0 };
         res.json({
             ...topic.toObject(),
-            totalVotes,
-            optionAVotes,
-            optionBVotes
+            ...stats
         });
     } catch (error) {
         console.error(error);
@@ -221,7 +228,7 @@ app.get('/api/topics', async (req, res) => {
         const category = req.query.category;
         const query = category ? { category } : {};
 
-        const [mostVotedTopics, newTopics, total] = await Promise.all([
+        const [topics, total] = await Promise.all([
             Topic.aggregate([
                 { $match: query },
                 {
@@ -229,87 +236,43 @@ app.get('/api/topics', async (req, res) => {
                         from: 'votes',
                         localField: '_id',
                         foreignField: 'topic',
-                        as: 'votes'
+                        pipeline: [
+                            {
+                                $group: {
+                                    _id: null,
+                                    count: { $sum: 1 },
+                                    optionAVotes: {
+                                        $sum: { $cond: [{ $eq: ['$value', -1] }, 1, 0] }
+                                    },
+                                    optionBVotes: {
+                                        $sum: { $cond: [{ $eq: ['$value', 1] }, 1, 0] }
+                                    }
+                                }
+                            }
+                        ],
+                        as: 'voteStats'
                     }
                 },
                 {
                     $addFields: {
-                        totalVotes: { $size: '$votes' },
-                        optionAVotes: {
-                            $size: {
-                                $filter: {
-                                    input: '$votes',
-                                    as: 'vote',
-                                    cond: { $eq: ['$$vote.value', -1] }
-                                }
-                            }
-                        },
-                        optionBVotes: {
-                            $size: {
-                                $filter: {
-                                    input: '$votes',
-                                    as: 'vote',
-                                    cond: { $eq: ['$$vote.value', 1] }
-                                }
-                            }
-                        }
+                        voteStats: { $arrayElemAt: ['$voteStats', 0] },
+                        totalVotes: { $ifNull: [{ $arrayElemAt: ['$voteStats.count', 0] }, 0] }
                     }
                 },
-                { $sort: { totalVotes: -1 } },
+                { $sort: { totalVotes: -1, createdAt: -1 } },
                 { $skip: skip },
-                { $limit: limit / 2 }
-            ]),
-            Topic.aggregate([
-                { $match: query },
-                {
-                    $lookup: {
-                        from: 'votes',
-                        localField: '_id',
-                        foreignField: 'topic',
-                        as: 'votes'
-                    }
-                },
-                {
-                    $addFields: {
-                        totalVotes: { $size: '$votes' },
-                        optionAVotes: {
-                            $size: {
-                                $filter: {
-                                    input: '$votes',
-                                    as: 'vote',
-                                    cond: { $eq: ['$$vote.value', -1] }
-                                }
-                            }
-                        },
-                        optionBVotes: {
-                            $size: {
-                                $filter: {
-                                    input: '$votes',
-                                    as: 'vote',
-                                    cond: { $eq: ['$$vote.value', 1] }
-                                }
-                            }
-                        }
-                    }
-                },
-                { $sort: { createdAt: -1 } },
-                { $skip: skip },
-                { $limit: limit / 2 }
+                { $limit: limit }
             ]),
             Topic.countDocuments(query)
         ]);
 
-        const uniqueTopics = new Map();
-        [...mostVotedTopics, ...newTopics].forEach((topic) => {
-            if (!uniqueTopics.has(topic._id.toString())) {
-                uniqueTopics.set(topic._id.toString(), topic);
-            }
-        });
-
-        const topics = Array.from(uniqueTopics.values());
-
         res.json({
-            topics,
+            topics: topics.map((topic) => ({
+                ...topic,
+                totalVotes: topic.voteStats?.count || 0,
+                optionAVotes: topic.voteStats?.optionAVotes || 0,
+                optionBVotes: topic.voteStats?.optionBVotes || 0
+            })),
             totalPages: Math.ceil(total / limit),
             currentPage: page,
             total

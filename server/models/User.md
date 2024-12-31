@@ -2,147 +2,172 @@
 
 ## Overview
 
-The `User.js` file defines the Mongoose schema and model for user data in the application. This
-model represents both coaches and club administrators, storing essential information like
-authentication details, professional credentials, team associations, and system preferences.
+The `User.js` file defines the Mongoose schema and model for user management in the application. It
+handles user authentication, subscription management, and various user-related functionalities. This
+model is a crucial part of the server-side architecture, working alongside other models like Topic
+and Vote.
 
 ## Schema Definition
 
-### Basic Information
+### Fields
 
-- **email** (String)
+| Field Name           | Type    | Description                      | Properties                                 |
+| -------------------- | ------- | -------------------------------- | ------------------------------------------ |
+| email                | String  | User's email address             | Required, Unique, Trimmed, Lowercase       |
+| password             | String  | Hashed user password             | Required                                   |
+| firstName            | String  | User's first name                | Trimmed                                    |
+| lastName             | String  | User's last name                 | Trimmed                                    |
+| profilePicture       | String  | URL to user's profile picture    | Optional                                   |
+| subscriptionStatus   | String  | User's subscription level        | Enum: ['free', 'premium'], Default: 'free' |
+| subscriptionId       | String  | External subscription identifier | Optional                                   |
+| createdAt            | Date    | Account creation timestamp       | Default: Current date                      |
+| isAdmin              | Boolean | Administrator status             | Default: false                             |
+| resetPasswordToken   | String  | Token for password reset         | Optional                                   |
+| resetPasswordExpires | Date    | Password reset token expiration  | Optional                                   |
+| verificationToken    | String  | Email verification token         | Optional                                   |
+| emailVerified        | Boolean | Email verification status        | Default: false                             |
 
-    - Required field
-    - Must be unique
-    - Automatically trimmed and converted to lowercase
-    - Used for authentication and communication
+## Methods
 
-- **password** (String)
+### Pre-Save Hook
 
-    - Required field
-    - Stores hashed password
+```javascript
+userSchema.pre('save', async function (next))
+```
 
-- **role** (String)
+Automatically hashes the password before saving if it has been modified.
 
-    - Either 'coach' or 'club'
-    - Defaults to 'coach'
-    - Indexed for optimized queries
+### comparePassword
 
-- **name** (String)
-    - Optional
-    - Trimmed to remove whitespace
+```javascript
+async comparePassword(candidatePassword)
+```
 
-### Professional Details
+Compares a provided password with the stored hash.
 
-- **certifications** (Array of Strings)
+- **Parameters**: `candidatePassword` (String)
+- **Returns**: Promise<Boolean>
 
-    - List of professional certifications
-    - Each entry is trimmed
+### generatePasswordResetToken
 
-- **experience** (String)
+```javascript
+generatePasswordResetToken();
+```
 
-    - Professional experience description
-    - Trimmed
+Generates a password reset token and sets expiration.
 
-- **achievements** (Array of Strings)
-    - List of professional achievements
-    - Each entry is trimmed
+- **Returns**: String (reset token)
 
-### Relationships and System Data
+### updatePreferences
 
-- **teams** (Array of ObjectIds)
+```javascript
+updatePreferences(newPreferences);
+```
 
-    - References to Team documents
-    - Establishes relationship with Team model
+Updates user preferences.
 
-- **preferences** (Map)
-    - Key-value store for user preferences
-    - Values are strings
-    - Defaults to empty object
+- **Parameters**: `newPreferences` (Object)
+- **Returns**: Promise<User>
 
-### Analytics and System Metrics
+### upgradeSubscription
 
-- **analytics** (Object)
-    - `lastLogin`: Date of last login
-    - `loginCount`: Number of times logged in
-    - `exercisesCreated`: Number of exercises created
+```javascript
+upgradeSubscription(subscriptionId);
+```
 
-### System Control
+Upgrades user to premium subscription.
 
-- **subscription** (String)
+- **Parameters**: `subscriptionId` (String)
+- **Returns**: Promise<User>
 
-    - Either 'free' or 'premium'
-    - Defaults to 'free'
+### downgradeSubscription
 
-- **permissions** (Array of Strings)
-    - Available permissions:
-        - 'create_exercise'
-        - 'manage_team'
-        - 'view_analytics'
-        - 'admin'
+```javascript
+downgradeSubscription();
+```
 
-### Timestamps
+Downgrades user to free subscription.
 
-- **createdAt**: Automatically set on creation
-- **updatedAt**: Automatically updated on modifications
+- **Returns**: Promise<User>
+
+### addVisitedCountry
+
+```javascript
+addVisitedCountry(countryCode, countryName);
+```
+
+Adds a country to user's visited countries list.
+
+- **Parameters**:
+    - `countryCode` (String)
+    - `countryName` (String)
+- **Returns**: Promise<User>
+
+### canCreateAudioGuide
+
+```javascript
+canCreateAudioGuide();
+```
+
+Checks if user can create an audio guide based on timing restrictions.
+
+- **Returns**: Boolean
 
 ## Usage Examples
 
 ### Creating a New User
 
 ```javascript
-import User from './models/User.js';
-
-const newUser = await User.create({
-    email: 'coach@example.com',
-    password: 'hashedPassword123',
-    name: 'John Doe',
-    role: 'coach',
-    certifications: ['UEFA A License', 'Youth Coach Certificate'],
-    experience: '10 years professional coaching experience'
+const newUser = new User({
+    email: 'user@example.com',
+    password: 'rawPassword', // Will be automatically hashed
+    firstName: 'John',
+    lastName: 'Doe'
 });
+await newUser.save();
 ```
 
-### Querying Users
+### Authenticating a User
 
 ```javascript
-// Find all coaches
-const coaches = await User.find({ role: 'coach' });
+const user = await User.findOne({ email: 'user@example.com' });
+const isMatch = await user.comparePassword('providedPassword');
+```
 
-// Find user by email
-const user = await User.findOne({ email: 'coach@example.com' });
+### Managing Subscriptions
 
-// Find users with specific certification
-const qualifiedCoaches = await User.find({
-    certifications: 'UEFA A License'
-});
+```javascript
+// Upgrade subscription
+await user.upgradeSubscription('sub_123xyz');
+
+// Downgrade subscription
+await user.downgradeSubscription();
 ```
 
 ## Integration with Project
 
-This model is central to the application's user management system and interacts with:
+This model is used throughout the application, particularly in:
 
-- Authentication/authorization flows
-- Team management (referenced in `teams` array)
-- Exercise creation and management
-- Analytics tracking
+- Authentication middleware (`server/middleware/auth.js`)
+- User routes (`server/user.js`)
+- Admin functionality (`server/admin.js`)
 
-## Schema Options
+The model supports both the web interface (React components in `src/`) and API endpoints, handling
+user-related operations and access control.
 
-- Uses `timestamps: true` for automatic timestamp management
-- Includes index on `role` field for optimized queries
+## Security Considerations
 
-## Notes
+- Passwords are automatically hashed using bcrypt
+- Email verification system included
+- Password reset functionality with secure token generation
+- Subscription status validation
+- Admin access control
 
-- Password should be hashed before saving
-- Email uniqueness is enforced at the database level
-- Role-based access control is implemented through the `role` and `permissions` fields
+## Dependencies
 
-## Related Files
+- mongoose
+- bcryptjs
+- crypto (Node.js built-in)
 
-- `Team.js` - Referenced by the `teams` field
-- Authentication middleware
-- User routes and controllers
-
-This model serves as the foundation for user management in the application, supporting both coach
-and club administrator roles with their respective functionalities and permissions.
+This documentation provides a comprehensive overview of the User model's capabilities and
+integration within the project structure.
