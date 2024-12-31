@@ -36,7 +36,6 @@ db.topics.insertMany([
         optionAImage: 'https://example.com/image1.jpg',
         optionBImage: 'https://example.com/image2.jpg',
         aiAnalysis: {
-            claude: { sentiment: 0.8, keywords: ['urgent', 'action', 'policy'] },
             gemini: { relevance: 0.9, categories: ['environmental', 'political'] }
         }
     }

@@ -1,173 +1,129 @@
 # User Model Documentation
 
 ## Overview
-
-The `User.js` file defines the Mongoose schema and model for user management in the application. It
-handles user authentication, subscription management, and various user-related functionalities. This
-model is a crucial part of the server-side architecture, working alongside other models like Topic
-and Vote.
+The `User.js` file defines the Mongoose schema and model for user data in the application. It handles user authentication, subscription management, and various user-related functionalities. This model is a crucial part of the server-side architecture, interacting with the MongoDB database and providing user data management capabilities.
 
 ## Schema Definition
 
-### Fields
+### User Schema Fields
 
-| Field Name           | Type    | Description                      | Properties                                 |
-| -------------------- | ------- | -------------------------------- | ------------------------------------------ |
-| email                | String  | User's email address             | Required, Unique, Trimmed, Lowercase       |
-| password             | String  | Hashed user password             | Required                                   |
-| firstName            | String  | User's first name                | Trimmed                                    |
-| lastName             | String  | User's last name                 | Trimmed                                    |
-| profilePicture       | String  | URL to user's profile picture    | Optional                                   |
-| subscriptionStatus   | String  | User's subscription level        | Enum: ['free', 'premium'], Default: 'free' |
-| subscriptionId       | String  | External subscription identifier | Optional                                   |
-| createdAt            | Date    | Account creation timestamp       | Default: Current date                      |
-| isAdmin              | Boolean | Administrator status             | Default: false                             |
-| resetPasswordToken   | String  | Token for password reset         | Optional                                   |
-| resetPasswordExpires | Date    | Password reset token expiration  | Optional                                   |
-| verificationToken    | String  | Email verification token         | Optional                                   |
-| emailVerified        | Boolean | Email verification status        | Default: false                             |
+| Field Name | Type | Description | Properties |
+|------------|------|-------------|------------|
+| email | String | User's email address | Required, Unique, Trimmed, Lowercase |
+| password | String | Hashed password | Required |
+| firstName | String | User's first name | Trimmed |
+| lastName | String | User's last name | Trimmed |
+| profilePicture | String | URL to user's profile picture | Optional |
+| subscriptionStatus | String | User's subscription level | Enum: ['free', 'premium'], Default: 'free' |
+| subscriptionId | String | External subscription identifier | Optional |
+| createdAt | Date | Account creation timestamp | Default: Current date |
+| isAdmin | Boolean | Administrative privileges flag | Default: false |
+| resetPasswordToken | String | Token for password reset | Optional |
+| resetPasswordExpires | Date | Password reset token expiration | Optional |
+| verificationToken | String | Email verification token | Optional |
+| emailVerified | Boolean | Email verification status | Default: false |
 
 ## Methods
 
 ### Pre-Save Hook
-
 ```javascript
 userSchema.pre('save', async function (next))
 ```
-
 Automatically hashes the password before saving if it has been modified.
 
 ### comparePassword
-
 ```javascript
-async comparePassword(candidatePassword)
+async function comparePassword(candidatePassword)
 ```
-
 Compares a provided password with the stored hash.
-
-- **Parameters**: `candidatePassword` (String)
-- **Returns**: Promise<Boolean>
+- **Parameters**: `candidatePassword` (String) - Password to verify
+- **Returns**: Promise<Boolean> - True if passwords match
 
 ### generatePasswordResetToken
-
 ```javascript
-generatePasswordResetToken();
+function generatePasswordResetToken()
 ```
-
 Generates a password reset token and sets expiration.
-
-- **Returns**: String (reset token)
+- **Returns**: String - Reset token
 
 ### updatePreferences
-
 ```javascript
-updatePreferences(newPreferences);
+function updatePreferences(newPreferences)
 ```
-
 Updates user preferences.
-
-- **Parameters**: `newPreferences` (Object)
-- **Returns**: Promise<User>
+- **Parameters**: `newPreferences` (Object) - New preference settings
+- **Returns**: Promise<Document> - Updated user document
 
 ### upgradeSubscription
-
 ```javascript
-upgradeSubscription(subscriptionId);
+function upgradeSubscription(subscriptionId)
 ```
-
 Upgrades user to premium subscription.
-
-- **Parameters**: `subscriptionId` (String)
-- **Returns**: Promise<User>
+- **Parameters**: `subscriptionId` (String) - External subscription identifier
+- **Returns**: Promise<Document> - Updated user document
 
 ### downgradeSubscription
-
 ```javascript
-downgradeSubscription();
+function downgradeSubscription()
 ```
-
 Downgrades user to free subscription.
-
-- **Returns**: Promise<User>
+- **Returns**: Promise<Document> - Updated user document
 
 ### addVisitedCountry
-
 ```javascript
-addVisitedCountry(countryCode, countryName);
+function addVisitedCountry(countryCode, countryName)
 ```
-
 Adds a country to user's visited countries list.
-
-- **Parameters**:
-    - `countryCode` (String)
-    - `countryName` (String)
-- **Returns**: Promise<User>
+- **Parameters**: 
+  - `countryCode` (String) - Country code
+  - `countryName` (String) - Country name
+- **Returns**: Promise<Document> - Updated user document
 
 ### canCreateAudioGuide
-
 ```javascript
-canCreateAudioGuide();
+function canCreateAudioGuide()
 ```
-
-Checks if user can create an audio guide based on timing restrictions.
-
-- **Returns**: Boolean
+Checks if user can create a new audio guide based on timing restrictions.
+- **Returns**: Boolean - Whether user can create an audio guide
 
 ## Usage Examples
 
 ### Creating a New User
-
 ```javascript
 const newUser = new User({
     email: 'user@example.com',
-    password: 'rawPassword', // Will be automatically hashed
+    password: 'password123',
     firstName: 'John',
     lastName: 'Doe'
 });
 await newUser.save();
 ```
 
-### Authenticating a User
-
+### Verifying Password
 ```javascript
-const user = await User.findOne({ email: 'user@example.com' });
-const isMatch = await user.comparePassword('providedPassword');
+const isMatch = await user.comparePassword('password123');
 ```
 
-### Managing Subscriptions
-
+### Managing Subscription
 ```javascript
-// Upgrade subscription
 await user.upgradeSubscription('sub_123xyz');
-
-// Downgrade subscription
 await user.downgradeSubscription();
 ```
 
-## Integration with Project
-
-This model is used throughout the application, particularly in:
-
+## Project Context
+This User model is central to the application's authentication and user management system. It integrates with:
 - Authentication middleware (`server/middleware/auth.js`)
 - User routes (`server/user.js`)
 - Admin functionality (`server/admin.js`)
-
-The model supports both the web interface (React components in `src/`) and API endpoints, handling
-user-related operations and access control.
-
-## Security Considerations
-
-- Passwords are automatically hashed using bcrypt
-- Email verification system included
-- Password reset functionality with secure token generation
-- Subscription status validation
-- Admin access control
+- Frontend components (`src/Login.jsx`, `src/Signup.jsx`)
 
 ## Dependencies
+- mongoose: Database modeling
+- bcryptjs: Password hashing
+- crypto: Token generation (built-in Node.js module)
 
-- mongoose
-- bcryptjs
-- crypto (Node.js built-in)
-
-This documentation provides a comprehensive overview of the User model's capabilities and
-integration within the project structure.
+## Notes
+- Passwords are automatically hashed using bcrypt with a salt factor of 10
+- Password reset tokens expire after 1 hour
+- Premium features are controlled through the subscription status
+- Email verification is supported through the verification token system

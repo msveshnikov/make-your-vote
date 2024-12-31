@@ -7,9 +7,7 @@ services:
             - '8016:3000'
         environment:
             - NODE_ENV=production
-            - OPENAI_KEY=${OPENAI_KEY}
             - GOOGLE_KEY=${GOOGLE_KEY}
-            - CLAUDE_KEY=${CLAUDE_KEY}
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - UNSPLASH_API_KEY=${UNSPLASH_API_KEY}
             - ELEVEN_KEY=${ELEVEN_KEY}

@@ -59,7 +59,7 @@ server/
 
 - **Frontend**: React.js, Vite, Chakra UI
 - **Backend**: Node.js/Express, MongoDB
-- **AI Services**: Claude, Gemini
+- **AI Services**: Gemini
 - **Infrastructure**: Docker, Nginx
 
 ## Installation & Setup
@@ -86,9 +86,7 @@ cp .env.example .env
 Required environment variables:
 
 ```
-OPENAI_KEY=
 GOOGLE_KEY=
-CLAUDE_KEY=
 GOOGLE_CLIENT_ID=
 MONGODB_URI=
 JWT_SECRET=
