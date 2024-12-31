@@ -289,9 +289,11 @@ function Vote() {
                         <HStack spacing={4}>
                             {user ? (
                                 <>
-                                    {/* <Button as={Link} to="/profile" colorScheme="teal">
-                                        Profile
-                                    </Button> */}
+                                    {user?.isAdmin && (
+                                        <Button as={Link} to="/admin" colorScheme="teal">
+                                            Admin
+                                        </Button>
+                                    )}
                                     <Button
                                         onClick={() => {
                                             localStorage.removeItem('token');
