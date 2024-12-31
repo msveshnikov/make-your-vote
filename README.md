@@ -133,5 +133,3 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
-
-- demographics-based insights in Admin Dashboard

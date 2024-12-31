@@ -189,7 +189,7 @@ const Admin = () => {
                         <CardBody>
                             <Stat>
                                 <StatLabel>Total Users</StatLabel>
-                                <StatNumber>{stats.stats.totalUsers}</StatNumber>
+                                <StatNumber>{stats?.stats?.totalUsers}</StatNumber>
                             </Stat>
                         </CardBody>
                     </Card>
@@ -197,7 +197,7 @@ const Admin = () => {
                         <CardBody>
                             <Stat>
                                 <StatLabel>Total Topics</StatLabel>
-                                <StatNumber>{stats.stats.totalTopics}</StatNumber>
+                                <StatNumber>{stats?.stats?.totalTopics}</StatNumber>
                             </Stat>
                         </CardBody>
                     </Card>
@@ -205,7 +205,7 @@ const Admin = () => {
                         <CardBody>
                             <Stat>
                                 <StatLabel>Total Votes</StatLabel>
-                                <StatNumber>{stats.stats.totalVotes}</StatNumber>
+                                <StatNumber>{stats?.stats?.totalVotes}</StatNumber>
                             </Stat>
                         </CardBody>
                     </Card>
