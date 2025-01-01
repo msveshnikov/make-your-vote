@@ -19,8 +19,7 @@ import {
     Switch,
     FormControl,
     FormLabel,
-    Stack,
-    Divider
+    Stack
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
