@@ -133,5 +133,3 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
-
--   after topic create, navigate to topic page
