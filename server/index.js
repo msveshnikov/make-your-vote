@@ -57,16 +57,16 @@ const cleanGeneratedCode = (code) => {
 
 const mergeDuplicateTopics = async () => {
     const topics = await Topic.find().lean();
-    const titleMap = new Map();
+    const duplicateMap = new Map();
 
     for (const topic of topics) {
-        const normalizedTitle = topic.title.toLowerCase().trim();
-        if (titleMap.has(normalizedTitle)) {
-            const originalTopic = titleMap.get(normalizedTitle);
+        const key = `${topic.optionA.toLowerCase()}_${topic.optionB.toLowerCase()}`;
+        if (duplicateMap.has(key)) {
+            const originalTopic = duplicateMap.get(key);
             await Vote.updateMany({ topic: topic._id }, { $set: { topic: originalTopic._id } });
             await Topic.deleteOne({ _id: topic._id });
         } else {
-            titleMap.set(normalizedTitle, topic);
+            duplicateMap.set(key, topic);
         }
     }
 };

@@ -134,4 +134,4 @@ Infrastructure:
 
 # TODO
 
-- improve design
+- merge duplicate topics if optionA and optionB are the same(and if topic.title is the same)
