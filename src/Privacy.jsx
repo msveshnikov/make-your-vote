@@ -19,7 +19,8 @@ import {
     Switch,
     FormControl,
     FormLabel,
-    Stack
+    Stack,
+    Divider
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -34,13 +35,14 @@ const Privacy = () => {
         analytics: true,
         marketing: false,
         necessary: true,
-        preferences: true
+        preferences: true,
+        aiProcessing: false
     });
 
     useEffect(() => {
         const fetchLastUpdate = async () => {
             try {
-                const response = await fetch(API_URL + '/api/privacy/last-updated');
+                const response = await fetch(`${API_URL}/api/privacy/last-updated`);
                 const data = await response.json();
                 setLastUpdated(new Date(data.lastUpdated).toLocaleDateString());
 
@@ -56,13 +58,28 @@ const Privacy = () => {
         fetchLastUpdate();
     }, []);
 
-    const handleConsentChange = (setting) => {
+    const handleConsentChange = async (setting) => {
         const newSettings = {
             ...consentSettings,
             [setting]: !consentSettings[setting]
         };
         setConsentSettings(newSettings);
         localStorage.setItem('gdprConsent', JSON.stringify(newSettings));
+
+        if (token) {
+            try {
+                await fetch(`${API_URL}/api/user/privacy-settings`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify(newSettings)
+                });
+            } catch (error) {
+                console.error('Error updating privacy settings:', error);
+            }
+        }
     };
 
     const handleExportData = async () => {
@@ -78,7 +95,7 @@ const Privacy = () => {
         }
 
         try {
-            const response = await fetch(API_URL + '/api/user/data-export', {
+            const response = await fetch(`${API_URL}/api/user/data-export`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -129,7 +146,7 @@ const Privacy = () => {
         }
 
         try {
-            const response = await fetch(API_URL + '/api/user', {
+            const response = await fetch(`${API_URL}/api/user`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -172,7 +189,7 @@ const Privacy = () => {
 
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>
-                        Cookie Settings
+                        Privacy Settings
                     </Heading>
                     <Stack spacing={4}>
                         <FormControl display="flex" alignItems="center">
@@ -215,8 +232,20 @@ const Privacy = () => {
                                 onChange={() => handleConsentChange('preferences')}
                             />
                         </FormControl>
+                        <FormControl display="flex" alignItems="center">
+                            <FormLabel htmlFor="aiProcessing" mb="0">
+                                AI Processing
+                            </FormLabel>
+                            <Switch
+                                id="aiProcessing"
+                                isChecked={consentSettings.aiProcessing}
+                                onChange={() => handleConsentChange('aiProcessing')}
+                            />
+                        </FormControl>
                     </Stack>
                 </Box>
+
+                <Divider />
 
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>
@@ -225,8 +254,9 @@ const Privacy = () => {
                     <UnorderedList spacing={2}>
                         <ListItem>User account information</ListItem>
                         <ListItem>Voting history and preferences</ListItem>
-                        <ListItem>Usage analytics</ListItem>
-                        <ListItem>Device information</ListItem>
+                        <ListItem>Usage analytics and interactions</ListItem>
+                        <ListItem>Device and browser information</ListItem>
+                        <ListItem>AI-processed content and recommendations</ListItem>
                     </UnorderedList>
                 </Box>
 
@@ -234,6 +264,16 @@ const Privacy = () => {
                     <Heading as="h2" size="lg" mb={4}>
                         Your Rights
                     </Heading>
+                    <Text mb={4}>
+                        Under GDPR and other privacy regulations, you have the right to:
+                    </Text>
+                    <UnorderedList spacing={2} mb={4}>
+                        <ListItem>Access your personal data</ListItem>
+                        <ListItem>Correct inaccurate data</ListItem>
+                        <ListItem>Request data deletion</ListItem>
+                        <ListItem>Object to data processing</ListItem>
+                        <ListItem>Data portability</ListItem>
+                    </UnorderedList>
                     <Button colorScheme="blue" onClick={handleExportData} mr={4}>
                         Export Data
                     </Button>
@@ -244,10 +284,10 @@ const Privacy = () => {
 
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>
-                        Contact
+                        Contact Information
                     </Heading>
                     <Text mb={4}>
-                        Email:{' '}
+                        For privacy-related inquiries, contact our Data Protection Officer at:{' '}
                         <Link href="mailto:privacy@makeyour.vote" color="blue.500">
                             privacy@makeyour.vote
                         </Link>
@@ -264,9 +304,12 @@ const Privacy = () => {
                     <ModalHeader>Confirm Account Deletion</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        <Text mb={4}>This action cannot be undone. Are you sure?</Text>
+                        <Text mb={4}>
+                            This action will permanently delete your account and all associated
+                            data. This cannot be undone. Are you sure?
+                        </Text>
                         <Button colorScheme="red" mr={3} onClick={handleDeleteAccount}>
-                            Delete
+                            Delete Account
                         </Button>
                         <Button onClick={onClose}>Cancel</Button>
                     </ModalBody>

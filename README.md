@@ -86,7 +86,6 @@ Backend:
 - Node.js/Express
 - AI Services (Gemini)
 - MongoDB
-- Never delete console.error() calls!!!
 
 Infrastructure:
 
@@ -133,3 +132,5 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
+
+-   add full privacy policy text
