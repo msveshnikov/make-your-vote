@@ -181,7 +181,8 @@ function Vote() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ topicId, value: option })
             });
-            if (!response.ok) throw new Error('Vote failed');
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error);
 
             setVotedTopics((prev) => new Set([...prev, topicId]));
 
@@ -207,9 +208,9 @@ function Vote() {
                 status: 'success',
                 duration: 2000
             });
-        } catch {
+        } catch (e) {
             toast({
-                title: 'Error recording vote',
+                title: e.message,
                 status: 'error',
                 duration: 3000
             });

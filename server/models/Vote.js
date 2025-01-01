@@ -27,11 +27,6 @@ const voteSchema = new mongoose.Schema(
             maxLength: 1000
         },
         metadata: {
-            device: String,
-            location: {
-                type: { type: String },
-                coordinates: [Number]
-            },
             userAgent: String,
             browserLanguage: String,
             countryCode: {

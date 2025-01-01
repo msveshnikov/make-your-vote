@@ -133,5 +133,3 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
-
-- remove on startup all votes with "curl" in the user-agent

@@ -167,28 +167,41 @@ export const getIpFromRequest = (req) => {
     return ips[0].trim();
 };
 
+const isDuplicateVote = async (topicId, metadata) => {
+    const existingVote = await Vote.findOne({
+        'metadata.ip': metadata.ip,
+        'metadata.countryCode': metadata.countryCode,
+        'metadata.browserLanguage': metadata.browserLanguage,
+        'metadata.userAgent': metadata.userAgent,
+        topic: topicId
+    });
+    return !!existingVote;
+};
+
 app.post('/api/vote', authenticateToken, async (req, res) => {
     try {
-        const { topicId, value, context, metadata } = req.body;
+        const { topicId, value, context } = req.body;
         const userId = req.user?.id;
         const countryCode = req.headers['geoip_country_code'];
         const countryName = req.headers['geoip_country_name'];
         const browserLanguage = req.headers['accept-language'];
         const ip = getIpFromRequest(req);
-
+        const metadata = {
+            userAgent: req.headers['user-agent'],
+            countryCode,
+            countryName,
+            browserLanguage,
+            ip
+        };
+        if (await isDuplicateVote(topicId, metadata)) {
+            return res.status(409).json({ error: 'Duplicate vote' });
+        }
         const vote = new Vote({
             user: userId,
             topic: topicId,
             value,
             context,
-            metadata: {
-                ...metadata,
-                userAgent: req.headers['user-agent'],
-                countryCode,
-                countryName,
-                browserLanguage,
-                ip
-            },
+            metadata,
             isAnonymous: !userId
         });
 
