@@ -55,6 +55,12 @@ const cleanGeneratedCode = (code) => {
     return match ? match[1] : code;
 };
 
+const removeCurlVotes = async () => {
+    await Vote.deleteMany({
+        'metadata.userAgent': { $regex: /curl/i }
+    });
+};
+
 const mergeDuplicateTopics = async () => {
     const topics = await Topic.find().lean();
     const duplicateMap = new Map();
@@ -90,7 +96,7 @@ const generateSitemap = async () => {
 const generateTopicPairs = async () => {
     try {
         const prompt =
-            "Generate 20 pairs of comparable items/people for voting (e.g., 'Ronaldo vs Messi'). Format as JSON array of objects with properties: title, optionA, optionB, category.";
+            'Generate 20 pairs of comparable items/people for voting. Format as JSON array of objects with properties: title, optionA, optionB, category.';
         const geminiResponse = await getTextGemini(prompt, 'gemini-exp-1206', 1.0);
         const geminiPairs = JSON.parse(cleanGeneratedCode(geminiResponse));
 
@@ -314,14 +320,8 @@ export const enrichMetadata = async (html, slug) => {
                 '@type': 'Question',
                 name: topic.title,
                 suggestedAnswer: [
-                    {
-                        '@type': 'Answer',
-                        text: topic.optionA
-                    },
-                    {
-                        '@type': 'Answer',
-                        text: topic.optionB
-                    }
+                    { '@type': 'Answer', text: topic.optionA },
+                    { '@type': 'Answer', text: topic.optionB }
                 ]
             }
         };
@@ -357,9 +357,7 @@ app.get('/', async (req, res) => {
 
 app.get('*', async (req, res) => {
     const html = fs.readFileSync(join(__dirname, '../dist/index.html'), 'utf8');
-    if (!req.path.startsWith('/topic/')) {
-        return res.send(html);
-    }
+    if (!req.path.startsWith('/topic/')) return res.send(html);
     const slug = req.path.substring(7);
     const enrichedHtml = await enrichMetadata(html, slug);
     res.send(enrichedHtml);
@@ -375,6 +373,7 @@ process.on('uncaughtException', (err, origin) => {
 
 httpServer.listen(port, async () => {
     console.log(`Server running on port ${port}`);
+    await removeCurlVotes();
     await generateSitemap();
     if (process.env.NODE_ENV === 'production') {
         await generateTopicPairs();

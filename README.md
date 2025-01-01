@@ -134,4 +134,4 @@ Infrastructure:
 
 # TODO
 
-- merge duplicate topics if optionA and optionB are the same(and if topic.title is the same)
+- remove on startup all votes with "curl" in the user-agent
