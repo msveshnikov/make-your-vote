@@ -189,7 +189,65 @@ const Privacy = () => {
 
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>
-                        Privacy Settings
+                        1. Information We Collect
+                    </Heading>
+                    <Text mb={4}>
+                        We collect information that you provide directly to us, including:
+                    </Text>
+                    <UnorderedList spacing={2} mb={4}>
+                        <ListItem>Name and contact information</ListItem>
+                        <ListItem>Account credentials</ListItem>
+                        <ListItem>Voting preferences and history</ListItem>
+                        <ListItem>User-generated content</ListItem>
+                        <ListItem>Communication preferences</ListItem>
+                    </UnorderedList>
+                </Box>
+
+                <Box>
+                    <Heading as="h2" size="lg" mb={4}>
+                        2. How We Use Your Information
+                    </Heading>
+                    <Text mb={4}>Your information is used to:</Text>
+                    <UnorderedList spacing={2} mb={4}>
+                        <ListItem>Provide and improve our services</ListItem>
+                        <ListItem>Personalize your experience</ListItem>
+                        <ListItem>Process your votes and opinions</ListItem>
+                        <ListItem>Communicate with you</ListItem>
+                        <ListItem>Ensure platform security</ListItem>
+                    </UnorderedList>
+                </Box>
+
+                <Box>
+                    <Heading as="h2" size="lg" mb={4}>
+                        3. Data Sharing and Disclosure
+                    </Heading>
+                    <Text mb={4}>We may share your information with:</Text>
+                    <UnorderedList spacing={2} mb={4}>
+                        <ListItem>Service providers and partners</ListItem>
+                        <ListItem>Legal authorities when required</ListItem>
+                        <ListItem>Other users (only public content)</ListItem>
+                        <ListItem>Analytics providers</ListItem>
+                    </UnorderedList>
+                </Box>
+
+                <Box>
+                    <Heading as="h2" size="lg" mb={4}>
+                        4. Data Security
+                    </Heading>
+                    <Text mb={4}>
+                        We implement appropriate security measures to protect your data, including:
+                    </Text>
+                    <UnorderedList spacing={2} mb={4}>
+                        <ListItem>Encryption in transit and at rest</ListItem>
+                        <ListItem>Regular security audits</ListItem>
+                        <ListItem>Access controls</ListItem>
+                        <ListItem>Secure data storage</ListItem>
+                    </UnorderedList>
+                </Box>
+
+                <Box>
+                    <Heading as="h2" size="lg" mb={4}>
+                        5. Your Privacy Choices
                     </Heading>
                     <Stack spacing={4}>
                         <FormControl display="flex" alignItems="center">
@@ -245,28 +303,11 @@ const Privacy = () => {
                     </Stack>
                 </Box>
 
-                <Divider />
-
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>
-                        Data Collection
+                        6. Your Rights
                     </Heading>
-                    <UnorderedList spacing={2}>
-                        <ListItem>User account information</ListItem>
-                        <ListItem>Voting history and preferences</ListItem>
-                        <ListItem>Usage analytics and interactions</ListItem>
-                        <ListItem>Device and browser information</ListItem>
-                        <ListItem>AI-processed content and recommendations</ListItem>
-                    </UnorderedList>
-                </Box>
-
-                <Box>
-                    <Heading as="h2" size="lg" mb={4}>
-                        Your Rights
-                    </Heading>
-                    <Text mb={4}>
-                        Under GDPR and other privacy regulations, you have the right to:
-                    </Text>
+                    <Text mb={4}>Under applicable privacy laws, you have the right to:</Text>
                     <UnorderedList spacing={2} mb={4}>
                         <ListItem>Access your personal data</ListItem>
                         <ListItem>Correct inaccurate data</ListItem>
@@ -284,7 +325,7 @@ const Privacy = () => {
 
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>
-                        Contact Information
+                        7. Contact Us
                     </Heading>
                     <Text mb={4}>
                         For privacy-related inquiries, contact our Data Protection Officer at:{' '}

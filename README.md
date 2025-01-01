@@ -132,5 +132,3 @@ Infrastructure:
     - Custom dashboards
 
 # TODO
-
--   add full privacy policy text
