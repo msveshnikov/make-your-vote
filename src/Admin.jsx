@@ -160,7 +160,7 @@ const Admin = () => {
             <Heading size="md" mb={4}>
                 Demographics Insights
             </Heading>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+            <SimpleGrid columns={{ base: 1, md: 1 }} spacing={3}>
                 <Card>
                     <CardBody>
                         <Heading size="sm" mb={4}>
