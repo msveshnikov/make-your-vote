@@ -44,61 +44,68 @@
                 --dark: #000000;
                 --light: #ffffff;
                 --glass: rgba(255, 255, 255, 0.1);
-                --neon-glow: 0 0 10px rgba(0, 255, 0, 0.5);
+                /* --neon-glow: 0 0 10px rgba(0, 255, 0, 0.5); */
             }
+
             * {
                 box-sizing: border-box;
                 margin: 0;
                 padding: 0;
             }
+
             body {
                 font-family: 'Inter', sans-serif;
                 line-height: 1.6;
                 color: var(--dark);
-                background: var(--light);
+                background: #f8f9fa;
             }
+
             .container {
-                max-width: 1200px;
+                max-width: 1400px;
                 margin: 0 auto;
-                padding: 0 20px;
+                padding: 0 2rem;
             }
+
             header {
-                background: rgba(0, 0, 0, 0.8);
+                background: rgba(26, 26, 26, 0.95);
                 backdrop-filter: blur(10px);
-                border-bottom: 1px solid var(--primary);
-                box-shadow: var(--neon-glow);
-                color: var(--light);
                 padding: 1rem 0;
                 position: fixed;
                 width: 100%;
                 z-index: 1000;
+                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
             }
-            nav ul {
-                list-style: none;
+
+            nav {
                 display: flex;
-                justify-content: space-around;
+                justify-content: space-between;
+                align-items: center;
             }
-            nav ul li a {
-                color: var(--primary);
+
+            .nav-links {
+                display: flex;
+                gap: 2rem;
+            }
+
+            nav a {
+                color: var(--light);
                 text-decoration: none;
                 font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                transition: all 0.3s ease;
-                text-shadow: var(--neon-glow);
+                transition: color 0.3s ease;
             }
-            nav ul li a:hover {
+
+            nav a:hover {
                 color: var(--secondary);
-                text-shadow: 0 0 15px var(--secondary);
             }
+
             .hero {
-                background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8)),
+                background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)),
                     url('hero1.webp');
                 background-size: cover;
                 background-position: center;
                 color: #fff;
                 text-align: center;
-                padding: 15rem 0;
+                padding: 19rem 0;
                 position: relative;
                 overflow: hidden;
             }
@@ -115,20 +122,18 @@
                 }
             }
             .hero h1 {
-                font-size: 4.5rem;
-                margin-bottom: 1rem;
-                text-shadow: 0 0 20px var(--primary);
+                font-size: 4rem;
                 font-weight: 700;
-                letter-spacing: -1px;
+                margin-bottom: 1.5rem;
+                line-height: 1.2;
             }
+
             .hero p {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
                 margin-bottom: 2rem;
                 opacity: 0.9;
-                max-width: 800px;
-                margin-left: auto;
-                margin-right: auto;
             }
+
             .cta-button {
                 display: inline-block;
                 background: var(--primary);
@@ -139,93 +144,97 @@
                 font-weight: 600;
                 text-transform: uppercase;
                 letter-spacing: 2px;
-                transition: all 0.3s ease;
-                box-shadow: var(--neon-glow);
+                /* transition: all 0.3s ease; */
+                /* box-shadow: var(--neon-glow); */
                 border: 1px solid var(--primary);
             }
+
             .cta-button:hover {
-                background: transparent;
-                color: var(--primary);
+                /* background: transparent; */
+                /* color: var(--primary); */
                 transform: translateY(-3px);
                 box-shadow: 0 0 30px var(--primary);
             }
-            .features,
-            .roadmap,
-            .testimonials,
-            .market {
+
+            .section {
                 padding: 8rem 0;
-                background: var(--light);
-                position: relative;
             }
-            .feature-grid,
-            .roadmap-grid,
-            .testimonial-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 2.5rem;
-            }
-            .feature-item,
-            .roadmap-item,
-            .testimonial-item {
-                background: rgba(255, 255, 255, 0.95);
-                padding: 2.5rem;
-                border-radius: 20px;
+
+            .section-title {
+                font-size: 2.5rem;
                 text-align: center;
-                transition: all 0.3s ease;
-                border: 1px solid var(--primary);
-                box-shadow: var(--neon-glow);
-            }
-            .feature-item:hover,
-            .roadmap-item:hover,
-            .testimonial-item:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 0 30px var(--primary);
-            }
-            h2 {
-                font-size: 3rem;
                 margin-bottom: 4rem;
-                text-align: center;
                 color: var(--dark);
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                position: relative;
             }
-            h2::after {
-                content: '';
-                display: block;
-                width: 100px;
-                height: 3px;
-                background: var(--primary);
-                margin: 1rem auto;
-                box-shadow: var(--neon-glow);
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
             }
+
+            .card {
+                background: var(--light);
+                border-radius: 20px;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+            .card h3 {
+                color: var(--primary);
+                margin-bottom: 1rem;
+            }
+
+            .testimonial-item {
+                text-align: center;
+            }
+
+            .testimonial-face img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                margin-bottom: 1rem;
+            }
+
             footer {
                 background: var(--dark);
                 color: var(--light);
+                padding: 4rem 0;
                 text-align: center;
-                padding: 3rem 0;
-                border-top: 1px solid var(--primary);
             }
+
+            .footer-links {
+                margin-top: 1rem;
+            }
+
             .footer-links a {
-                color: var(--primary);
+                color: var(--light);
                 text-decoration: none;
                 margin: 0 1rem;
-                transition: all 0.3s ease;
+                opacity: 0.8;
+                transition: opacity 0.3s ease;
             }
+
             .footer-links a:hover {
-                color: var(--secondary);
-                text-shadow: 0 0 10px var(--secondary);
+                opacity: 1;
             }
+
             @media (max-width: 768px) {
                 .hero h1 {
                     font-size: 2.5rem;
                 }
-                .hero p {
-                    font-size: 1.2rem;
-                    padding: 0 1rem;
-                }
-                nav ul {
+
+                .nav-links {
                     display: none;
+                }
+
+                .container {
+                    padding: 0 1rem;
                 }
             }
         </style>
@@ -236,33 +245,35 @@
                 <div class="container">
                     <h1>Direct Democracy</h1>
                     <p>
-                        Building the first standardized infrastructure for collective public
-                        opinion, transforming fragmented sentiment into official, actionable data.
+                        Join the first standardized platform for collective public opinion,
+                        transforming individual voices into actionable insights.
                     </p>
-                    <a href="/app" class="cta-button">Start Voting</a>
+                    <a href="/app" class="cta-button">Get Started</a>
                 </div>
             </section>
-            <section id="features" class="features">
-                <div class="container">
-                    <h2>Platform Features</h2>
-                    <div class="feature-grid">
-                        <article class="feature-item">
-                            <h3>AI-Enhanced Analysis</h3>
-                            <p>Powered by Gemini for comprehensive topic analysis and insights</p>
-                        </article>
-                        <article class="feature-item">
-                            <h3>Real-time Processing</h3>
-                            <p>Instant vote tracking and sentiment analysis updates</p>
-                        </article>
 
-                        <article class="feature-item">
+            <section id="features" class="section">
+                <div class="container">
+                    <h2 class="section-title">Platform Features</h2>
+                    <div class="grid">
+                        <div class="card">
+                            <h3>AI-Enhanced Analysis</h3>
+                            <p>
+                                Powered by Gemini AI for deep insight generation and trend analysis
+                            </p>
+                        </div>
+                        <div class="card">
+                            <h3>Real-time Processing</h3>
+                            <p>Instant vote tracking and live sentiment analysis updates</p>
+                        </div>
+                        <div class="card">
                             <h3>Enterprise Solutions</h3>
-                            <p>Custom deployments and white-label options available</p>
-                        </article>
+                            <p>Scalable deployments with white-label options for organizations</p>
+                        </div>
                     </div>
                 </div>
             </section>
-            <section id="roadmap" class="roadmap">
+            <!-- <section id="roadmap" class="roadmap">
                 <div class="container">
                     <h2>Development Roadmap</h2>
                     <div class="roadmap-grid">
@@ -281,46 +292,41 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> -->
 
-            <section
-                id="testimonials"
-                class="testimonials"
-                role="region"
-                aria-label="User testimonials"
-            >
+            <section id="testimonials" class="section">
                 <div class="container">
-                    <h2>What Our Users Say</h2>
-                    <div class="testimonial-grid">
-                        <div class="testimonial-item">
+                    <h2 class="section-title">User Testimonials</h2>
+                    <div class="grid">
+                        <div class="card testimonial-item">
                             <div class="testimonial-face">
-                                <img src="https://i.pravatar.cc/150?img=1" alt="Alex Thompson" />
+                                <img src="https://i.pravatar.cc/150?img=1" alt="User testimonial" />
                             </div>
-                            <p class="testimonial-text">
-                                "The real-time processing and AI analysis have transformed how we
-                                understand public sentiment."
+                            <p>
+                                "The real-time analytics have transformed how we understand public
+                                sentiment."
                             </p>
-                            <p class="testimonial-author">Alex Thompson, Policy Analyst</p>
+                            <p><strong>Alex Thompson</strong><br />Policy Analyst</p>
                         </div>
-                        <div class="testimonial-item">
+                        <div class="card testimonial-item">
                             <div class="testimonial-face">
                                 <img src="https://i.pravatar.cc/150?img=5" alt="Sophia Lee" />
                             </div>
-                            <p class="testimonial-text">
-                                "MakeYour.vote's mobile experience is unparalleled. I can stay
-                                connected to global opinions on-the-go."
+                            <p>
+                                "An essential tool for our market research and strategy
+                                development."
                             </p>
-                            <p class="testimonial-author">Sophia Lee, Journalist</p>
+                            <p><strong>Sarah Chen</strong><br />Business Strategist</p>
                         </div>
-                        <div class="testimonial-item">
+                        <div class="card testimonial-item">
                             <div class="testimonial-face">
                                 <img src="https://i.pravatar.cc/150?img=8" alt="David Chen" />
                             </div>
-                            <p class="testimonial-text">
-                                "The unified platform has become an essential tool for our market
-                                research and strategy development."
+                            <p>
+                                "The mobile experience is unparalleled. Perfect for on-the-go
+                                insights."
                             </p>
-                            <p class="testimonial-author">David Chen, Business Strategist</p>
+                            <p><strong>Michael Roberts</strong><br />Digital Consultant</p>
                         </div>
                     </div>
                 </div>

@@ -2,9 +2,8 @@
 /* global use, db */
 
 use('vote');
-db.votes.deleteMany({ countryCode: "CZ" });
+db.votes.deleteMany({ countryCode: 'CZ' });
 db.users.updateOne({ email: 'msveshnikov@gmail.com' }, { $set: { isAdmin: true } });
-
 
 db.votes.dropIndex('topic_1_user_1');
 
@@ -16,10 +15,7 @@ db.votes.createIndex({ createdAt: 1 });
 db.votes.createIndex({ topic: 1, user: 1 });
 
 // Admin setup
-db.users.updateOne(
-    { email: 'msveshnikov@gmail.com' },
-    { $set: { isAdmin: true, role: 'admin' } }
-);
+db.users.updateOne({ email: 'msveshnikov@gmail.com' }, { $set: { isAdmin: true, role: 'admin' } });
 
 // Sample user data
 db.users.insertMany([
@@ -99,10 +95,7 @@ db.votes.aggregate([
     {
         $addFields: {
             engagementScore: {
-                $multiply: [
-                    '$voteCount',
-                    { $size: '$uniqueUsers' }
-                ]
+                $multiply: ['$voteCount', { $size: '$uniqueUsers' }]
             }
         }
     },
@@ -132,7 +125,4 @@ db.votes.aggregate([
 ]);
 
 // Clear metadata location
-db.votes.updateMany(
-    {},
-    { $unset: { 'metadata.location': '' } }
-);
+db.votes.updateMany({}, { $unset: { 'metadata.location': '' } });
