@@ -5,26 +5,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             name="description"
-            content="MakeYour.vote - The definitive infrastructure for collective public opinion, unifying fragmented sentiment into official, actionable data."
+            content="MakeYour.vote - The definitive infrastructure for collective public opinion, unifying fragmented sentiment into official, actionable data powered by AI."
         />
         <meta
             name="keywords"
-            content="public opinion, voting platform, sentiment analysis, opinion tracking, global consensus, AI-driven analytics, collective sentiment, unified platform, Gemini AI"
+            content="public opinion, voting platform, sentiment analysis, opinion tracking, global consensus, AI-driven analytics, collective sentiment, unified platform, Gemini AI, real-time updates"
         />
         <meta name="author" content="MakeYour.vote" />
-        <meta
-            property="og:title"
-            content="MakeYour.vote - The Definitive Source for Public Opinion"
-        />
+        <meta property="og:title" content="MakeYour.vote - The Future of Public Opinion" />
         <meta
             property="og:description"
-            content="Building the first standardized infrastructure for collective public opinion. Unify fragmented sentiment into official, actionable data."
+            content="Building the first AI-powered standardized infrastructure for collective public opinion. Unify fragmented sentiment into official, actionable data."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://makeyour.vote" />
         <meta property="og:image" content="/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="MakeYour.vote - Unified Public Opinion Platform" />
+        <meta name="twitter:title" content="MakeYour.vote - AI-Powered Public Opinion Platform" />
         <meta
             name="twitter:description"
             content="The first standardized infrastructure for collective public opinion."
@@ -44,7 +41,6 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
             rel="stylesheet"
         />
-
         <title>MakeYour.vote - The Definitive Source for Public Opinion</title>
         <style>
             :root {
@@ -421,6 +417,141 @@
             .theme-switch:hover {
                 transform: scale(1.1);
             }
+
+            .features {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                max-width: 1400px;
+                margin: 4rem auto;
+            }
+
+            .tech-stack {
+                padding: 4rem 5%;
+                background: var(--surface);
+            }
+
+            .tech-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 2rem;
+                max-width: 1200px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .tech-item {
+                padding: 1.5rem;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            .tech-item:hover {
+                transform: translateY(-5px);
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .tech-item i {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                color: var(--primary-light);
+            }
+
+            .roadmap {
+                padding: 6rem 5%;
+            }
+
+            .timeline {
+                max-width: 1000px;
+                margin: 4rem auto;
+                position: relative;
+            }
+
+            .timeline::before {
+                content: '';
+                position: absolute;
+                left: 50%;
+                width: 2px;
+                height: 100%;
+                background: var(--gradient-1);
+            }
+
+            .timeline-item {
+                margin: 2rem 0;
+                position: relative;
+                width: 50%;
+                padding: 2rem;
+            }
+
+            .timeline-item:nth-child(odd) {
+                left: 0;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 50%;
+            }
+
+            .timeline-content {
+                background: var(--surface);
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            }
+
+            .contact {
+                padding: 6rem 5%;
+                background: var(--gradient-2);
+                text-align: center;
+            }
+
+            .contact-form {
+                max-width: 600px;
+                margin: 3rem auto;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                border: none;
+                background: rgba(255, 255, 255, 0.1);
+                color: var(--text-primary);
+            }
+
+            .partners {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 3rem;
+                flex-wrap: wrap;
+                margin: 4rem 0;
+            }
+
+            .partner-logo {
+                height: 40px;
+                opacity: 0.6;
+                transition: opacity 0.3s ease;
+            }
+
+            .partner-logo:hover {
+                opacity: 1;
+            }
+
+            @media (max-width: 768px) {
+                .timeline::before {
+                    left: 0;
+                }
+
+                .timeline-item {
+                    width: 100%;
+                    left: 0 !important;
+                }
+            }
         </style>
     </head>
     <body>
@@ -497,8 +628,77 @@
             </div>
         </div>
 
+        <section class="tech-stack">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-react"></i>
+                    <h4>React.js</h4>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-node"></i>
+                    <h4>Node.js</h4>
+                </div>
+                <div class="tech-item">
+                    <i class="fab fa-docker"></i>
+                    <h4>Docker</h4>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-robot"></i>
+                    <h4>AI/ML</h4>
+                </div>
+            </div>
+        </section>
+
+        <section class="roadmap">
+            <h2 class="section-title">Development Roadmap</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Core Platform</h3>
+                        <p>Advanced authentication and real-time features</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>AI Integration</h3>
+                        <p>Predictive analytics and automated content curation</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Mobile Experience</h3>
+                        <p>Native apps and offline-first architecture</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- <section class="contact">
+            <h2 class="section-title">Get in Touch</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <input
+                        type="email"
+                        class="form-control"
+                        placeholder="Enter your email"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <textarea
+                        class="form-control"
+                        placeholder="Your message"
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+            </form>
+        </section> -->
+
         <footer class="footer">
-            <p>&copy; 2023 MakeYour.vote. All rights reserved.</p>
+            <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
         </footer>
 
         <div class="theme-switch">
