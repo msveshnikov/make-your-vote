@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru-RU">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,192 +36,323 @@
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+        />
+
         <title>MakeYour.vote - The Definitive Source for Public Opinion</title>
         <style>
             :root {
-                --primary: #117fe5;
-                --secondary: #00ff00;
-                --dark: #000000;
-                --light: #ffffff;
-                --glass: rgba(255, 255, 255, 0.1);
-                /* --neon-glow: 0 0 10px rgba(0, 255, 0, 0.5); */
+                --primary-color: #3b82f6;
+                --primary-dark: #1e40af;
+                --primary-light: #60a5fa;
+                --accent-color: #10b981;
+                --background: #0f172a;
+                --surface: #1e293b;
+                --text-primary: #f8fafc;
+                --text-secondary: #94a3b8;
+                --gradient-1: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+                --gradient-2: linear-gradient(45deg, #1e40af 0%, #3b82f6 100%);
             }
 
             * {
-                box-sizing: border-box;
                 margin: 0;
                 padding: 0;
+                box-sizing: border-box;
             }
 
             body {
-                font-family: 'Inter', sans-serif;
+                font-family: 'Plus Jakarta Sans', sans-serif;
                 line-height: 1.6;
-                color: var(--dark);
-                background: #f8f9fa;
+                color: var(--text-primary);
+                background: var(--background);
+                overflow-x: hidden;
             }
 
-            .container {
-                max-width: 1400px;
-                margin: 0 auto;
-                padding: 0 2rem;
-            }
-
-            header {
-                background: rgba(26, 26, 26, 0.95);
+            .navbar {
+                background: rgba(15, 23, 42, 0.95);
                 backdrop-filter: blur(10px);
-                padding: 1rem 0;
                 position: fixed;
                 width: 100%;
+                top: 0;
                 z-index: 1000;
-                box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            }
-
-            nav {
+                padding: 1rem 5%;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
 
-            .nav-links {
-                display: flex;
-                gap: 2rem;
-            }
-
-            nav a {
-                color: var(--light);
+            .logo {
+                font-size: 1.5rem;
+                font-weight: 800;
+                background: var(--gradient-1);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
                 text-decoration: none;
-                font-weight: 500;
-                transition: color 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
             }
 
-            nav a:hover {
-                color: var(--secondary);
+            .logo i {
+                font-size: 1.75rem;
+                color: var(--primary-color);
             }
 
-            .hero {
-                background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)),
-                    url('hero1.webp');
-                background-size: cover;
-                background-position: center;
-                color: #fff;
-                text-align: center;
-                padding: 19rem 0;
-                position: relative;
-                overflow: hidden;
+            .prod-badge {
+                background: var(--accent-color);
+                color: white;
+                padding: 0.25rem 0.75rem;
+                border-radius: 2rem;
+                font-size: 0.875rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                animation: pulse 2s infinite;
             }
 
             @keyframes pulse {
                 0% {
-                    opacity: 0.1;
+                    transform: scale(1);
                 }
                 50% {
-                    opacity: 0.2;
+                    transform: scale(1.05);
                 }
                 100% {
-                    opacity: 0.1;
+                    transform: scale(1);
                 }
             }
+
+            .hero {
+                margin-top: 4rem;
+                padding: 8rem 5%;
+                background: var(--gradient-2);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url('https://raw.githubusercontent.com/SamHerbert/SVG-Loaders/master/svg-loaders/grid.svg')
+                    repeat;
+                opacity: 0.1;
+                animation: move-background 20s linear infinite;
+            }
+
+            @keyframes move-background {
+                from {
+                    background-position: 0 0;
+                }
+                to {
+                    background-position: 100% 100%;
+                }
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 1;
+                max-width: 1200px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
             .hero h1 {
                 font-size: 4rem;
-                font-weight: 700;
+                font-weight: 800;
                 margin-bottom: 1.5rem;
                 line-height: 1.2;
+                background: linear-gradient(to right, #fff, #94a3b8);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                animation: slide-up 1s ease-out;
             }
 
             .hero p {
-                font-size: 1.25rem;
-                margin-bottom: 2rem;
-                opacity: 0.9;
+                font-size: 1.5rem;
+                max-width: 800px;
+                margin: 0 auto 3rem;
+                color: var(--text-secondary);
+                animation: slide-up 1s ease-out 0.2s backwards;
+            }
+
+            @keyframes slide-up {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .cta-button {
                 display: inline-block;
-                background: var(--primary);
-                color: #fff;
-                padding: 1.2rem 3.5rem;
+                background: var(--accent-color);
+                color: white;
+                padding: 1.25rem 2.5rem;
+                border-radius: 3rem;
                 text-decoration: none;
-                border-radius: 30px;
                 font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                /* transition: all 0.3s ease; */
-                /* box-shadow: var(--neon-glow); */
-                border: 1px solid var(--primary);
+                font-size: 1.125rem;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+                animation: slide-up 1s ease-out 0.4s backwards;
             }
 
             .cta-button:hover {
-                /* background: transparent; */
-                /* color: var(--primary); */
-                transform: translateY(-3px);
-                box-shadow: 0 0 30px var(--primary);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+                background: transparent;
+                border-color: var(--accent-color);
             }
 
             .section {
-                padding: 8rem 0;
+                padding: 8rem 5%;
+                position: relative;
             }
 
             .section-title {
-                font-size: 2.5rem;
+                font-size: 3rem;
+                font-weight: 800;
+                margin-bottom: 3rem;
                 text-align: center;
-                margin-bottom: 4rem;
-                color: var(--dark);
+                background: var(--gradient-1);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
             }
 
-            .grid {
+            .features {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                 gap: 2rem;
+                margin-top: 4rem;
+                max-width: 1400px;
+                margin: 0 auto;
             }
 
-            .card {
-                background: var(--light);
-                border-radius: 20px;
-                padding: 2rem;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-                transition: transform 0.3s ease;
+            .feature-card {
+                background: var(--surface);
+                padding: 2.5rem;
+                border-radius: 1.5rem;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                position: relative;
+                overflow: hidden;
             }
 
-            .card:hover {
-                transform: translateY(-5px);
-            }
-
-            .card h3 {
-                color: var(--primary);
-                margin-bottom: 1rem;
-            }
-
-            .testimonial-item {
-                text-align: center;
-            }
-
-            .testimonial-face img {
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                margin-bottom: 1rem;
-            }
-
-            footer {
-                background: var(--dark);
-                color: var(--light);
-                padding: 4rem 0;
-                text-align: center;
-            }
-
-            .footer-links {
-                margin-top: 1rem;
-            }
-
-            .footer-links a {
-                color: var(--light);
-                text-decoration: none;
-                margin: 0 1rem;
-                opacity: 0.8;
+            .feature-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--gradient-1);
+                opacity: 0;
                 transition: opacity 0.3s ease;
+                z-index: 0;
             }
 
-            .footer-links a:hover {
-                opacity: 1;
+            .feature-card:hover {
+                transform: translateY(-10px);
+                border-color: var(--primary-color);
+            }
+
+            .feature-card:hover::before {
+                opacity: 0.1;
+            }
+
+            .feature-card > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            .feature-card h3 {
+                color: var(--primary-light);
+                margin-bottom: 1.5rem;
+                font-size: 1.5rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .feature-card i {
+                font-size: 1.75rem;
+            }
+
+            .stats {
+                background: var(--surface);
+                padding: 6rem 5%;
+                margin-top: 4rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 3rem;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .stat-card {
+                text-align: center;
+                animation: fade-in 1s ease-out;
+            }
+
+            .stat-number {
+                font-size: 3.5rem;
+                font-weight: 800;
+                background: var(--gradient-1);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                margin-bottom: 0.5rem;
+                display: inline-block;
+            }
+
+            .stat-label {
+                color: var(--text-secondary);
+                font-size: 1.125rem;
+                font-weight: 600;
+            }
+
+            .footer {
+                background: var(--surface);
+                color: var(--text-secondary);
+                padding: 4rem 5%;
+                text-align: center;
+                position: relative;
+            }
+
+            .footer::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 1px;
+                background: var(--gradient-1);
+                opacity: 0.3;
             }
 
             @media (max-width: 768px) {
@@ -229,117 +360,209 @@
                     font-size: 2.5rem;
                 }
 
-                .nav-links {
-                    display: none;
+                .hero p {
+                    font-size: 1.125rem;
                 }
 
-                .container {
-                    padding: 0 1rem;
+                .section-title {
+                    font-size: 2rem;
                 }
+
+                .features {
+                    grid-template-columns: 1fr;
+                }
+
+                .stat-number {
+                    font-size: 2.5rem;
+                }
+            }
+
+            .scroll-indicator {
+                position: absolute;
+                bottom: 2rem;
+                left: 50%;
+                transform: translateX(-50%);
+                color: var(--text-secondary);
+                font-size: 2rem;
+                animation: bounce 2s infinite;
+                cursor: pointer;
+            }
+
+            @keyframes bounce {
+                0%,
+                20%,
+                50%,
+                80%,
+                100% {
+                    transform: translateY(0);
+                }
+                40% {
+                    transform: translateY(-20px);
+                }
+                60% {
+                    transform: translateY(-10px);
+                }
+            }
+
+            .theme-switch {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                background: var(--surface);
+                padding: 1rem;
+                border-radius: 50%;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                z-index: 1000;
+                transition: all 0.3s ease;
+            }
+
+            .theme-switch:hover {
+                transform: scale(1.1);
             }
         </style>
     </head>
     <body>
-        <main>
-            <section id="home" class="hero">
-                <div class="container">
-                    <h1>Direct Democracy</h1>
+        <nav class="navbar">
+            <a href="/app" class="logo">
+                <i class="fas fa-vote-yea"></i>
+                MakeYour.vote
+            </a>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>The Definitive Source for Public Opinion</h1>
+                <p>
+                    Unifying global voices into actionable insights through standardized
+                    infrastructure for collective public opinion.
+                </p>
+                <a href="/app" class="cta-button">Start Making Impact</a>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Our Vision</h2>
+
+            <div class="features">
+                <div class="feature-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i>Problem</h3>
                     <p>
-                        Join the first standardized platform for collective public opinion,
-                        transforming individual voices into actionable insights.
+                        Public sentiment is scattered across countless biased sources, making it
+                        impossible to understand what people truly think. Traditional polling
+                        methods are outdated and unreliable.
                     </p>
-                    <a href="/app" class="cta-button">Get Started</a>
                 </div>
-            </section>
-
-            <section id="features" class="section">
-                <div class="container">
-                    <h2 class="section-title">Platform Features</h2>
-                    <div class="grid">
-                        <div class="card">
-                            <h3>AI-Enhanced Analysis</h3>
-                            <p>
-                                Powered by Gemini AI for deep insight generation and trend analysis
-                            </p>
-                        </div>
-                        <div class="card">
-                            <h3>Real-time Processing</h3>
-                            <p>Instant vote tracking and live sentiment analysis updates</p>
-                        </div>
-                        <div class="card">
-                            <h3>Enterprise Solutions</h3>
-                            <p>Scalable deployments with white-label options for organizations</p>
-                        </div>
-                    </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-lightbulb"></i>Solution</h3>
+                    <p>
+                        Our platform unifies all votes into a single source of truth, making
+                        collective sentiment official and visible for everyone. We provide
+                        real-time, unbiased data that matters.
+                    </p>
                 </div>
-            </section>
-            <!-- <section id="roadmap" class="roadmap">
-                <div class="container">
-                    <h2>Development Roadmap</h2>
-                    <div class="roadmap-grid">
-                        <div class="roadmap-item">
-                            <h3>Core Platform</h3>
-                            <p>Advanced authentication and real-time collaborative features</p>
-                        </div>
-                        <div class="roadmap-item">
-                            <h3>AI Integration</h3>
-                            <p>Predictive analytics and automated content curation</p>
-                        </div>
-
-                        <div class="roadmap-item">
-                            <h3>Community Features</h3>
-                            <p>User profiles, discussion forums, and reward system</p>
-                        </div>
-                    </div>
-                </div>
-            </section> -->
-
-            <section id="testimonials" class="section">
-                <div class="container">
-                    <h2 class="section-title">User Testimonials</h2>
-                    <div class="grid">
-                        <div class="card testimonial-item">
-                            <div class="testimonial-face">
-                                <img src="https://i.pravatar.cc/150?img=1" alt="User testimonial" />
-                            </div>
-                            <p>
-                                "The real-time analytics have transformed how we understand public
-                                sentiment."
-                            </p>
-                            <p><strong>Alex Thompson</strong><br />Policy Analyst</p>
-                        </div>
-                        <div class="card testimonial-item">
-                            <div class="testimonial-face">
-                                <img src="https://i.pravatar.cc/150?img=5" alt="Sophia Lee" />
-                            </div>
-                            <p>
-                                "An essential tool for our market research and strategy
-                                development."
-                            </p>
-                            <p><strong>Sarah Chen</strong><br />Business Strategist</p>
-                        </div>
-                        <div class="card testimonial-item">
-                            <div class="testimonial-face">
-                                <img src="https://i.pravatar.cc/150?img=8" alt="David Chen" />
-                            </div>
-                            <p>
-                                "The mobile experience is unparalleled. Perfect for on-the-go
-                                insights."
-                            </p>
-                            <p><strong>Michael Roberts</strong><br />Digital Consultant</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        <footer>
-            <div class="container">
-                <p>&copy; 2025 MakeYour.vote. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <a href="/terms">Terms of Service</a>
+                <div class="feature-card">
+                    <h3><i class="fas fa-chart-line"></i>Impact</h3>
+                    <p>
+                        By standardizing public opinion infrastructure, we enable better
+                        decision-making, more responsive governance, and stronger democratic
+                        participation.
+                    </p>
                 </div>
             </div>
+        </section>
+
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">100K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1M+</div>
+                    <div class="stat-label">Votes Cast</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Real-time Updates</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2023 MakeYour.vote. All rights reserved.</p>
         </footer>
+
+        <div class="theme-switch">
+            <i class="fas fa-adjust"></i>
+        </div>
+
+        <script>
+            // Smooth scroll
+            document.querySelector('.scroll-indicator').addEventListener('click', () => {
+                window.scrollTo({
+                    top: window.innerHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Animate feature cards
+            document.querySelectorAll('.feature-card').forEach((card) => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease-out';
+                observer.observe(card);
+            });
+
+            // Animate statistics
+            document.querySelectorAll('.stat-card').forEach((stat, index) => {
+                stat.style.opacity = 0;
+                stat.style.transform = 'translateY(30px)';
+                stat.style.transition = `all 0.6s ease-out ${index * 0.2}s`;
+                observer.observe(stat);
+            });
+
+            // Theme switcher
+            const themeSwitch = document.querySelector('.theme-switch');
+            let isDark = true;
+
+            themeSwitch.addEventListener('click', () => {
+                isDark = !isDark;
+                if (isDark) {
+                    document.documentElement.style.setProperty('--background', '#0f172a');
+                    document.documentElement.style.setProperty('--surface', '#1e293b');
+                    document.documentElement.style.setProperty('--text-primary', '#f8fafc');
+                    document.documentElement.style.setProperty('--text-secondary', '#94a3b8');
+                } else {
+                    document.documentElement.style.setProperty('--background', '#ffffff');
+                    document.documentElement.style.setProperty('--surface', '#f1f5f9');
+                    document.documentElement.style.setProperty('--text-primary', '#0f172a');
+                    document.documentElement.style.setProperty('--text-secondary', '#475569');
+                }
+            });
+        </script>
     </body>
 </html>
